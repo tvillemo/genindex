@@ -8,14 +8,15 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+
 class Database 
 {
 	
   private Connection myConnexion;
   private Statement myStatement;
-  private final String MYURL = "jdbc:mysql://localhost/projetannuel";
-  private final String MYUSER = "root";
-  private final String MYPASSWORD = "tardpassword";
+  private final String MYURL = "jdbc:oracle://192.168.24.3";
+  private final String MYUSER = "gp28";
+  private final String MYPASSWORD = "nounours";
 	
   private Animals animal;
   private Samples sample;

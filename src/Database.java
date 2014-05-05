@@ -57,6 +57,7 @@ class Database
 	  {
 		  myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
 		  myStatement = (Statement) myConnexion.createStatement();
+		  System.out.println("SUCCESS");
 	  } catch (SQLException ex) {
 		  System.out.println("FAILED TO CONNECT BDD");
 	  }

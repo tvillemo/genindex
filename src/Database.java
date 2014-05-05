@@ -1,34 +1,33 @@
 /**
  * This class manage all the methods of the different classes which interact with the database.
  */
- 
 
+import java.beans.Statement;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-class Database {
+class Database 
+{
+	
+  private Connection myConnexion;
+  private Statement myStatement;
+  private final String MYURL = "jdbc:mysql://localhost/projetannuel";
+  private final String MYUSER = "root";
+  private final String MYPASSWORD = "tardpassword";
+	
   private Animals animal;
-
   private Samples sample;
-
   private Types_analysis typeAna;
-
   private Analysis analysis;
-
   private Users user;
-
   private Date d1;
-
   private Date d2;
-
   private Customers customer;
-
   private Orders order;
-
-  /**
-   * The adress of a customer.
-   */
+  //The adress of a customer.
   private Adress adress;
-
   public Storage storage;
 
   public Database() {
@@ -49,6 +48,44 @@ class Database {
 
     // Bouml preserved body end 00043002
   }
+  
+  
+  public void ConnectBDD()
+  {
+	  try 
+	  {
+		  myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
+		  myStatement = (Statement) myConnexion.createStatement();
+	  } catch (SQLException ex) {
+		  System.out.println("FAILED TO CONNECT BDD");
+	  }
+
+  }
+  
+//  public Connection getMyConnexion() 
+//  {
+//      return myConnexion;
+//  }
+//
+//  public Statement getMyStatement() 
+//  {
+//      return myStatement;
+//  }
+
+  	public void close() 
+  	{
+  		try 
+  		{
+  			((Connection) this.myStatement).close();
+  			this.myConnexion.close();    
+  		} 
+  		catch (SQLException ex) 
+  		{
+  			System.out.println("Mysql connection fermeture failed !!!");
+  		}
+  	}
+  
+  
 
   /**
    * This function permits to list all the orders in the database.

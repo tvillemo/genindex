@@ -58,27 +58,28 @@ class Database
 
 	}
 
-//	/**
-//	 * Lance une requète et l'affiche pour les tests
-//	 */
-//	public void DisplayResultsQuery(String query)
-//	{
-//		try
-//		{
-//			if (myStatement.execute(query)){
-//				results= myStatement.executeQuery(query);
-//				while (results.next()) 
-//				{	
-//					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
-//				}
-//				results.close();
-//			}
-//		}
-//		catch (SQLException ex) 
-//		{
-//			System.out.println("Erreur requète test");
-//		}
-//	}
+	/**
+	 * Lance une requète et l'affiche pour les tests
+	 */
+	public void DisplayResultsQuery(String query)
+	{
+		ResultSet results = null;
+		try
+		{
+			if (myStatement.execute(query)){
+				results= myStatement.executeQuery(query);
+				while (results.next()) 
+				{	
+					System.out.println(results.getString(results.findColumn("CORPORATIONNAME")));
+				}
+				results.close();
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requète test");
+		}
+	}
 
 	/**
 	 * Connexion à la BDD

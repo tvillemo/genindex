@@ -22,6 +22,8 @@ class Database
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
 	
+	private String query = "";
+	
 	ResultSet results;
 
 	//--- Table -> Class ---//
@@ -40,23 +42,26 @@ class Database
 	public Database() 
 	{
 		// liste en attendant les requètes
-		d1 = new Date(23,12,10);
-		d2 = new Date(23,12,11);
-		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
-		order =  new Orders(1, d1,d2, 1, customer);
-		animal = new Animals("cat","2010");
-		sample = new Samples("1", "blood", d1, d2, animal);
-		this.typeAna = new Types_analysis("PCR", 40);
-		this.analysis = new Analysis(1, typeAna, d2);
-		sample.addAnalysis(analysis);
-		user = new Users("jean", "dupont", "@");
-		order.addSample(sample);
-		storage = new Storage("freezer", 60);
-		adress = new Adress(86000,"Poitiers");
+//		d1 = new Date(23,12,10);
+//		d2 = new Date(23,12,11);
+//		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
+//		order =  new Orders(1, d1,d2, 1, customer);
+//		animal = new Animals("cat","2010");
+//		sample = new Samples("1", "blood", d1, d2, animal);
+//		this.typeAna = new Types_analysis("PCR", 40);
+//		this.analysis = new Analysis(1, typeAna, d2);
+//		sample.addAnalysis(analysis);
+//		user = new Users("jean", "dupont", "@");
+//		order.addSample(sample);
+//		storage = new Storage("freezer", 60);
+//		adress = new Adress(86000,"Poitiers");
+		
+		ConnectBDD();
+		
 	}
 
 	/**
-	 * Lance une requète et l'affiche pour les tests
+	 * Lance une requête et l'affiche pour les tests
 	 */
 	public void DisplayResultsQuery(String query)
 	{
@@ -86,7 +91,7 @@ class Database
 			{
 				myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
 				myStatement = myConnexion.createStatement();
-				System.out.println("Connection successful");
+				//System.out.println("Connection successful");
 			} 
 			catch (SQLException ex) 
 			{
@@ -175,10 +180,19 @@ class Database
 		// Bouml preserved body end 00043082
 	}
 
-	public Samples searchSample(String id) {
-		// Bouml preserved body begin 00043102
+	//DONE
+	public Samples searchSample(String id) 
+	{
+		query="";
+		try
+		{
+			results = myStatement.executeQuery(query);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requète test");
+		}
 		return this.sample;
-		// Bouml preserved body end 00043102
 	}
 
 	public List<Samples> getListSamples() {

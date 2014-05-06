@@ -5,8 +5,8 @@ public class Main {
 	{
 		Database d = new Database();
 		
-		d.ConnectBDD();
-		d.DisplayResultsQuery("select * from ADRESS");
+		
+		//d.DisplayResultsQuery("select * from ADRESS");
 		d.close();
 	}
 

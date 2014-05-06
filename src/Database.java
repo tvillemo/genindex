@@ -193,7 +193,7 @@ class Database
 			resultsSample = myStatement.executeQuery(QuerySample);
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
-			if (resultsSample.getString("STATUTSAMPLE") == "analysee")
+			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
 			}
@@ -206,18 +206,48 @@ class Database
 		return mySample;
 	}
 
-	public List<Samples> getListSamples() {
-		// Bouml preserved body begin 00043182
+	//DONE
+	public List<Samples> getListSamples() 
+	{
 		List<Samples> listS = new ArrayList<Samples>();
-		listS.add(this.sample);
+		
+		ResultSet resultsSamples = null;
+		
+		String QuerySample="Select IDSAMPLE from SAMPLE";
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				listS.add(searchSample(resultsSamples.getString("IDSAMPLE")));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+		
 		return(listS);
-		// Bouml preserved body end 00043182
 	}
 
-	public void saveSample(Samples sample) {
-		// Bouml preserved body begin 00043202
+	public void saveSample(Samples sample) 
+	{
+//		
+//		ResultSet resultsSamples = null;
+//		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+//		String QuerySample="Insert into SAMPLE values("+sample.getId();
+//		
+//		try
+//		{
+//			resultsSamples = myStatement.executeQuery(QuerySample);
+//		}
+//		catch (SQLException ex) 
+//		{
+//			System.out.println("Erreur requête Sample");
+//		}
+		
 		this.sample = sample;
-		// Bouml preserved body end 00043202
 	}
 
 	public Animals searchAnimal(String specie) 

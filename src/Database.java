@@ -153,6 +153,7 @@ public void ConnectBDD()
 		// Bouml preserved body end 0003D002
 	}
 
+	//DONE
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
@@ -188,6 +189,7 @@ public void ConnectBDD()
 		// Bouml preserved body end 00042F02
 	}
 
+	//DONE
 	/**
 	 * This function permits to search the order in the database that has this id.
 	 */

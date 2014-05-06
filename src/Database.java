@@ -166,6 +166,36 @@ class Database
 	 * This function permits to search the order in the database that has this id.
 	 */
 	public Orders searchOrder(int id) {
+		
+		ResultSet resultsOrder = null;
+		ResultSet resultsNbEch = null;
+		Orders myOrder = null;
+		Customers myCustomer = null;
+		
+		String QueryOrder="Select IDClient, datelot, idinvoice, pricewithTVA, idPayment from LOT, INVOICE WHERE LOT.idinvoice = INVOICE.idinvoice AND idlot="+id;
+		String QueryNbEch="Select COUNT(idSample) from Sample WHERE idlot="+id;
+		
+		try
+		{
+			resultsOrder = myStatement.executeQuery(QueryOrder);
+			resultsNbEch = myStatement.executeQuery(QueryNbEch);
+			
+			//Creation du client
+			myCustomer=searchCustomerID(Integer.parseInt(resultsOrder.getString("IDClient")));
+			
+			//Creation de la facture
+			
+			
+			//Creation du lot
+			myOrder = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getNString("NAMETYPE"), new Date(0,0,0), new Date(0,0,0), new Animals("",""));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requète search order");
+		}
+		searchCustomerID(int ID)
+		
+		return mySample;
 		// Bouml preserved body begin 00042F82
 		return(this.order);
 		// Bouml preserved body end 00042F82

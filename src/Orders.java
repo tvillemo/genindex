@@ -14,7 +14,7 @@ class Orders {
   /**
    * The priority level is expressed in days.
    */
-  private int priorityLevel;
+  //private int priorityLevel;
 
   /**
    * The number of samples for the order.
@@ -23,7 +23,7 @@ class Orders {
 
   private List<Samples> samples;
 
-  private Date dateDeadline;
+  //private Date dateDeadline;
 
   private Date dateOrder;
 
@@ -33,7 +33,7 @@ class Orders {
    * TRUE if the invoice is paid, FALSE if not.
    * 
    */
-  private boolean paid;
+  //private boolean paid;
 
   /**
    * TRUE if the results are send. in this case, the analyse is finished, so the order is "stored" in the database.
@@ -41,15 +41,15 @@ class Orders {
    */
   private boolean results_send;
 
-  public Orders(int num_samples, Date date_order, Date date_deadline, int priority, Customers customer) {
+  public Orders(int num_samples, Date date_order, Customers customer) {
     // Bouml preserved body begin 0001F402
 	  this.samples = new ArrayList<Samples>();
 	  this.numberSamples=num_samples;
 	  this.dateOrder=date_order;
-	  this.dateDeadline=date_deadline;
-	  this.priorityLevel = priority;
+	  //this.dateDeadline=date_deadline;
+	  //this.priorityLevel = priority;
 	  this.customer=customer;
-	  this.paid = false;
+	  //this.paid = false;
 	  this.results_send=false;
 	  this.idOrder=countId;
 	  countId = countId +1;
@@ -62,11 +62,12 @@ class Orders {
     // Bouml preserved body end 0002FA02
   }
 
-  public int getPriorityLevel() {
+  /*public int getPriorityLevel() {
     // Bouml preserved body begin 00042A82
 	  return(this.priorityLevel);
     // Bouml preserved body end 00042A82
   }
+  */
 
   public List<Samples> getSamples() {
     // Bouml preserved body begin 00042C82
@@ -80,11 +81,11 @@ class Orders {
     // Bouml preserved body end 00043402
   }
 
-  public boolean getPaid() {
+  /*public boolean getPaid() {
     // Bouml preserved body begin 00042B02
 	  return(this.paid);
     // Bouml preserved body end 00042B02
-  }
+  }*/
 
   public boolean getResultSend() {
     // Bouml preserved body begin 00042B82
@@ -95,7 +96,7 @@ class Orders {
   /**
    * A setter to change the priority level.
    */
-  public void setPriorityLevel(int newP) {
+  /*public void setPriorityLevel(int newP) {
     // Bouml preserved body begin 0001F682
 	  this.priorityLevel=newP;
     // Bouml preserved body end 0001F682
@@ -105,7 +106,7 @@ class Orders {
     // Bouml preserved body begin 00026582
 	  this.paid=paid;
     // Bouml preserved body end 00026582
-  }
+  }*/
 
   public void setResultsSend(boolean sent) {
     // Bouml preserved body begin 00026602
@@ -116,11 +117,11 @@ class Orders {
   /**
    * This function is just a setter that permits to change the attribute "Paid" from FALSE to TRUE
    */
-  public void payAnalyse() {
+  /*public void payAnalyse() {
     // Bouml preserved body begin 0001F602
 	  this.paid=true;
     // Bouml preserved body end 0001F602
-  }
+  }*/
 
   /**
    * This function permits to attach a sample to its order.
@@ -142,8 +143,8 @@ class Orders {
 	  System.out.print("Customer : ");
 	  System.out.println(this.customer.getLastName());
 	  
-	  System.out.print("DeadLine : ");
-	  this.dateDeadline.printDate();
+	  //System.out.print("DeadLine : ");
+	  //this.dateDeadline.printDate();
 	  
 	  System.out.print("Number of samples : ");
 	  System.out.println(this.numberSamples);

@@ -180,22 +180,27 @@ class Database
 		// Bouml preserved body end 00043082
 	}
 
-	//DONE
+	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 		
-		String QuerySample="Select IDSAMPLE, NAMETYPE,  from SAMPLE natural join SAMPLETYPE";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
 		
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
-			mySample = new Samples( resultsSample.getNString("IDSAMPLE"), resultsSample.getNString("NAMETYPE"), new Date(0,0,0), new Date(0,0,0), new Animals("",""));
+			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
+			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+			if (resultsSample.getString("STATUTSAMPLE") == "analysee")
+			{
+				mySample.setAnalyzed();
+			}
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println("Erreur requète test");
+			System.out.println("Erreur requête Sample");
 		}
 		 
 		return mySample;

@@ -2,19 +2,23 @@
  * This class manage all the methods of the different classes which interact with the database.
  */
 
-import java.beans.Statement;
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+//import javax.faces.bean.ManagedBean;
+//import javax.faces.bean.SessionScoped;
 
 class Database 
 {
 	
   private Connection myConnexion;
   private Statement myStatement;
-  private final String MYURL = "jdbc:oracle://192.168.24.3";
+  private final String MYURL = "jdbc:oracle:thin:@//192.168.24.3/pfpbs";
   private final String MYUSER = "gp28";
   private final String MYPASSWORD = "nounours";
 	
@@ -53,15 +57,40 @@ class Database
   
   public void ConnectBDD()
   {
-	  try 
-	  {
-		  myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
-		  myStatement = (Statement) myConnexion.createStatement();
-		  System.out.println("SUCCESS");
-	  } catch (SQLException ex) {
-		  System.out.println("FAILED TO CONNECT BDD");
-	  }
+      if (testDriver()) 
+      {
+          try 
+          {
+              myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
+              myStatement = myConnexion.createStatement();
+          } 
+          catch (SQLException ex) 
+          {
+              Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+              System.out.println("SQLException: " + ex.getMessage());
+              System.out.println("SQLState: " + ex.getSQLState());
+              System.out.println("VendorError: " + ex.getErrorCode());
+          }
+      }
+      else
+      {
+          System.out.println("testdriver false");
+      }
 
+  }
+  
+  
+  public boolean testDriver() 
+  {
+      //   Chargement du driver JDBC pour Oracle */
+      try {
+          Class.forName("oracle.jdbc.driver.OracleDriver"); 
+          return true;
+      } catch (ClassNotFoundException e) {
+          System.out.println("Le driver n'a pas été chargé");
+          return false;
+      }
+  
   }
   
 //  public Connection getMyConnexion() 

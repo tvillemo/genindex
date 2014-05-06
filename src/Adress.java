@@ -8,7 +8,7 @@ class Adress {
   private int number;
 
   /**
-   * The name of the street.
+   * The name of the street. 
    */
   private String street;
 

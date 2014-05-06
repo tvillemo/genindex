@@ -11,19 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-//import javax.faces.bean.ManagedBean;
-//import javax.faces.bean.SessionScoped;
 
 class Database 
 {
+	
 	//--- Database Connection ---//
 	private Connection myConnexion;
 	private Statement myStatement;
 	private final String MYURL = "jdbc:oracle:thin:@//192.168.24.3/pfpbs";
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
+	
+	ResultSet results;
 
-	//---  ---//
+	//--- Table -> Class ---//
 	private Animals animal;
 	private Samples sample;
 	private Types_analysis typeAna;
@@ -36,8 +37,9 @@ class Database
 	private Adress adress;
 	public Storage storage;
 
-	public Database() {
-		// Bouml preserved body begin 00043002
+	public Database() 
+	{
+		// liste en attendant les requètes
 		d1 = new Date(23,12,10);
 		d2 = new Date(23,12,11);
 		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
@@ -51,11 +53,31 @@ class Database
 		order.addSample(sample);
 		storage = new Storage("freezer", 60);
 		adress = new Adress(86000,"Poitiers");
-
-		// Bouml preserved body end 00043002
 	}
 
+	/**
+	 * Lance une requète et l'affiche pour les tests
+	 */
+	public void DisplayResultsQuery(String query)
+	{
+		try
+		{
+			results = myStatement.executeQuery(query);
+			while (results.next()) 
+			{	
+			    System.out.println(results.getString(2));
+			}
+			results.close();
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requète test");
+		}
+	}
 
+	/**
+	 * Connexion à la BDD
+	 */
 	public void ConnectBDD()
 	{
 		ResultSet resultSet = null;
@@ -96,7 +118,9 @@ class Database
 		}
 	}
 
-
+	/**
+	 * Test des driver de la BDD
+	 */
 	public boolean testDriver() 
 	{
 		//   Chargement du driver JDBC pour Oracle */
@@ -110,21 +134,14 @@ class Database
 
 	}
 
-	//  public Connection getMyConnexion() 
-	//  {
-	//      return myConnexion;
-	//  }
-	//
-	//  public Statement getMyStatement() 
-	//  {
-	//      return myStatement;
-	//  }
-
+	/**
+	 * Fermeture de la connexion
+	 */
 	public void close() 
 	{
 		try 
 		{
-			((Connection) this.myStatement).close();
+			this.myStatement.close();
 			this.myConnexion.close();    
 		} 
 		catch (SQLException ex) 

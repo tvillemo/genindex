@@ -14,14 +14,14 @@ import java.util.logging.Logger;
 
 class Database 
 {
-	
+
 	//--- Database Connection ---//
 	private Connection myConnexion;
 	private Statement myStatement;
 	private final String MYURL = "jdbc:oracle:thin:@//192.168.24.3/pfpbs";
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
-	
+
 	ResultSet results;
 
 	//--- Table -> Class ---//
@@ -62,12 +62,14 @@ class Database
 	{
 		try
 		{
-			results = myStatement.executeQuery(query);
-			while (results.next()) 
-			{	
-			    System.out.println(results.getString(2));
+			if (myStatement.execute(query)){
+				results= myStatement.executeQuery(query);
+				while (results.next()) 
+				{	
+					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
+				}
+				results.close();
 			}
-			results.close();
 		}
 		catch (SQLException ex) 
 		{
@@ -87,7 +89,8 @@ class Database
 			{
 				myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
 				System.out.println("Connection successful");
-				
+				myStatement = myConnexion.createStatement();
+
 			} 
 			catch (SQLException ex) 
 			{

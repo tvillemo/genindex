@@ -28,7 +28,7 @@ class Database
 	ResultSet results;
 
 	//--- Table -> Class ---//
-	private Animals animal;
+	private Animals animal; 
 	private Samples sample;
 	private Types_analysis typeAna;
 	private Analysis analysis;

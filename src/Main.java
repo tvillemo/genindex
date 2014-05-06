@@ -6,7 +6,13 @@ public class Main {
 		Database d = new Database();
 		
 		
+		
 		//d.DisplayResultsQuery("select * from ADRESS");
+		
+		Samples s = d.searchSample(""+2);
+		
+		//s.printSample(s);
+		
 		d.close();
 	}
 

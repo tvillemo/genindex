@@ -191,17 +191,17 @@ class Database
 			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
 			//Ajout des echantillons
 			
-			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
-			
-			addSample(Samples sample)
+//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
+//			
+//			addSample(Samples sample)
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requète search order");
 		}
-		searchCustomerID(int ID)
+		//searchCustomerID(int ID)
 		
-		return mySample;
+		//return mySample;
 		// Bouml preserved body begin 00042F82
 		return(this.order);
 		// Bouml preserved body end 00042F82

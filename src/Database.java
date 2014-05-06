@@ -23,9 +23,6 @@ class Database
 	private final String MYPASSWORD = "nounours";
 
 	
-	private String query = "";
-	
-	ResultSet results;
 
 	//--- Table -> Class ---//
 	private Animals animal;
@@ -61,27 +58,27 @@ class Database
 		
 	}
 
-	/**
-	 * Lance une requète et l'affiche pour les tests
-	 */
-	public void DisplayResultsQuery(String query)
-	{
-		try
-		{
-			if (myStatement.execute(query)){
-				results= myStatement.executeQuery(query);
-				while (results.next()) 
-				{	
-					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
-				}
-				results.close();
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requète test");
-		}
-	}
+//	/**
+//	 * Lance une requète et l'affiche pour les tests
+//	 */
+//	public void DisplayResultsQuery(String query)
+//	{
+//		try
+//		{
+//			if (myStatement.execute(query)){
+//				results= myStatement.executeQuery(query);
+//				while (results.next()) 
+//				{	
+//					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
+//				}
+//				results.close();
+//			}
+//		}
+//		catch (SQLException ex) 
+//		{
+//			System.out.println("Erreur requète test");
+//		}
+//	}
 
 	/**
 	 * Connexion à la BDD
@@ -186,16 +183,22 @@ class Database
 	//DONE
 	public Samples searchSample(String id) 
 	{
-		query="";
+		ResultSet resultsSample = null;
+		Samples mySample = null;
+		
+		String QuerySample="Select IDSAMPLE, NAMETYPE,  from SAMPLE natural join SAMPLETYPE";
+		
 		try
 		{
-			results = myStatement.executeQuery(query);
+			resultsSample = myStatement.executeQuery(QuerySample);
+			mySample = new Samples( resultsSample.getNString("IDSAMPLE"), resultsSample.getNString("NAMETYPE"), new Date(0,0,0), new Date(0,0,0), new Animals("",""));
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requète test");
 		}
-		return this.sample;
+		 
+		return mySample;
 	}
 
 	public List<Samples> getListSamples() {
@@ -212,7 +215,8 @@ class Database
 		// Bouml preserved body end 00043202
 	}
 
-	public Animals searchAnimal(String specie) {
+	public Animals searchAnimal(String specie) 
+	{
 		// Bouml preserved body begin 00043282
 		return this.animal;
 		// Bouml preserved body end 00043282

@@ -255,6 +255,7 @@ public void ConnectBDD()
 	 * This function permits to save in the database the order in parameter.
 	 */
 	public void saveOrder(Orders order) {
+		
 		// Bouml preserved body begin 00043082
 		this.order =order;
 		// Bouml preserved body end 00043082

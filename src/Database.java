@@ -88,21 +88,6 @@ class Database
 				myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
 				System.out.println("Connection successful");
 				
-				myStatement = myConnexion.createStatement();
-				boolean rs = myStatement.execute("SELECT * FROM t_test");
-				if (rs){
-					resultSet = myStatement.getResultSet();
-					resultSet.next();
-					System.out.println(resultSet.getObject(1));
-					System.out.println(resultSet.getObject(2));
-					resultSet.next();
-					System.out.println(resultSet.getObject(resultSet.getInt("id_analyse")));
-					System.out.println(resultSet.getObject(resultSet.getInt("resultat")));
-				}
-				else {
-					System.out.println("aucun résultat");
-				}
-				
 			} 
 			catch (SQLException ex) 
 			{

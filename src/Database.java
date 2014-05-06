@@ -22,10 +22,10 @@ class Database
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
 
-	
+
 
 	//--- Table -> Class ---//
-	private Animals animal;
+	private Animals animal; 
 	private Samples sample;
 	private Types_analysis typeAna;
 	private Analysis analysis;
@@ -53,9 +53,9 @@ class Database
 //		order.addSample(sample);
 //		storage = new Storage("freezer", 60);
 //		adress = new Adress(86000,"Poitiers");
-		
+
 		ConnectBDD();
-		
+
 	}
 
 //	/**
@@ -83,7 +83,7 @@ class Database
 	/**
 	 * Connexion à la BDD
 	 */
-	public void ConnectBDD()
+public void ConnectBDD()
 	{
 		ResultSet resultSet = null;
 		if (testDriver()) 
@@ -156,9 +156,35 @@ class Database
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
-	public Orders searchOrder(Customers customer) {
+	public ArrayList<Orders> searchOrder(Customers customer) {
+		
+		ResultSet resultsOrder = null;
+		ArrayList<Orders> liste= new ArrayList<Orders>();
+		Orders myOrder = null;
+		
+		
+		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
+		
+		try
+		{
+			resultsOrder = myStatement.executeQuery(QueryOrder);
+			
+			while(resultsOrder.next())
+			{
+				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+				
+				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
+				
+				liste.add(myOrder);
+			}
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête search Order");
+		}
 		// Bouml preserved body begin 00042F02
-		return(this.order);
+		return(liste);
 		// Bouml preserved body end 00042F02
 	}
 
@@ -166,6 +192,60 @@ class Database
 	 * This function permits to search the order in the database that has this id.
 	 */
 	public Orders searchOrder(int id) {
+
+		ResultSet resultsOrder = null;
+		ResultSet resultsNbEch = null;
+		ResultSet resultsEch = null;
+		Orders myOrder = null;
+		Customers myCustomer = null;
+		Animals myAnimal = null;
+		Samples mySample = null;
+		
+		String QueryOrder="Select IDClient, datelot from LOT WHERE idlot="+id;
+		String QueryNbEch="Select COUNT(idSample) as nb from Sample WHERE idlot="+id;
+		String QueryEch="Select idSample, nameType, dateSampling, nameSpecies, birthAnimal  from Sample, SampleType, Animal, Species WHERE Sample.idType=Sampletype.idtype AND Sample.idAnimal=Animal.idAnimal AND Animal.idSpecies=Species.idSpecies AND idlot="+id;
+		
+		try
+		{
+			resultsOrder = myStatement.executeQuery(QueryOrder);
+			resultsNbEch = myStatement.executeQuery(QueryNbEch);
+
+			//Creation du client
+			myCustomer=searchCustomerID(Integer.parseInt(resultsOrder.getString("IDClient")));
+
+			//Creation de la date
+			Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+
+			//Creation du lot
+			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
+			//Ajout des echantillons
+
+//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
+//			
+//			addSample(Samples sample)
+			
+			//Ajout des echantillons
+			resultsEch = myStatement.executeQuery(QueryEch);
+			while(resultsEch.next())
+			{
+				myAnimal = new Animals(resultsEch.getString("nameSpecies"), resultsEch.getString("birthAnimal"));
+				
+				//Creation de la date
+				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
+				
+				
+				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
+			
+				myOrder.addSample(mySample);
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requète search order");
+		}
+		//searchCustomerID(int ID)
+
+		//return mySample;
 		// Bouml preserved body begin 00042F82
 		return(this.order);
 		// Bouml preserved body end 00042F82
@@ -175,6 +255,7 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 	public void saveOrder(Orders order) {
+		
 		// Bouml preserved body begin 00043082
 		this.order =order;
 		// Bouml preserved body end 00043082
@@ -185,9 +266,9 @@ class Database
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
-		
+
 		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
-		
+
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
@@ -202,7 +283,7 @@ class Database
 		{
 			System.out.println("Erreur requête Sample");
 		}
-		 
+
 		return mySample;
 	}
 
@@ -315,14 +396,6 @@ class Database
 		// Bouml preserved body end 00023645
 	}
 
-	public List<Types_analysis> getListAnalysisType() {
-		// Bouml preserved body begin 000236C5
-		List<Types_analysis> listTA = new ArrayList<Types_analysis>();
-		listTA.add(this.typeAna);
-		return(listTA);
-		// Bouml preserved body end 000236C5
-	}
-
 	public Analysis searchAnalysis(Types_analysis type) {
 		// Bouml preserved body begin 00023745
 		if(this.analysis.getTypeAnalysis()== type)
@@ -335,6 +408,16 @@ class Database
 			return ana;
 		}
 		// Bouml preserved body end 00023745
+	}
+
+
+
+	public List<Types_analysis> getListAnalysisType() {
+		// Bouml preserved body begin 000236C5
+		List<Types_analysis> listTA = new ArrayList<Types_analysis>();
+		listTA.add(this.typeAna);
+		return(listTA);
+		// Bouml preserved body end 000236C5
 	}
 
 	public Analysis searchAnalysisID(int ID) {
@@ -364,17 +447,43 @@ class Database
 		// Bouml preserved body end 00023845
 	}
 
-	public Types_analysis searchTypesAnalysis(String name) {
+	public ArrayList<Types_analysis> searchTypesAnalysis(String name,String test) {
 		// Bouml preserved body begin 000238C5
+		ArrayList<Types_analysis> typeAnalysisOut=new ArrayList<Types_analysis>();
 		if(name.equals(this.typeAna.getType()))
 		{
-			return this.typeAna;
+			ResultSet result;
+			int typeID=0;
+			int typeTest=0;
+			try{
+				result=myStatement.executeQuery("select idtype from sampletype where nametype="+name);
+				if (result.next()){
+					typeID=result.getInt("idtype");
+					result=myStatement.executeQuery("select idtest from testtype where nametest="+test);
+					if(result.next()){
+						typeTest=result.getInt("idtest");
+						
+					}
+					else{
+						System.out.println("le type de test demandé n'est pas connu");
+					}
+				}
+				else{
+					System.out.println("le type d'échantillon demandé n'est pas connu");
+				}
+				
+				
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		else
 		{
-			Types_analysis tAna = new Types_analysis("PCR", 45);
-			return tAna;
+			System.out.println("Votre attribut ne correspond pas à une chaine de caractères...");
 		}
+		return typeAnalysisOut;
 		// Bouml preserved body end 000238C5
 	}
 
@@ -382,12 +491,27 @@ class Database
 		// Bouml preserved body begin 00023945
 		if(typeAnalysis.getType().equals(this.typeAna.getType()))
 		{
-			this.typeAna = typeAnalysis;
+
+			ResultSet result;
+			int testID=0;
+			int typeID=0;
+			try {
+				result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
+				result.next();
+				typeID=result.getInt("idtype");
+				result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
+				result.next();
+				testID=result.getInt("idtest");
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		else
-		{
-			System.out.println("new data record");
+		else {
+			System.out.println("Erreur de données en entrée !");
 		}
+
 		// Bouml preserved body end 00023945
 	}
 

@@ -2,6 +2,7 @@
  * This class manage all the methods of the different classes which interact with the database.
  */
 
+import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -57,13 +58,29 @@ class Database
 
 	public void ConnectBDD()
 	{
+		ResultSet resultSet = null;
 		if (testDriver()) 
 		{
 			try 
 			{
 				myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
-				myStatement = myConnexion.createStatement();
 				System.out.println("Connection successful");
+				
+				myStatement = myConnexion.createStatement();
+				boolean rs = myStatement.execute("SELECT * FROM t_test");
+				if (rs){
+					resultSet = myStatement.getResultSet();
+					resultSet.next();
+					System.out.println(resultSet.getObject(1));
+					System.out.println(resultSet.getObject(2));
+					resultSet.next();
+					System.out.println(resultSet.getObject(resultSet.getInt("id_analyse")));
+					System.out.println(resultSet.getObject(resultSet.getInt("resultat")));
+				}
+				else {
+					System.out.println("aucun résultat");
+				}
+				
 			} 
 			catch (SQLException ex) 
 			{
@@ -77,7 +94,6 @@ class Database
 		{
 			System.out.println("testdriver false");
 		}
-
 	}
 
 

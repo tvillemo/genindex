@@ -347,7 +347,7 @@ public void ConnectBDD()
 		}
 		else
 		{
-			Analysis ana = new Analysis(2, typeAna, d2);
+			Analysis ana = new Analysis(2, typeAna, d2,null,null,"en cours");
 			return ana;
 		}
 		// Bouml preserved body end 00023745
@@ -371,7 +371,7 @@ public void ConnectBDD()
 		}
 		else
 		{
-			Analysis ana = new Analysis(2, typeAna, d2);
+			Analysis ana = new Analysis(2, typeAna, d2,null,null,"en cours");
 			return ana;
 		}
 		// Bouml preserved body end 000237C5
@@ -379,15 +379,14 @@ public void ConnectBDD()
 
 	public void saveAnalysis(Analysis analysis) {
 		// Bouml preserved body begin 00023845
-		if(analysis.getID()==this.analysis.getID())
-		{
-			this.analysis = analysis;
+		String query="insert into Analysis values ("+analysis.getID()+","+analysis.getSecondReader().getId()+","+analysis.getFirstReader().getId()+","+analysis.getIDMother()+","+analysis.getIDFather()+","+analysis.getID()+","+analysis.getStatut()+","+analysis.getResult1()+","+analysis.getResult2()+")";
+		
+		try {
+			myStatement.execute(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else
-		{
-			System.out.println("new data record");
-		}
-		// Bouml preserved body end 00023845
 	}
 
 	public ArrayList<Types_analysis> searchTypesAnalysis(String name,String test) {
@@ -445,6 +444,8 @@ public void ConnectBDD()
 				result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
 				result.next();
 				testID=result.getInt("idtest");
+				String query="insert into cost values ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
+				myStatement.execute(query);
 			}
 			catch (SQLException e) {
 				// TODO Auto-generated catch block

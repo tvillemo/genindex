@@ -172,8 +172,9 @@ class Database
 		Orders myOrder = null;
 		Customers myCustomer = null;
 		
-		String QueryOrder="Select IDClient, datelot, idinvoice, pricewithTVA, idPayment from LOT, INVOICE WHERE LOT.idinvoice = INVOICE.idinvoice AND idlot="+id;
-		String QueryNbEch="Select COUNT(idSample) from Sample WHERE idlot="+id;
+		String QueryOrder="Select IDClient, datelot from LOT WHERE idlot="+id;
+		String QueryNbEch="Select COUNT(idSample) as nb from Sample WHERE idlot="+id;
+		String QueryEch="Select idSample, nameType, dateSampling,  from Sample, SampleType WHERE idlot="+id;
 		
 		try
 		{
@@ -183,11 +184,16 @@ class Database
 			//Creation du client
 			myCustomer=searchCustomerID(Integer.parseInt(resultsOrder.getString("IDClient")));
 			
-			//Creation de la facture
-			
+			//Creation de la date
+			Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 			
 			//Creation du lot
-			myOrder = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getNString("NAMETYPE"), new Date(0,0,0), new Date(0,0,0), new Animals("",""));
+			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
+			//Ajout des echantillons
+			
+			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
+			
+			addSample(Samples sample)
 		}
 		catch (SQLException ex) 
 		{

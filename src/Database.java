@@ -153,15 +153,43 @@ public void ConnectBDD()
 		// Bouml preserved body end 0003D002
 	}
 
+	//DONE
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
-	public Orders searchOrder(Customers customer) {
+	public ArrayList<Orders> searchOrder(Customers customer) {
+		
+		ResultSet resultsOrder = null;
+		ArrayList<Orders> liste= new ArrayList<Orders>();
+		Orders myOrder = null;
+		
+		
+		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
+		
+		try
+		{
+			resultsOrder = myStatement.executeQuery(QueryOrder);
+			
+			while(resultsOrder.next())
+			{
+				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+				
+				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
+				
+				liste.add(myOrder);
+			}
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête search Order");
+		}
 		// Bouml preserved body begin 00042F02
-		return(this.order);
+		return(liste);
 		// Bouml preserved body end 00042F02
 	}
 
+	//DONE
 	/**
 	 * This function permits to search the order in the database that has this id.
 	 */
@@ -229,6 +257,7 @@ public void ConnectBDD()
 	 * This function permits to save in the database the order in parameter.
 	 */
 	public void saveOrder(Orders order) {
+		
 		// Bouml preserved body begin 00043082
 		this.order =order;
 		// Bouml preserved body end 00043082
@@ -247,7 +276,7 @@ public void ConnectBDD()
 			resultsSample = myStatement.executeQuery(QuerySample);
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
-			if (resultsSample.getString("STATUTSAMPLE") == "analysee")
+			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
 			}
@@ -260,18 +289,48 @@ public void ConnectBDD()
 		return mySample;
 	}
 
-	public List<Samples> getListSamples() {
-		// Bouml preserved body begin 00043182
+	//DONE
+	public List<Samples> getListSamples() 
+	{
 		List<Samples> listS = new ArrayList<Samples>();
-		listS.add(this.sample);
+		
+		ResultSet resultsSamples = null;
+		
+		String QuerySample="Select IDSAMPLE from SAMPLE";
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				listS.add(searchSample(resultsSamples.getString("IDSAMPLE")));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+		
 		return(listS);
-		// Bouml preserved body end 00043182
 	}
 
-	public void saveSample(Samples sample) {
-		// Bouml preserved body begin 00043202
+	public void saveSample(Samples sample) 
+	{
+//		
+//		ResultSet resultsSamples = null;
+//		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+//		String QuerySample="Insert into SAMPLE values("+sample.getId();
+//		
+//		try
+//		{
+//			resultsSamples = myStatement.executeQuery(QuerySample);
+//		}
+//		catch (SQLException ex) 
+//		{
+//			System.out.println("Erreur requête Sample");
+//		}
+		
 		this.sample = sample;
-		// Bouml preserved body end 00043202
 	}
 
 	public Animals searchAnimal(String specie) 

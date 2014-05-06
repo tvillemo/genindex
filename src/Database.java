@@ -156,9 +156,35 @@ class Database
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
-	public Orders searchOrder(Customers customer) {
+	public ArrayList<Orders> searchOrder(Customers customer) {
+		
+		ResultSet resultsOrder = null;
+		ArrayList<Orders> liste= new ArrayList<Orders>();
+		Orders myOrder = null;
+		
+		
+		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
+		
+		try
+		{
+			resultsOrder = myStatement.executeQuery(QueryOrder);
+			
+			while(resultsOrder.next())
+			{
+				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+				
+				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
+				
+				liste.add(myOrder);
+			}
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête search Order");
+		}
 		// Bouml preserved body begin 00042F02
-		return(this.order);
+		return(liste);
 		// Bouml preserved body end 00042F02
 	}
 

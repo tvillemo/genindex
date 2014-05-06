@@ -169,13 +169,16 @@ public void ConnectBDD()
 
 		ResultSet resultsOrder = null;
 		ResultSet resultsNbEch = null;
+		ResultSet resultsEch = null;
 		Orders myOrder = null;
 		Customers myCustomer = null;
-
+		Animals myAnimal = null;
+		Samples mySample = null;
+		
 		String QueryOrder="Select IDClient, datelot from LOT WHERE idlot="+id;
 		String QueryNbEch="Select COUNT(idSample) as nb from Sample WHERE idlot="+id;
-		String QueryEch="Select idSample, nameType, dateSampling,  from Sample, SampleType WHERE idlot="+id;
-
+		String QueryEch="Select idSample, nameType, dateSampling, nameSpecies, birthAnimal  from Sample, SampleType, Animal, Species WHERE Sample.idType=Sampletype.idtype AND Sample.idAnimal=Animal.idAnimal AND Animal.idSpecies=Species.idSpecies AND idlot="+id;
+		
 		try
 		{
 			resultsOrder = myStatement.executeQuery(QueryOrder);
@@ -194,6 +197,21 @@ public void ConnectBDD()
 //			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
 //			
 //			addSample(Samples sample)
+			
+			//Ajout des echantillons
+			resultsEch = myStatement.executeQuery(QueryEch);
+			while(resultsEch.next())
+			{
+				myAnimal = new Animals(resultsEch.getString("nameSpecies"), resultsEch.getString("birthAnimal"));
+				
+				//Creation de la date
+				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
+				
+				
+				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
+			
+				myOrder.addSample(mySample);
+			}
 		}
 		catch (SQLException ex) 
 		{

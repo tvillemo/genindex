@@ -63,17 +63,15 @@ class Database
 		try
 		{
 			results = myStatement.executeQuery(query);
-			int cpt = 0;
 			while (results.next()) 
 			{	
-			    System.out.println(results.getString(cpt));
-			    cpt++;
+			    System.out.println(results.getString(2));
 			}
 			results.close();
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println("Erreur requète");
+			System.out.println("Erreur requète test");
 		}
 	}
 

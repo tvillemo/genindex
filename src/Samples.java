@@ -45,12 +45,12 @@ class Samples {
    * - the date of creation of this sample (date).
    * - the date of the storage of this sample (date).
    */
-  Samples(String Identifier, String Type_sample, Date D_sampling, Date D_storage, Animals anim) {
+  Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim) {
     // Bouml preserved body begin 0002A282
 	  this.id = Identifier;
 	  this.type = Type_sample;
 	  this.dateSampling = D_sampling;
-	  this.dateStorage = D_storage;
+	  //this.dateStorage = D_storage;
 	  this.animal = anim;
 	  this.analyzed = false; // default: the sample is not analyzed
 	  this.analysis = new ArrayList<Analysis>();

@@ -8,6 +8,8 @@ class Invoice {
   private int id;
 
   private double price;
+  
+  private boolean paid;
 
   /**
    * It is the number of analysis of the order.

@@ -63,6 +63,7 @@ class Database
           {
               myConnexion = DriverManager.getConnection(MYURL, MYUSER, MYPASSWORD);
               myStatement = myConnexion.createStatement();
+              System.out.println("Connection successful");
           } 
           catch (SQLException ex) 
           {

@@ -22,9 +22,9 @@ class Database
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
 
-	
+
 	private String query = "";
-	
+
 	ResultSet results;
 
 	//--- Table -> Class ---//
@@ -43,22 +43,22 @@ class Database
 	public Database() 
 	{
 		// liste en attendant les requètes
-//		d1 = new Date(23,12,10);
-//		d2 = new Date(23,12,11);
-//		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
-//		order =  new Orders(1, d1,d2, 1, customer);
-//		animal = new Animals("cat","2010");
-//		sample = new Samples("1", "blood", d1, d2, animal);
-//		this.typeAna = new Types_analysis("PCR", 40);
-//		this.analysis = new Analysis(1, typeAna, d2);
-//		sample.addAnalysis(analysis);
-//		user = new Users("jean", "dupont", "@");
-//		order.addSample(sample);
-//		storage = new Storage("freezer", 60);
-//		adress = new Adress(86000,"Poitiers");
-		
+		//		d1 = new Date(23,12,10);
+		//		d2 = new Date(23,12,11);
+		//		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
+		//		order =  new Orders(1, d1,d2, 1, customer);
+		//		animal = new Animals("cat","2010");
+		//		sample = new Samples("1", "blood", d1, d2, animal);
+		//		this.typeAna = new Types_analysis("PCR", 40);
+		//		this.analysis = new Analysis(1, typeAna, d2);
+		//		sample.addAnalysis(analysis);
+		//		user = new Users("jean", "dupont", "@");
+		//		order.addSample(sample);
+		//		storage = new Storage("freezer", 60);
+		//		adress = new Adress(86000,"Poitiers");
+
 		ConnectBDD();
-		
+
 	}
 
 	/**
@@ -316,7 +316,7 @@ class Database
 		// Bouml preserved body begin 00023845
 		if(analysis.getID()==this.analysis.getID())
 		{
-			this.analysis = analysis;
+			
 		}
 		else
 		{
@@ -325,30 +325,72 @@ class Database
 		// Bouml preserved body end 00023845
 	}
 
-	public Types_analysis searchTypesAnalysis(String name) {
+	
+	//DONE
+	public ArrayList<Types_analysis> searchTypesAnalysis(String name) {
 		// Bouml preserved body begin 000238C5
+		ArrayList<Types_analysis> typeAnalysisOut=new ArrayList<Types_analysis>();
 		if(name.equals(this.typeAna.getType()))
 		{
-			return this.typeAna;
+			ResultSet result;
+			int typeID=0;
+			int typeTest=0;
+			try{
+				result=myStatement.executeQuery("select idtype from sampletype where nametype="+name);
+				if (result.next()){
+					typeID=result.getInt("idtype");
+					result=myStatement.executeQuery("select * from cost where idtype="+typeID);
+					while (result.next()){
+						typeAnalysisOut.add(new Types_analysis(result.getString("idtype"),result.getInt("price"),result.getString("idTest")));
+					}
+				}
+				else{
+					System.out.println("le type d'échantillon demandé n'est pas connu");
+				}
+				
+				
+			}
+			catch (SQLException e)
+			{
+				e.printStackTrace();
+			}
 		}
 		else
 		{
-			Types_analysis tAna = new Types_analysis("PCR", 45);
-			return tAna;
+			System.out.println("Votre attribut ne correspond pas à une chaine de caractères...");
 		}
+		return typeAnalysisOut;
 		// Bouml preserved body end 000238C5
 	}
 
+	//DONE
 	public void saveAnalysisType(Types_analysis typeAnalysis) {
 		// Bouml preserved body begin 00023945
 		if(typeAnalysis.getType().equals(this.typeAna.getType()))
 		{
-			this.typeAna = typeAnalysis;
+
+			ResultSet result;
+			int testID=0;
+			int typeID=0;
+			try {
+				result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
+				result.next();
+				typeID=result.getInt("idtype");
+				result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
+				result.next();
+				testID=result.getInt("idtest");
+				String query="insert into cost ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
+				myStatement.execute(query);
+			}
+			catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
-		else
-		{
-			System.out.println("new data record");
+		else {
+			System.out.println("Erreur de données en entrée !");
 		}
+
 		// Bouml preserved body end 00023945
 	}
 

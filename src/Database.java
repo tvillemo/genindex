@@ -22,6 +22,7 @@ class Database
 	private final String MYUSER = "gp28";
 	private final String MYPASSWORD = "nounours";
 
+	//---  ---//
 	private Animals animal;
 	private Samples sample;
 	private Types_analysis typeAna;

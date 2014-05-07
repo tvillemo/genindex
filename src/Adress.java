@@ -34,13 +34,12 @@ class Adress {
     // Bouml preserved body end 0001F502
   }
 
-  public Adress(int number, String street, int zip, String city, String country) {
+  public Adress(int number, String street, int zip, String city) {
     // Bouml preserved body begin 0002C182
 	  this.number = number;
 	  this.street = street;
 	  this.zipCode = zip;
 	  this.city = city;
-	  this.country = country;
     // Bouml preserved body end 0002C182
   }
 

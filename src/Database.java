@@ -413,12 +413,21 @@ class Database
 	public void saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
 
+		ResultSet resultsNbAdressSociete = null;
+		ResultSet resultsCustomer = null;
+		
 		if (cust.isPro()){
 			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
+			String QueryNbAdressSociete = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
+						
+			//resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
 			
-			
-			
-				// Si elle n'existe pas, on l'ajoute
+			// Si elle n'existe pas, on l'ajoute
+			//if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
+				String QueryCustomer = "INSERT INTO Adress VALUES(1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
+				
+				//resultsCustomer = myStatement.executeQuery
+			//}				
 			
 			// Sinon, on vérifie si le client existe déjà dans la BDD
 				
@@ -435,9 +444,7 @@ class Database
 				// Si il n'existe pas, on l'ajoute
 		}
 		
-		else {
-			
-		}
+
 		
 		/*ResultSet resultsSamples = null;
 		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
@@ -456,7 +463,7 @@ class Database
 
 		try {
 			myStatement.execute(query);
-		} */
+		}*/ 
 		
 		// Bouml preserved body end 00023645
 	}

@@ -65,7 +65,7 @@ class Samples {
 	  System.out.println("Identifier: "+ sam.id);
 	  System.out.println("Type of sample: "+ sam.type);
 	  System.out.println("Date of the creation of the sample: "+ sam.dateSampling);
-	  System.out.println("Date of the storage of the sample: " + sam.dateStorage);
+	 // System.out.println("Date of the storage of the sample: " + sam.dateStorage);
 	  System.out.println("Analyzed? : " + sam.analyzed);
     // Bouml preserved body end 0002A382
   }

@@ -279,7 +279,6 @@ class Database
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-<<<<<<< HEAD
 	public void saveOrder(Orders order) 
 	{
 		String QuerySample="Insert into ";
@@ -292,14 +291,8 @@ class Database
 		{
 			System.out.println("Erreur requête saveOrder");
 		}
-=======
-	public void saveOrder(Orders order) {
-
-		// Bouml preserved body begin 00043082
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
-		this.order =order;
 	}
-	
+		
 	//DONE
 	/**
 	 * This function know if a customer already exist

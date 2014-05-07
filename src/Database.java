@@ -40,24 +40,46 @@ class Database
 	public Database() 
 	{
 		// liste en attendant les requètes
-//		d1 = new Date(23,12,10);
-//		d2 = new Date(23,12,11);
-//		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
-//		order =  new Orders(1, d1,d2, 1, customer);
-//		animal = new Animals("cat","2010");
-//		sample = new Samples("1", "blood", d1, d2, animal);
-//		this.typeAna = new Types_analysis("PCR", 40);
-//		this.analysis = new Analysis(1, typeAna, d2);
-//		sample.addAnalysis(analysis);
-//		user = new Users("jean", "dupont", "@");
-//		order.addSample(sample);
-//		storage = new Storage("freezer", 60);
-//		adress = new Adress(86000,"Poitiers");
+		//		d1 = new Date(23,12,10);
+		//		d2 = new Date(23,12,11);
+		//		customer =  new Customers("jean", "dupont", 86000,"Poitiers", "090909",1);
+		//		order =  new Orders(1, d1,d2, 1, customer);
+		//		animal = new Animals("cat","2010");
+		//		sample = new Samples("1", "blood", d1, d2, animal);
+		//		this.typeAna = new Types_analysis("PCR", 40);
+		//		this.analysis = new Analysis(1, typeAna, d2);
+		//		sample.addAnalysis(analysis);
+		//		user = new Users("jean", "dupont", "@");
+		//		order.addSample(sample);
+		//		storage = new Storage("freezer", 60);
+		//		adress = new Adress(86000,"Poitiers");
 
 		ConnectBDD();
 
 	}
-
+	
+	//	/**
+	//	 * Lance une requète et l'affiche pour les tests
+	//	 */
+	//	public void DisplayResultsQuery(String query)
+	//	{
+	//		try
+	//		{
+	//			if (myStatement.execute(query)){
+	//				results= myStatement.executeQuery(query);
+	//				while (results.next()) 
+	//				{	
+	//					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
+	//				}
+	//				results.close();
+	//			}
+	//		}
+	//		catch (SQLException ex) 
+	//		{
+	//			System.out.println("Erreur requète test");
+	//		}
+	//	}
+	
 	/**
 	 * Lance une requète et l'affiche pour les tests
 	 */
@@ -82,7 +104,7 @@ class Database
 	/**
 	 * Connexion à la BDD
 	 */
-public void ConnectBDD()
+	public void ConnectBDD()
 	{
 		ResultSet resultSet = null;
 		if (testDriver()) 
@@ -157,27 +179,27 @@ public void ConnectBDD()
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
 	public ArrayList<Orders> searchOrder(Customers customer) {
-		
+
 		ResultSet resultsOrder = null;
 		ArrayList<Orders> liste= new ArrayList<Orders>();
 		Orders myOrder = null;
-		
-		
+
+
 		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
-		
+
 		try
 		{
 			resultsOrder = myStatement.executeQuery(QueryOrder);
-			
+
 			while(resultsOrder.next())
 			{
 				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
-				
+
 				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
-				
+
 				liste.add(myOrder);
 			}
-			
+
 		}
 		catch (SQLException ex) 
 		{
@@ -201,11 +223,11 @@ public void ConnectBDD()
 		Customers myCustomer = null;
 		Animals myAnimal = null;
 		Samples mySample = null;
-		
+
 		String QueryOrder="Select IDClient, datelot from LOT WHERE idlot="+id;
 		String QueryNbEch="Select COUNT(idSample) as nb from Sample WHERE idlot="+id;
 		String QueryEch="Select idSample, nameType, dateSampling, nameSpecies, birthAnimal  from Sample, SampleType, Animal, Species WHERE Sample.idType=Sampletype.idtype AND Sample.idAnimal=Animal.idAnimal AND Animal.idSpecies=Species.idSpecies AND idlot="+id;
-		
+
 		try
 		{
 			resultsOrder = myStatement.executeQuery(QueryOrder);
@@ -221,22 +243,22 @@ public void ConnectBDD()
 			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
 			//Ajout des echantillons
 
-//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
-//			
-//			addSample(Samples sample)
-			
+			//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
+			//			
+			//			addSample(Samples sample)
+
 			//Ajout des echantillons
 			resultsEch = myStatement.executeQuery(QueryEch);
 			while(resultsEch.next())
 			{
 				myAnimal = new Animals(resultsEch.getString("nameSpecies"), resultsEch.getString("birthAnimal"));
-				
+
 				//Creation de la date
 				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
-				
-				
+
+
 				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
-			
+
 				myOrder.addSample(mySample);
 			}
 		}
@@ -257,6 +279,7 @@ public void ConnectBDD()
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
+<<<<<<< HEAD
 	public void saveOrder(Orders order) 
 	{
 		String QuerySample="Insert into ";
@@ -269,6 +292,11 @@ public void ConnectBDD()
 		{
 			System.out.println("Erreur requête saveOrder");
 		}
+=======
+	public void saveOrder(Orders order) {
+
+		// Bouml preserved body begin 00043082
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 		this.order =order;
 	}
 	
@@ -451,11 +479,11 @@ public void ConnectBDD()
 	public List<Samples> getListSamples() 
 	{
 		List<Samples> listS = new ArrayList<Samples>();
-		
+
 		ResultSet resultsSamples = null;
-		
+
 		String QuerySample="Select IDSAMPLE from SAMPLE";
-		
+
 		try
 		{
 			resultsSamples = myStatement.executeQuery(QuerySample);
@@ -468,26 +496,26 @@ public void ConnectBDD()
 		{
 			System.out.println("Erreur requête Sample");
 		}
-		
+
 		return(listS);
 	}
 
 	public void saveSample(Samples sample) 
 	{
-//		
-//		ResultSet resultsSamples = null;
-//		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
-//		String QuerySample="Insert into SAMPLE values("+sample.getId();
-//		
-//		try
-//		{
-//			resultsSamples = myStatement.executeQuery(QuerySample);
-//		}
-//		catch (SQLException ex) 
-//		{
-//			System.out.println("Erreur requête Sample");
-//		}
-		
+		//		
+		//		ResultSet resultsSamples = null;
+		//		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+		//		String QuerySample="Insert into SAMPLE values("+sample.getId();
+		//		
+		//		try
+		//		{
+		//			resultsSamples = myStatement.executeQuery(QuerySample);
+		//		}
+		//		catch (SQLException ex) 
+		//		{
+		//			System.out.println("Erreur requête Sample");
+		//		}
+
 		this.sample = sample;
 	}
 
@@ -517,7 +545,7 @@ public void ConnectBDD()
 
 	public Customers searchCustomerName(String name) {
 		// Bouml preserved body begin 00023545
-		if(name.equals(customer.getLastName()))
+		/*if(name.equals(customer.getLastName()))
 		{
 			return customer;
 		}
@@ -525,13 +553,14 @@ public void ConnectBDD()
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 00023545
 	}
 
 	public Customers searchCustomerID(int ID) {
 		// Bouml preserved body begin 000235C5
-		if(customer.getID()==ID)
+		/*if(customer.getID()==ID)
 		{
 			return customer;
 		}
@@ -539,20 +568,59 @@ public void ConnectBDD()
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 000235C5
 	}
 
 	public void saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
-		if(cust.getID()==customer.getID())
-		{
-			customer=cust;
+
+		if (cust.isPro()){
+			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
+			
+			
+			
+				// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client existe déjà dans la BDD
+				
+				//Si il n'existe pas, on l'ajoute
+			
+			// Sinon, si on a une adresse de facturation
+			
+				// on vérifie si elle existe dans la BDD avec l'id
+			
+					// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client pro existe
+				
+				// Si il n'existe pas, on l'ajoute
 		}
-		else
-		{
-			System.out.println("new data record");
+		
+		else {
+			
 		}
+		
+		/*ResultSet resultsSamples = null;
+		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+		String QuerySample="Insert into SAMPLE values("+sample.getId();
+			
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+		
+		String query="insert into Analysis values ("+analysis.getID()+","+analysis.getSecondReader().getId()+","+analysis.getFirstReader().getId()+","+analysis.getIDMother()+","+analysis.getIDFather()+","+analysis.getID()+","+analysis.getStatut()+","+analysis.getResult1()+","+analysis.getResult2()+")";
+
+		try {
+			myStatement.execute(query);
+		} */
+		
 		// Bouml preserved body end 00023645
 	}
 
@@ -597,10 +665,11 @@ public void ConnectBDD()
 	public void saveAnalysis(Analysis analysis) {
 		// Bouml preserved body begin 00023845
 		String query="insert into Analysis values ("+analysis.getID()+","+analysis.getSecondReader().getId()+","+analysis.getFirstReader().getId()+","+analysis.getIDMother()+","+analysis.getIDFather()+","+analysis.getID()+","+analysis.getStatut()+","+analysis.getResult1()+","+analysis.getResult2()+")";
-		
+
 		try {
 			myStatement.execute(query);
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -609,38 +678,31 @@ public void ConnectBDD()
 	public ArrayList<Types_analysis> searchTypesAnalysis(String name,String test) {
 		// Bouml preserved body begin 000238C5
 		ArrayList<Types_analysis> typeAnalysisOut=new ArrayList<Types_analysis>();
-		if(name.equals(this.typeAna.getType()))
-		{
-			ResultSet result;
-			int typeID=0;
-			int typeTest=0;
-			try{
-				result=myStatement.executeQuery("select idtype from sampletype where nametype="+name);
-				if (result.next()){
-					typeID=result.getInt("idtype");
-					result=myStatement.executeQuery("select idtest from testtype where nametest="+test);
-					if(result.next()){
-						typeTest=result.getInt("idtest");
-						
-					}
-					else{
-						System.out.println("le type de test demandé n'est pas connu");
-					}
+		ResultSet result;
+		int typeID=0;
+		int typeTest=0;
+		try{
+			result=myStatement.executeQuery("select idtype from sampletype where nametype="+name);
+			if (result.next()){
+				typeID=result.getInt("idtype");
+				result=myStatement.executeQuery("select idtest from testtype where nametest="+test);
+				if(result.next()){
+					typeTest=result.getInt("idtest");
+
 				}
 				else{
-					System.out.println("le type d'échantillon demandé n'est pas connu");
+					System.out.println("le type de test demandé n'est pas connu");
 				}
-				
-				
 			}
-			catch (SQLException e)
-			{
-				e.printStackTrace();
+			else{
+				System.out.println("le type d'échantillon demandé n'est pas connu");
 			}
+
+
 		}
-		else
+		catch (SQLException e)
 		{
-			System.out.println("Votre attribut ne correspond pas à une chaine de caractères...");
+			e.printStackTrace();
 		}
 		return typeAnalysisOut;
 		// Bouml preserved body end 000238C5
@@ -648,32 +710,26 @@ public void ConnectBDD()
 
 	public void saveAnalysisType(Types_analysis typeAnalysis) {
 		// Bouml preserved body begin 00023945
-		if(typeAnalysis.getType().equals(this.typeAna.getType()))
-		{
 
-			ResultSet result;
-			int testID=0;
-			int typeID=0;
-			try {
-				result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
-				result.next();
-				typeID=result.getInt("idtype");
-				result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
-				result.next();
-				testID=result.getInt("idtest");
-				String query="insert into cost values ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
-				myStatement.execute(query);
-			}
-			catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		ResultSet result;
+		int testID=0;
+		int typeID=0;
+		try {
+			result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
+			result.next();
+			typeID=result.getInt("idtype");
+			result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
+			result.next();
+			testID=result.getInt("idtest");
+			String query="insert into cost values ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
+			myStatement.execute(query);
 		}
-		else {
-			System.out.println("Erreur de données en entrée !");
+		catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		// Bouml preserved body end 00023945
 	}
 
+	// Bouml preserved body end 00023945
 }
+

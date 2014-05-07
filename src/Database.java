@@ -66,14 +66,12 @@ class Database
 		ResultSet results = null;
 		try
 		{
-			if (myStatement.execute(query)){
-				results= myStatement.executeQuery(query);
-				while (results.next()) 
-				{	
-					System.out.println(results.getString(results.findColumn("CORPORATIONNAME")));
-				}
-				results.close();
+			results= myStatement.executeQuery(query);
+			while (results.next()) 
+			{	
+				System.out.println(results.getString("NAMETYPE"));
 			}
+			results.close();
 		}
 		catch (SQLException ex) 
 		{
@@ -254,15 +252,171 @@ public void ConnectBDD()
 		// Bouml preserved body end 00042F82
 	}
 
+	
+	//DONE
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-	public void saveOrder(Orders order) {
+	public void saveOrder(Orders order) 
+	{
+		String QuerySample="Insert into ";
 		
-		// Bouml preserved body begin 00043082
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête saveOrder");
+		}
 		this.order =order;
-		// Bouml preserved body end 00043082
 	}
+	
+	//DONE
+	/**
+	 * This function know if a customer already exist
+	 */
+	public boolean IfCustomerExist(Customers custom) 
+	{
+		String QuerySample="";
+		String QuerySamplePro="";
+		ResultSet myResult;
+		boolean bool = false;
+		
+		try
+		{
+			if (custom.pro)
+			{
+				myResult=myStatement.executeQuery(QuerySamplePro);
+			}
+			else
+			{
+				myResult=myStatement.executeQuery(QuerySample);
+			}
+			
+			if (myResult.wasNull())
+			{
+				bool = false;
+			}
+			else
+			{
+				bool = true;
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête IfCustomerExist");
+		}
+		
+		
+		return bool;
+	}
+	
+	//DONE
+	/**
+	 * This function know if an animal already exist
+	 */
+	public boolean IfAnimalExist(Animals aminal) 
+	{
+		String QuerySample="";
+		ResultSet myResult;
+		boolean bool = false;
+		
+		try
+		{
+			myResult=myStatement.executeQuery(QuerySample);
+			if (myResult.wasNull())
+			{
+				bool = false;
+			}
+			else
+			{
+				bool = true;
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête IfAnimalExist");
+		}
+		
+		return bool;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to save in the database the order in parameter.
+	 */
+	public ArrayList<String> getAllCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getAllCategory");
+		}
+		return maListe;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to get species by categories
+	 */
+	public ArrayList<String> getSpeciesByCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getSpeciesByCategory");
+		}
+		return maListe;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to get analyse by categories
+	 */
+	public ArrayList<String> getAnalyseByCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getAnalyseByCategory");
+		}
+		return maListe;
+	}
+
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
@@ -270,17 +424,20 @@ public void ConnectBDD()
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE="+id+";";
 
 		try
 		{
+			System.out.println("1");
 			resultsSample = myStatement.executeQuery(QuerySample);
+			System.out.println("2");
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
 			}
+			System.out.println("3");
 		}
 		catch (SQLException ex) 
 		{

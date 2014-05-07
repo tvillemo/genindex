@@ -88,12 +88,14 @@ class Database
 		ResultSet results = null;
 		try
 		{
-			results= myStatement.executeQuery(query);
-			while (results.next()) 
-			{	
-				System.out.println(results.getString("NAMETYPE"));
+			if (myStatement.execute(query)){
+				results= myStatement.executeQuery(query);
+				while (results.next()) 
+				{	
+					System.out.println(results.getString(results.findColumn("CORPORATIONNAME")));
+				}
+				results.close();
 			}
-			results.close();
 		}
 		catch (SQLException ex) 
 		{
@@ -274,170 +276,15 @@ class Database
 		// Bouml preserved body end 00042F82
 	}
 
-	
-	//DONE
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-	public void saveOrder(Orders order) 
-	{
-		String QuerySample="Insert into ";
-		
-		try
-		{
-			myStatement.executeQuery(QuerySample);
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête saveOrder");
-		}
-	}
-		
-	//DONE
-	/**
-	 * This function know if a customer already exist
-	 */
-	public boolean IfCustomerExist(Customers custom) 
-	{
-		String QuerySample="";
-		String QuerySamplePro="";
-		ResultSet myResult;
-		boolean bool = false;
-		
-		try
-		{
-			if (custom.pro)
-			{
-				myResult=myStatement.executeQuery(QuerySamplePro);
-			}
-			else
-			{
-				myResult=myStatement.executeQuery(QuerySample);
-			}
-			
-			if (myResult.wasNull())
-			{
-				bool = false;
-			}
-			else
-			{
-				bool = true;
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête IfCustomerExist");
-		}
-		
-		
-		return bool;
-	}
-	
-	//DONE
-	/**
-	 * This function know if an animal already exist
-	 */
-	public boolean IfAnimalExist(Animals aminal) 
-	{
-		String QuerySample="";
-		ResultSet myResult;
-		boolean bool = false;
-		
-		try
-		{
-			myResult=myStatement.executeQuery(QuerySample);
-			if (myResult.wasNull())
-			{
-				bool = false;
-			}
-			else
-			{
-				bool = true;
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête IfAnimalExist");
-		}
-		
-		return bool;
-	}
-	
-	//DONE
-	/**
-	 * This function permits to save in the database the order in parameter.
-	 */
-	public ArrayList<String> getAllCategory() 
-	{
-		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
-		ArrayList<String> maListe = new ArrayList<String>();
-		
-		try
-		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
-			while(resultsSamples.next())
-			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête getAllCategory");
-		}
-		return maListe;
-	}
-	
-	//DONE
-	/**
-	 * This function permits to get species by categories
-	 */
-	public ArrayList<String> getSpeciesByCategory() 
-	{
-		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
-		ArrayList<String> maListe = new ArrayList<String>();
-		
-		try
-		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
-			while(resultsSamples.next())
-			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête getSpeciesByCategory");
-		}
-		return maListe;
-	}
-	
-	//DONE
-	/**
-	 * This function permits to get analyse by categories
-	 */
-	public ArrayList<String> getAnalyseByCategory() 
-	{
-		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
-		ArrayList<String> maListe = new ArrayList<String>();
-		
-		try
-		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
-			while(resultsSamples.next())
-			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
-			}
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête getAnalyseByCategory");
-		}
-		return maListe;
-	}
+	public void saveOrder(Orders order) {
 
+		// Bouml preserved body begin 00043082
+		this.order =order;
+		// Bouml preserved body end 00043082
+	}
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
@@ -445,20 +292,17 @@ class Database
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE="+id+";";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
 
 		try
 		{
-			System.out.println("1");
 			resultsSample = myStatement.executeQuery(QuerySample);
-			System.out.println("2");
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
 			}
-			System.out.println("3");
 		}
 		catch (SQLException ex) 
 		{
@@ -569,21 +413,21 @@ class Database
 	public void saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
 
-		ResultSet resultsNbAdressSociete = null;
+		/*ResultSet resultsNbAdressSociete = null;
 		ResultSet resultsCustomer = null;
 		
 		if (cust.isPro()){
 			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
 			String QueryNbAdressSociete = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
 						
-			//resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
+			resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
 			
 			// Si elle n'existe pas, on l'ajoute
-			//if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
+			if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
 				String QueryCustomer = "INSERT INTO Adress VALUES(1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
 				
-				//resultsCustomer = myStatement.executeQuery
-			//}				
+				resultsCustomer = myStatement.executeQuery(QueryCustomer);
+			}				
 			
 			// Sinon, on vérifie si le client existe déjà dans la BDD
 				
@@ -600,9 +444,11 @@ class Database
 				// Si il n'existe pas, on l'ajoute
 		}
 		
-
+		else {
+			
+		}
 		
-		/*ResultSet resultsSamples = null;
+		ResultSet resultsSamples = null;
 		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
 		String QuerySample="Insert into SAMPLE values("+sample.getId();
 			
@@ -619,7 +465,7 @@ class Database
 
 		try {
 			myStatement.execute(query);
-		}*/ 
+		} */
 		
 		// Bouml preserved body end 00023645
 	}

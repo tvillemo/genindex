@@ -382,7 +382,7 @@ class Database
 
 	public Customers searchCustomerName(String name) {
 		// Bouml preserved body begin 00023545
-		if(name.equals(customer.getLastName()))
+		/*if(name.equals(customer.getLastName()))
 		{
 			return customer;
 		}
@@ -390,13 +390,14 @@ class Database
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 00023545
 	}
 
 	public Customers searchCustomerID(int ID) {
 		// Bouml preserved body begin 000235C5
-		if(customer.getID()==ID)
+		/*if(customer.getID()==ID)
 		{
 			return customer;
 		}
@@ -404,20 +405,59 @@ class Database
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 000235C5
 	}
 
 	public void saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
-		if(cust.getID()==customer.getID())
-		{
-			customer=cust;
+
+		if (cust.isPro()){
+			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
+			
+			
+			
+				// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client existe déjà dans la BDD
+				
+				//Si il n'existe pas, on l'ajoute
+			
+			// Sinon, si on a une adresse de facturation
+			
+				// on vérifie si elle existe dans la BDD avec l'id
+			
+					// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client pro existe
+				
+				// Si il n'existe pas, on l'ajoute
 		}
-		else
-		{
-			System.out.println("new data record");
+		
+		else {
+			
 		}
+		
+		/*ResultSet resultsSamples = null;
+		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+		String QuerySample="Insert into SAMPLE values("+sample.getId();
+			
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+		
+		String query="insert into Analysis values ("+analysis.getID()+","+analysis.getSecondReader().getId()+","+analysis.getFirstReader().getId()+","+analysis.getIDMother()+","+analysis.getIDFather()+","+analysis.getID()+","+analysis.getStatut()+","+analysis.getResult1()+","+analysis.getResult2()+")";
+
+		try {
+			myStatement.execute(query);
+		} */
+		
 		// Bouml preserved body end 00023645
 	}
 

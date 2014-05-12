@@ -14,9 +14,9 @@ class Invoice {
    * It is the number of analysis of the order.
    */
 
-  public  Invoice(double priceNoTVA, int id) {
+  public  Invoice(double priceNoTVA) {
     // Bouml preserved body begin 00021A45
-	  this.id=id;
+	  this.id=0;
 	  this.priceNoTVA=priceNoTVA;
 	  double price=priceNoTVA+priceNoTVA*TVA;
 	  this.price=price;

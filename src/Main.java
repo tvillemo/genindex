@@ -15,40 +15,39 @@ public class Main {
 		
 		//s.printSample(s);
 
-//		Customers c = new Customers(null, 0, null, null, 1);
-//		c.setName("Auguste", "Dupond");
-//		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
-//		c.setNomSociete("");
-//		c.setPro(false);
-//		
-//		Animals a = new Animals(null, null);
-//		a.setName("51423565");
+		Customers c = new Customers(null, 0, null, null, 0);
+		c.setName("Aria", "Durand");
+		c.setAdressClient(new Adress(11,"av du Cmdt Gabon",15200,"Mauriac"));
+		c.setNomSociete("Elevage des Babines");
+		c.setPro(true);
+		Animals a = new Animals(null, null);
+		a.setName("");
+		c.setName("Auguste", "Dupond");
+		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
+		c.setPro(false);
 		
 
-		ArrayList<String> X = d.getAnalyseByCategory("Oiseaux");
+		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
+
 		
-		for (int i = 0; i< X.size();i++)
-		{
-			System.out.println(X.get(i));
-		}
-//		Ovins
-//		Oiseaux
-//		Canins
-//		Felins
-//		Bovins
-//		Porcins
-//		Poissons d'aquaculture
-//		Huitres
-//		Crevettes
-//		Gazelles
-//		Girafes
-//		Iguanes
-//		Chevaux
-//		Renards
+		System.out.println(d.IfCustomerExist(c));
 		
-		//System.out.println(d.IfCustomerExist(c));
+		System.out.println(d.IfAnimalExist(a,c));
+
+//		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
+//		
+//		for (int i = 0; i < t.size(); i++)
+//		{
+//			System.out.println(i);
+//		}
+//		
 		
-		//System.out.println(d.IfAnimalExist(a,c));
+		d.close();
+	}
+
+}
+
+		System.out.println(d.IfCustomerExist(c));
 
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
 //		

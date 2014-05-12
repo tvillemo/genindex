@@ -171,7 +171,7 @@ class Orders {
 	 for (int i=0; i<samples.size(); i++){
 		 totalPrice = totalPrice + samples.get(i).getAnalysis().getTypeAnalysis().getPrice();
 	 }
-	 this.invoice = new Invoice(totalPrice,this.idOrder);
+	 this.invoice = new Invoice(totalPrice);
     // Bouml preserved body end 0002FA82
   }
 

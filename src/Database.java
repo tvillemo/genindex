@@ -308,9 +308,9 @@ class Database
 	public boolean IfCustomerExist(Customers custom) 
 	{
 		
-		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
-		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient="+custom.getLastName()+" AND firstNameClient="+custom.getFirstName()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
-		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName="+custom.getNomSociete()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
+		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient='"+custom.getID()+"'";
+		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num='"+custom.getAdressClient().getNumber()+"' AND CP='"+custom.getAdressClient().getZipCode()+"' AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient()+"'";
+		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num='"+custom.getAdressClient().getNumber()+"' AND CP='"+custom.getAdressClient().getZipCode()+"' AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient()+"'";
 		ResultSet myResult;
 		boolean bool = false;
 		
@@ -597,14 +597,14 @@ class Database
 		// Si c'est un professionnel
 		if (cust.isPro()){
 			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
-			String QueryNbAdressSociete = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress='"+cust.getAdressClient().getIdAdress()+"'";
+			String QueryNbAdressSociete = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
 				
 			try {
 				resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
 				
 				// Si elle n'existe pas, on l'ajoute
-				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
-					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ('"+cust.getAdressClient().getNumber() + "','" + cust.getAdressClient().getZipCode() + "','" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+				if (resultsNbAdressSociete.getInt("nbAdress") == 0){
+					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
 					
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
 				}
@@ -614,14 +614,14 @@ class Database
 			}				
 			
 			// vérifier si le client existe déjà dans la BDD
-			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress='"+cust.getAdressClient().getIdAdress() + "'";			
+			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
 			
 			try {
 				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);
 					
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
 						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
@@ -637,14 +637,14 @@ class Database
 			// Si on a une adresse de facturation
 			if (cust.getAdressFacturation() != null) {				
 				// on vérifie si elle existe dans la BDD avec l'id
-				String QueryNbAdressFacturation = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress='"+cust.getAdressFacturation().getIdAdress() + "'";
+				String QueryNbAdressFacturation = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressFacturation().getIdAdress();
 			
 				try {									
 					resultsNbAdressFacturation = myStatement.executeQuery(QueryNbAdressFacturation);
 					
 					// Si elle n'existe pas, on l'ajoute
-					if (Integer.parseInt(resultsNbAdressFacturation.getString("nbAdress")) == 0){
-						String QueryAdressPro = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ('"+cust.getAdressFacturation().getNumber() + "','" + cust.getAdressFacturation().getZipCode() + "','" + cust.getAdressFacturation().getCity() + "','" + cust.getAdressFacturation().getStreet()+"')";
+					if (resultsNbAdressFacturation.getInt("nbAdress") == 0){
+						String QueryAdressPro = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressFacturation().getNumber() + "," + cust.getAdressFacturation().getZipCode() + ",'" + cust.getAdressFacturation().getCity() + "','" + cust.getAdressFacturation().getStreet()+"')";
 						
 						resultsAdressFact = myStatement.executeQuery(QueryAdressPro);
 					}	
@@ -656,15 +656,15 @@ class Database
 			
 			// On vérifie si le client pro existe dans la table ProfessionnalClient
 			String QueryNbPro = "SELECT COUNT(corporationName) AS nbPro FROM ProfessionalClient WHERE corporationName='"+cust.getNomSociete() +"'";
-			String QueryIdAdressFact = "SELECT idAdress FROM Adress WHERE idAdress='"+cust.getAdressFacturation().getIdAdress() + "'";
+			String QueryIdAdressFact = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressFacturation().getIdAdress();
 			
 			try {
 				resultsNbPro = myStatement.executeQuery(QueryNbPro);	
 				resultsIdAdressFact = myStatement.executeQuery(QueryIdAdressFact);
 					
 				// Si il n'existe pas, on l'ajoute (il faut vérifier si on a un mail de facturation et un departement de paiement pour le customer donné
-				if (Integer.parseInt(resultsNbPro.getString("nbPro")) == 0){
-					int idA = Integer.parseInt(resultsIdAdressFact.getString("idAdress"));
+				if (resultsNbPro.getInt("nbPro") == 0){
+					int idA = resultsIdAdressFact.getInt("idAdress");
 					if (cust.getEmail() != null) {	
 						if (cust.getDepartementFacturation() != null) {
 							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ",'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
@@ -691,31 +691,33 @@ class Database
 		// Sinon c'est un particulier
 		else {
 			// vérifier si l'adresse du client n'existe pas déjà dans la base de données avec l'id
-			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress='"+cust.getAdressClient().getIdAdress() +"'";
-				
-			try {
+			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
+			
+			try {					
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
 				
+				resultsNbAdressClient.next();
 				// Si elle n'existe pas, on l'ajoute
-				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
-					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ('"+cust.getAdressClient().getNumber() + "','" + cust.getAdressClient().getZipCode() + "','" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
 					
-					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
+					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête AdressSociete");
+				System.out.println("Erreur requête AdressClient");
 			}	
 			
 			// vérifier si le client existe déjà dans la BDD
-			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress='"+cust.getAdressClient().getIdAdress()+"'";			
+			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
 			
 			try {
-				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);
-					
+				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);				
+				
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					System.out.println("Client existe pas !!");
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
 						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
@@ -725,7 +727,7 @@ class Database
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête Client");
+				System.out.println("Erreur requête Client Particulier");
 			}	
 		}				
 		

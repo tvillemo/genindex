@@ -15,6 +15,10 @@ import javax.swing.*;
 
 public class InterfaceUS1 extends JPanel {
     
+
+     private JButton valider;
+     private JRadioButton proButton;
+    private JRadioButton parButton;
     
     public InterfaceUS1 (){
         /* Panel du haut avec les radioButton*/

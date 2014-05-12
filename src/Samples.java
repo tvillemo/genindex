@@ -12,7 +12,9 @@ class Samples {
    * The identifiant of the sample. It is automatically incremented.
    * This identifiant is unique.
    */
-  private String id;
+  private int id;
+  
+  private Boolean first;
 
   /**
    * It is the type of the sample (blood, DNA...)
@@ -45,7 +47,7 @@ class Samples {
    * - the date of creation of this sample (date).
    * - the date of the storage of this sample (date).
    */
-  Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim) {
+  Samples(int Identifier, String Type_sample, Date D_sampling, Animals anim) {
     // Bouml preserved body begin 0002A282
 	  this.id = Identifier;
 	  this.type = Type_sample;
@@ -109,7 +111,7 @@ class Samples {
   /**
    * This "get" permits to return the identifier of the animal.
    */
-  public String getId() {
+  public int getId() {
     // Bouml preserved body begin 0002A602
 	  return id;
     // Bouml preserved body end 0002A602
@@ -203,5 +205,10 @@ class Samples {
 	  return analysisCount;
     // Bouml preserved body end 00023445
   }
+
+public Boolean getFirst() {
+	// TODO Auto-generated method stub
+	return first;
+}
 
 }

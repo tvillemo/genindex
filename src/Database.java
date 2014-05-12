@@ -718,17 +718,13 @@ class Database
 								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null, null, null)";
 							}
 						}
-					}
-					
-					
+					}										
 					resultsAddClientPro = myStatement.executeQuery(QueryClient);
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête ClientPro");
-			}	
-			
-			System.out.println("Fini !!");
+			}							
 		}
 		
 		// Sinon c'est un particulier

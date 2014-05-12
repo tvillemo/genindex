@@ -6,7 +6,7 @@ class Animals {
    * The animal belongs to a specie.
    */
 private String name;
-	
+	private int IdAnimal;
   private String specie;
 
   private String numberBirthday;
@@ -48,6 +48,14 @@ public String getName() {
 
 public void setName(String name) {
 	this.name = name;
+}
+
+public int getIdAnimal() {
+	return IdAnimal;
+}
+
+public void setIdAnimal(int idAnimal) {
+	IdAnimal = idAnimal;
 }
 
 }

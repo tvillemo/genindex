@@ -476,30 +476,31 @@ class Database
 		return maListe;
 	}
 
-	//DONE (Peut être rajouter la liste des analyses)
+	//DONE and WORKS (Peut être rajouter la liste des analyses)
+	@SuppressWarnings("deprecation")
 	public Samples searchSample(int id) 
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, STATUTSAMPLE, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
 
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
-			System.out.println(resultsSample.getDate("DATESAMPLING"));
+			resultsSample.next();
+			
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
-			System.out.println("2");
 			mySample = new Samples( resultsSample.getInt("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
-			System.out.println("3");
-
-			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
+			
+			if (resultsSample.getString("STATUTSAMPLE").equals("Analyse"))
 			{
 				mySample.setAnalyzed();
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête Sample");
 		}
 
@@ -575,7 +576,7 @@ class Database
 	/**
 	 * This function permits to get the user that use this session.
 	 */
-	public Users getUser() {
+	public Users getUser(int id) {
 		// Bouml preserved body begin 00043502
 		return user;
 		// Bouml preserved body end 00043502

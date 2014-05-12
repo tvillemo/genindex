@@ -2,10 +2,13 @@
 // essai
 
 class Adress {
-  /**
+	
+  private int idAdress;
+
+/**
    * The number is the number of the street.
    */
-  private int number;
+  private int number;  
 
   /**
    * The name of the street. 
@@ -103,4 +106,12 @@ class Adress {
     // Bouml preserved body end 00022C03
   }
 
+  public int getIdAdress() {
+    return idAdress;
+  }
+	
+  public void setIdAdress(int idAdress) {
+	this.idAdress = idAdress;
+  }
+  
 }

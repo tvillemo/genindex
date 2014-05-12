@@ -109,7 +109,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 		}
 		if (point.getSource()==annuleButton)
 		{
-			
+			this.dispose();
 		}
     }
 	

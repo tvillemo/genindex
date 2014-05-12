@@ -259,7 +259,7 @@ class Database
 				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
 
 
-				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
+				//mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
 
 				myOrder.addSample(mySample);
 			}
@@ -485,7 +485,7 @@ class Database
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
-			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+			//mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
@@ -597,8 +597,11 @@ class Database
 		// Bouml preserved body end 000235C5
 	}
 
-	public void saveCustomer(Customers cust) {
+	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
+		
+		boolean ClientProInsere = false;
+		boolean ClientInsere = false;
 
 		ResultSet resultsNbAdressSociete = null;
 		ResultSet resultsCustomer = null;
@@ -646,7 +649,7 @@ class Database
 						
 					}
 					
-					resultsClientPro = myStatement.executeQuery(QueryClient);					
+					resultsClientPro = myStatement.executeQuery(QueryClient);
 				}
 			}
 			catch (SQLException ex) {
@@ -720,6 +723,7 @@ class Database
 						}
 					}										
 					resultsAddClientPro = myStatement.executeQuery(QueryClient);
+					ClientProInsere = true;
 				}
 			}
 			catch (SQLException ex) {
@@ -740,7 +744,7 @@ class Database
 				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
 					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
 					
-					resultsCustomer = myStatement.executeQuery(QueryCustomer);											
+					resultsCustomer = myStatement.executeQuery(QueryCustomer);						
 				}
 			}
 			catch (SQLException ex) {
@@ -758,12 +762,20 @@ class Database
 					}
 					
 					resultsClient = myStatement.executeQuery(QueryClient);
+					ClientInsere = true;
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête Client Particulier");
 			}
-		}					
+		}
+		
+		if (ClientProInsere || ClientInsere){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public Analysis searchAnalysis(Types_analysis type) {

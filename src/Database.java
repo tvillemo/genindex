@@ -293,7 +293,10 @@ class Database
 			{
 				saveSample(s,order.getId());
 			}
+<<<<<<< HEAD
 
+=======
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
@@ -330,17 +333,14 @@ class Database
 		{
 			if (custom.getID() != 0)
 			{
-				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
-				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
-				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			myResult.next();
@@ -361,8 +361,13 @@ class Database
 
 		return bool;
 	}
+<<<<<<< HEAD
 
 	//DONE
+=======
+	
+	//DONE and WORKS
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 	/**
 	 * This function know if an animal already exist
 	 */
@@ -377,6 +382,7 @@ class Database
 			myResult=myStatement.executeQuery(QuerySample);
 
 			myResult.next();
+			System.out.println(QuerySample);
 			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
@@ -393,8 +399,13 @@ class Database
 
 		return bool;
 	}
+<<<<<<< HEAD
 
 	//DONE
+=======
+	
+	//DONE and WORKS
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 	/**
 	 * This function permits to get all categories of the database
 	 * @return : ArrayList of string of Categories names
@@ -408,9 +419,7 @@ class Database
 
 		try
 		{
-			System.out.println("1");
 			resultsSamples = myStatement.executeQuery(QuerySample);
-			System.out.println("2");
 			while(resultsSamples.next())
 			{
 				maListe.add(resultsSamples.getString(1));
@@ -423,8 +432,13 @@ class Database
 		}
 		return maListe;
 	}
+<<<<<<< HEAD
 
 	//DONE
+=======
+	
+	//DONE and WORKS
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 	/**
 	 * This function permits to get all species by categories
 	 * @return : ArrayList of string of Species 
@@ -446,13 +460,12 @@ class Database
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getSpeciesByCategory");
 		}
 		return maListe;
 	}
 
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get analyse by categories
 	 * @return : ArrayList of string of analysis
@@ -461,7 +474,7 @@ class Database
 	public ArrayList<String> getAnalyseByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"';";
+		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
 
 		try
@@ -469,7 +482,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("1"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
@@ -641,9 +654,15 @@ class Database
 				resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
 
 				// Si elle n'existe pas, on l'ajoute
+<<<<<<< HEAD
 				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
 					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
 
+=======
+				if (resultsNbAdressSociete.getInt("nbAdress") == 0){
+					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+					
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
 				}
 			}
@@ -659,12 +678,12 @@ class Database
 
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + "," + cust.getNomSociete() + "," + cust.getLastName() + "," + cust.getPhone() + "," + cust.getFax() + "," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
 					else {
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + "," + cust.getNomSociete() + "," + cust.getLastName() + "," + cust.getPhone() + ", null," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
 					}
 				}
 			}
@@ -681,9 +700,15 @@ class Database
 					resultsNbAdressFacturation = myStatement.executeQuery(QueryNbAdressFacturation);
 
 					// Si elle n'existe pas, on l'ajoute
+<<<<<<< HEAD
 					if (Integer.parseInt(resultsNbAdressFacturation.getString("nbAdress")) == 0){
 						String QueryAdressPro = "INSERT INTO Adress VALUES (1,"+cust.getAdressFacturation().getNumber() + cust.getAdressFacturation().getZipCode() + cust.getAdressFacturation().getCity() + cust.getAdressFacturation().getStreet()+")";
 
+=======
+					if (resultsNbAdressFacturation.getInt("nbAdress") == 0){
+						String QueryAdressPro = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressFacturation().getNumber() + "," + cust.getAdressFacturation().getZipCode() + ",'" + cust.getAdressFacturation().getCity() + "','" + cust.getAdressFacturation().getStreet()+"')";
+						
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 						resultsAdressFact = myStatement.executeQuery(QueryAdressPro);
 					}	
 				}
@@ -693,7 +718,7 @@ class Database
 			}
 
 			// On vérifie si le client pro existe dans la table ProfessionnalClient
-			String QueryNbPro = "SELECT COUNT(corporationName) AS nbPro FROM ProfessionalClient WHERE corporationName="+cust.getNomSociete();
+			String QueryNbPro = "SELECT COUNT(corporationName) AS nbPro FROM ProfessionalClient WHERE corporationName='"+cust.getNomSociete() +"'";
 			String QueryIdAdressFact = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressFacturation().getIdAdress();
 
 			try {
@@ -701,22 +726,22 @@ class Database
 				resultsIdAdressFact = myStatement.executeQuery(QueryIdAdressFact);
 
 				// Si il n'existe pas, on l'ajoute (il faut vérifier si on a un mail de facturation et un departement de paiement pour le customer donné
-				if (Integer.parseInt(resultsNbPro.getString("nbPro")) == 0){
-					int idA = Integer.parseInt(resultsIdAdressFact.getString("idAdress"));
+				if (resultsNbPro.getInt("nbPro") == 0){
+					int idA = resultsIdAdressFact.getInt("idAdress");
 					if (cust.getEmail() != null) {	
 						if (cust.getDepartementFacturation() != null) {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + "," + cust.getEmail() + "," + cust.getDepartementFacturation() +")";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ",'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
 						}
 						else {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + "," + cust.getEmail() + ", null)";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ",'" + cust.getEmail() + "', null)";
 						}
 					}
 					else {
 						if (cust.getDepartementFacturation() != null) {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + ", null," + cust.getDepartementFacturation() +")";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ", null,'" + cust.getDepartementFacturation() +"')";
 						}
 						else {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + ", null, null)";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ", null, null)";
 						}
 					}
 				}
@@ -729,20 +754,38 @@ class Database
 		// Sinon c'est un particulier
 		else {
 			// vérifier si l'adresse du client n'existe pas déjà dans la base de données avec l'id
+<<<<<<< HEAD
 			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
 
 			try {
+=======
+			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
+			
+			try {					
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
+<<<<<<< HEAD
 
+=======
+				
+				resultsNbAdressClient.next();
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 				// Si elle n'existe pas, on l'ajoute
+<<<<<<< HEAD
 				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
 					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
 
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
+=======
+				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+					
+					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête AdressSociete");
+				System.out.println("Erreur requête AdressClient");
 			}	
 
 			// vérifier si le client existe déjà dans la BDD
@@ -750,20 +793,22 @@ class Database
 
 			try {
 				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);
-
+				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);				
+				
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					System.out.println("Client existe pas !!");
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + ", null," + cust.getLastName() + "," + cust.getPhone() + "," + cust.getFax() + "," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
 					else {
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + ", null," + cust.getLastName() + "," + cust.getPhone() + ", null," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
 					}
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête Client");
+				System.out.println("Erreur requête Client Particulier");
 			}	
 		}				
 
@@ -937,7 +982,5 @@ class Database
 			System.out.println("Erreur requête insert species");
 		}
 	}
-
-
 }
 

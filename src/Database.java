@@ -395,24 +395,29 @@ class Database
 	
 	//DONE
 	/**
-	 * This function permits to save in the database the order in parameter.
+	 * This function permits to get all categories of the database
+	 * @return : ArrayList of string of Categories names
+	 * @author jeremy & mathilde
 	 */
 	public ArrayList<String> getAllCategory() 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameCategory FROM Category";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
 		{
+			System.out.println("1");
 			resultsSamples = myStatement.executeQuery(QuerySample);
+			System.out.println("2");
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getAllCategory");
 		}
 		return maListe;
@@ -420,12 +425,14 @@ class Database
 	
 	//DONE
 	/**
-	 * This function permits to get species by categories
+	 * This function permits to get all species by categories
+	 * @return : ArrayList of string of Species 
+	 * @author jeremy & mathilde
 	 */
-	public ArrayList<String> getSpeciesByCategory() 
+	public ArrayList<String> getSpeciesByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameSpecies, Species.idSpecies FROM Category, Species WHERE Category.idCategory=Species.idCategory AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -433,11 +440,12 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getSpeciesByCategory");
 		}
 		return maListe;
@@ -446,11 +454,13 @@ class Database
 	//DONE
 	/**
 	 * This function permits to get analyse by categories
+	 * @return : ArrayList of string of analysis
+	 * @author jeremy & mathilde
 	 */
-	public ArrayList<String> getAnalyseByCategory() 
+	public ArrayList<String> getAnalyseByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"';";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -458,15 +468,18 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString("1"));
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getAnalyseByCategory");
 		}
 		return maListe;
 	}
+	
+	
 /*>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 
 		// Bouml preserved body begin 00043082
@@ -916,5 +929,7 @@ class Database
 			System.out.println("Erreur requête insert species");
 		}
 	}
+
+	
 }
 

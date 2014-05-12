@@ -22,6 +22,13 @@ public class Main {
 		c.setPro(true);
 		Animals a = new Animals(null, null);
 		a.setName("");
+		c.setName("Auguste", "Dupond");
+		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
+		c.setPro(false);
+		
+
+		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
+
 		
 		System.out.println(d.IfCustomerExist(c));
 		

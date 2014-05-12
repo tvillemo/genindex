@@ -2,20 +2,25 @@ import java.util.ArrayList;
 
 
 public class Main {
-
+	
 	public static void main(String[] args) 
 	{
 		Database d = new Database();
 		
 		
 		
-		d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
+		//d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
+		
+		ArrayList<String> categ = d.getAllCategory();
+		for(int i = 0; i< categ.size() ; i++) {
+			System.out.println(categ);
+		}
 		
 		//Samples s = d.searchSample(""+2);
 		
 		//s.printSample(s);
 
-		Customers c = new Customers(null, 0, null, null, 0);
+		/*Customers c = new Customers(null, 0, null, null, 0);
 		c.setName("Auguste", "Dupond");
 		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
 		c.setPro(false);
@@ -24,6 +29,7 @@ public class Main {
 		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
 		
 		System.out.println(d.IfCustomerExist(c));
+		*/
 
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
 //		

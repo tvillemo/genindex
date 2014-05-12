@@ -6,8 +6,12 @@ import java.awt.Component;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.util.ArrayList;
-
 import javax.swing.*;
+
+/**
+*
+* @author Audrey
+*/
 
 public class InterfaceUS3 extends JFrame implements ActionListener
 {

@@ -15,9 +15,11 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 	private JTextField nomField;
 	private JComboBox catBox;
 	private JButton valideButton, annuleButton;
+	private Database d;
 	
 	public InterfaceUS3()
 	{
+		d = new Database();
 		
 		// création du panel et des labels
 		ajoutPanel = new JPanel(new GridLayout(3,2));
@@ -45,7 +47,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 		// visibilité
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        this.setSize(400,150);
+        this.setSize(500,150);
         this.setVisible(true);
 
     }
@@ -55,7 +57,24 @@ public class InterfaceUS3 extends JFrame implements ActionListener
     {
 		if (point.getSource()==valideButton)
 		{
-			//verifSpecies();
+			if (d.verifSpecies(nomField.getText()))
+			{
+				//System.out.println(catBox.getSelectedItem().toString());
+				d.saveSpecies(nomField.getText(), d.getIdCategory(catBox.getSelectedItem().toString()));
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Votre espèce a bien été enregistrée", "",
+				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				       options, options[1]);
+			}
+			else
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Cette espèce existe déjà", "",
+				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				       options, options[1]);
+			}
 		}
 		if (point.getSource()==annuleButton)
 		{

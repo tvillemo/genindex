@@ -759,7 +759,7 @@ class Database
 //					
 //					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
 //
-//				}
+				}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
 			}	
@@ -1095,12 +1095,5 @@ class Database
 			return(-1);
 		}
 	}
-
-	
-	
-	
-	
-	
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 }
 

@@ -7,7 +7,6 @@ import java.util.HashMap;
  */
 class Types_analysis {
   private String type;
-  private String testname;
   /**
    * The price of one type of analysis for one sample.
    */
@@ -16,11 +15,10 @@ class Types_analysis {
   /**
    * constructor of types
    */
-  public  Types_analysis(String name, int price,String test) {
+  public  Types_analysis(String name, int price) {
     // Bouml preserved body begin 0001FE45
 	  this.type = name;
 	  this.price = price;
-	  this.testname=test;
     // Bouml preserved body end 0001FE45
   }
 
@@ -50,13 +48,5 @@ class Types_analysis {
 	  this.price=price;
     // Bouml preserved body end 00020045
   }
-
-public String getTestname() {
-	return testname;
-}
-
-public void setTestname(String samplename) {
-	this.testname = samplename;
-}
 
 }

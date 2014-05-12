@@ -195,7 +195,7 @@ class Database
 			{
 				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
-				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
+				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
 
 				liste.add(myOrder);
 			}
@@ -240,7 +240,7 @@ class Database
 			Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
 			//Creation du lot
-			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
+			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer,new Types_analysis("PCR",95));
 			//Ajout des echantillons
 
 			//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
@@ -281,10 +281,14 @@ class Database
 	 */
 	public void saveOrder(Orders order) 
 	{
-		String QuerySample="Insert into ";
+		String QuerySample="";
 		
 		try
 		{
+			for (Samples s : order.getSamples())
+			{
+				saveSample(s);
+			}
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
@@ -715,13 +719,7 @@ class Database
 		int testID=0;
 		int typeID=0;
 		try {
-			result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
-			result.next();
-			typeID=result.getInt("idtype");
-			result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
-			result.next();
-			testID=result.getInt("idtest");
-			String query="insert into cost values ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
+			String query="insert into cost values ("+typeID+",0)";
 			myStatement.execute(query);
 		}
 		catch (SQLException e) {
@@ -731,5 +729,64 @@ class Database
 	}
 
 	// Bouml preserved body end 00023945
+	
+	/**
+	 * This function permits to verify if the name of the species is on the database, it returns true if it isn't in.
+	 * @param : name of the species
+	 * @author mathilde
+	 */
+	public boolean verifSpecies(String species) {
+		String QuerySample="Select COUNT From Species Where nameSpecies = species";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			if (monRes.getString(1) == "0") {
+				return(true);
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête vérification species dans la base");
+		}
+		return(false);
+	}
+	
+	/**
+	 * This function permits to get the id of a Sting name Category
+	 * @param : name of the species
+	 * @author mathilde
+	 */
+	public int getIdCategory(String category) 
+	{
+		String QuerySample="Select idCateg From Category Where nameCategory = category";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête recupere idCategory");
+		}
+		return(-1);
+	}
+	
+	/**
+	 * This function permits to save a species in the database
+	 * @param : name of the species, id of the category
+	 * @author mathilde
+	 */
+	public void saveSpecies(String species, int idCategory) 
+	{
+		String QuerySample="Insert into Species values(1,idCategory,species)";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête insert species");
+		}
+	}
 }
 

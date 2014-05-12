@@ -146,18 +146,23 @@ public class InterfaceUS1 extends JPanel implements ActionListener{
     frame.setVisible(true);
     }
     
+     @Override
     public void actionPerformed(ActionEvent e) {
         if ((JButton) e.getSource() == valider )
         {
-        }
-        
-        if ((JRadioButton) e.getSource() == proButton )
+            Customers C = new Customers();
+            if ((JRadioButton) e.getSource() == proButton )
         {
+            
         }
         
         if ((JRadioButton) e.getSource() == parButton )
         {
+            
         }
+        }
+        
+        
     }
     
     

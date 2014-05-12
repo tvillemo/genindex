@@ -28,6 +28,8 @@ class Orders {
   private Date dateOrder;
 
   private Invoice invoice;
+  
+  private Types_analysis test;
 
   /**
    * TRUE if the invoice is paid, FALSE if not.
@@ -41,7 +43,7 @@ class Orders {
    */
   private boolean results_send;
 
-  public Orders(int num_samples, Date date_order, Customers customer) {
+  public Orders(int num_samples, Date date_order, Customers customer,Types_analysis testAna) {
     // Bouml preserved body begin 0001F402
 	  this.samples = new ArrayList<Samples>();
 	  this.numberSamples=num_samples;
@@ -49,6 +51,7 @@ class Orders {
 	  //this.dateDeadline=date_deadline;
 	  //this.priorityLevel = priority;
 	  this.customer=customer;
+	  this.setTest(testAna);
 	  //this.paid = false;
 	  this.results_send=false;
 	  this.idOrder=countId;
@@ -168,8 +171,7 @@ class Orders {
 	 for (int i=0; i<samples.size(); i++){
 		 totalPrice = totalPrice + samples.get(i).getAnalysis().getTypeAnalysis().getPrice();
 	 }
-	 
-	 this.invoice = new Invoice(totalPrice, this.numberSamples, this.idOrder);
+	 this.invoice = new Invoice(totalPrice,this.idOrder);
     // Bouml preserved body end 0002FA82
   }
 
@@ -186,5 +188,17 @@ class Orders {
 	  }
     // Bouml preserved body end 00042C02
   }
+
+public Customers getCustomer(){
+	return this.customer;
+}
+
+public Types_analysis getTest() {
+	return test;
+}
+
+public void setTest(Types_analysis test) {
+	this.test = test;
+}
 
 }

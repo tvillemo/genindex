@@ -635,10 +635,12 @@ class Database
 			
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
+			String firstName=resultClient.getString("FirstNameClient");
 			resultAdress=myStatement.executeQuery(query);
 			resultAdress.next();
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
+			c.setName(firstName, nameClient);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

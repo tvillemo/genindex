@@ -361,8 +361,8 @@ class Database
 
 		return bool;
 	}
-
-	//DONE
+	
+	//DONE and WORKS
 	/**
 	 * This function know if an animal already exist
 	 */
@@ -394,7 +394,7 @@ class Database
 		return bool;
 	}
 
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get all categories of the database
 	 * @return : ArrayList of string of Categories names
@@ -424,7 +424,7 @@ class Database
 		return maListe;
 	}
 
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get all species by categories
 	 * @return : ArrayList of string of Species 
@@ -481,18 +481,22 @@ class Database
 	}
 
 	//DONE (Peut être rajouter la liste des analyses)
-	public Samples searchSample(String id) 
+	public Samples searchSample(int id) 
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
 
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
+			System.out.println(resultsSample.getDate("DATESAMPLING"));
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
+			System.out.println("2");
 			mySample = new Samples( resultsSample.getInt("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+			System.out.println("3");
+
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
@@ -520,7 +524,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				listS.add(searchSample(resultsSamples.getString("IDSAMPLE")));
+				listS.add(searchSample(resultsSamples.getInt("IDSAMPLE")));
 			}
 		}
 		catch (SQLException ex) 
@@ -564,18 +568,18 @@ class Database
 			e.printStackTrace();
 		}
 		
-		String QuerySample="Insert into SAMPLE values("+sample.getId()+","+IDAnimal+","+IDlot+","+IDSample+","+sample.getFirst()+",'En Attente',trunc(sysdate))";
+		//String QuerySample="Insert into SAMPLE values("+sample.getId()+","+sample.getAnimal().getId()+","+IDlot+","+IDSample+","+sample.getFirst()+",'En Attente',trunc(sysdate))";
 
-		try
-		{
-			System.out.println(QuerySample);
-			myStatement.execute(QuerySample);
-			System.out.println(QuerySample);
-		}
-		catch (SQLException ex) 
-		{
-			System.out.println("Erreur requête Sample");
-		}
+//		try
+//		{
+////			System.out.println(QuerySample);
+////			myStatement.execute(QuerySample);
+////			System.out.println(QuerySample);
+//		}
+//		catch (SQLException ex) 
+//		{
+//			System.out.println("Erreur requête Sample");
+//		}
 
 	}
 
@@ -697,7 +701,6 @@ class Database
 					// Si elle n'existe pas, on l'ajoute
 					if (Integer.parseInt(resultsNbAdressFacturation.getString("nbAdress")) == 0){
 						String QueryAdressPro = "INSERT INTO Adress VALUES (1,"+cust.getAdressFacturation().getNumber() + cust.getAdressFacturation().getZipCode() + cust.getAdressFacturation().getCity() + cust.getAdressFacturation().getStreet()+")";
-
 						resultsAdressFact = myStatement.executeQuery(QueryAdressPro);
 					}	
 				}
@@ -747,14 +750,16 @@ class Database
 
 			try {
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
-
-				// Si elle n'existe pas, on l'ajoute
-				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
-					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
-
-					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
-				}
-			}
+//				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
+//					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
+//
+//					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
+//				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+//					//String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+//					
+//					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
+//
+//				}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
 			}	
@@ -927,8 +932,7 @@ class Database
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println(ex.getMessage());
-			System.out.println("Erreur requête recupere idCategory");
+			System.out.println("Erreur requete recupere idCategory");
 		}
 		return(-1);
 	}
@@ -951,7 +955,152 @@ class Database
 			System.out.println("Erreur requête insert species");
 		}
 	}
+	
+	
+	/**
+	 * This function permits to verify if the name of the category is on the database, it returns true if it isn't in.
+	 * @param : name of the category
+	 * @author Marion
+	 */
+	public boolean verifCategory(String category) {
+		String QuerySample="Select COUNT(idCategory) From Category Where nameCategory ='"+category+"'";
+		boolean b=false;
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			if (monRes.getInt(1) == 0) 
+			{
+				b=true;
+			}
+			else
+			{
+				b=false;
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete verification categorie dans la base");
+		}
+		return b;
+	}
 
+	/**
+	 * This function permits to save a category in the database
+	 * @param : name of the category
+	 * @author Marion
+	 */
+	public void saveCategory(String category) 
+	{
+		String QuerySample="Insert into Category (nameCategory) values('"+category+"')";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete insert category");
+		}
+	}
 
+	/**
+	 * This function permits to have the list of all sample type in the database
+	 * @author Marion
+	 */
+	public ArrayList<String> getSampleType() 
+	{
+		ArrayList<String> listT = new ArrayList<String>(); //La liste des diffÃ©rents types d'echantillons
+		String QuerySample="SELECT nameType FROM SampleType";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			while(monRes.next())
+			{
+				listT.add(monRes.getString(1));
+			}
+			return(listT);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete selection des types d'Ã©chantillons");
+		}
+		return (listT);
+	}
+
+	/**
+	 * This function permits to add a sample type in the database
+	 * @param : name of the sample type
+	 * @author Marion
+	 */
+	public void saveSampleType(String type) 
+	{
+		String QuerySample="Insert into SampleType (nameType) values('"+type+"')";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete insert SampleType");
+		}
+	}
+
+	/**
+	 * This function permits to associate a sample type and a category in the database
+	 * @param : name of the category and list the list of sample type
+	 * @author Marion
+	 */
+	public void saveAssociationSampleTypeCategory (String name, ArrayList<String> list) 
+	{
+		//Ajout de l'association pour chaque type d'echantillon
+		for (int i=0; i< list.size(); i++)
+		{
+			//Recuperation de l'idType associÃ© au nom de type d'echantillon dans la liste
+			int idType =getIdSampleType(list.get(i));
+
+			//Recuperation de l'idCategory associÃ© au nom de categorie
+			int idCategory=getIdCategory(name);
+
+			//ajout de la ligne dans match
+			String QuerySample="Insert into Match (idCategory, idType) values('"+idCategory+"', '"+idType+"')";
+			try
+			{
+				myStatement.executeQuery(QuerySample);
+			}
+			catch (SQLException ex) 
+			{
+				System.out.println("Erreur requete insert Match");
+			}
+		}
+	}
+
+	/**
+	 * This function permits to get the id associate to a sample type name in the database
+	 * @param : name of the sample type
+	 * @author Marion
+	 * Renvoie -1 si il y a une erreur
+	 */
+	public Integer getIdSampleType(String name) 
+	{
+		String QuerySample="SELECT idType FROM SampleType WHERE nameType='"+name+"'";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(Integer.parseInt(monRes.getString("idType")));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete selection des types d'Ã©chantillons");
+			return(-1);
+		}
+	}
+
+	
+	
+	
+	
+	
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 }
 

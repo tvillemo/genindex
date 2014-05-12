@@ -15,7 +15,7 @@ import javax.swing.*;
 
 public class InterfaceUS1 extends JPanel {
     
-<<<<<<< HEAD
+
      private JButton valider;
      private JRadioButton proButton;
     private JRadioButton parButton;

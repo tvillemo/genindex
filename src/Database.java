@@ -463,12 +463,6 @@ class Database
 		}
 		return maListe;
 	}
-/*>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
-
-		// Bouml preserved body begin 00043082
-		this.order =order;
-		// Bouml preserved body end 00043082
-	}*/
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 

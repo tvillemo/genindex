@@ -14,14 +14,18 @@ public class Main {
 		//Samples s = d.searchSample(""+2);
 		
 		//s.printSample(s);
-
+		Invoice in=new Invoice(145);
+		Types_analysis analy=new Types_analysis("PCR",145);
 		Customers c = new Customers(null, 0, null, null, 0);
 		c.setName("Auguste", "Dupond");
 		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
 		c.setPro(false);
 		
+		
+		Orders o=new Orders(2,new Date(12,12,1995),c,analy);
+		
+		
 
-		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
 		
 		System.out.println(d.IfCustomerExist(c));
 

@@ -279,9 +279,7 @@ class Database
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-/*<<<<<<< HEAD
-	public void saveOrder(Orders order) {
-=======*/
+
 	public void saveOrder(Orders order) 
 	{
 		String QuerySample="";
@@ -313,7 +311,7 @@ class Database
 		}
 	}
 		
-	//DONE
+	//DONE and WORKS
 	//Créer un Sample avec ID == 0 pour les requètes non ID
 	/**
 	 * This function know if a customer already exist
@@ -367,16 +365,18 @@ class Database
 	/**
 	 * This function know if an animal already exist
 	 */
-	public boolean IfAnimalExist(Animals aminal) 
+	public boolean IfAnimalExist(Animals animal, Customers custom) 
 	{
-		String QuerySample="";
+		String QuerySample="SELECT COUNT(Animal.idAnimal) FROM Animal, Sample, Lot, Client WHERE Animal.idAnimal=Sample.idAnimal AND Sample.idLot=Lot.idLot AND Lot.idClient=Client.idClient AND Client.idClient='"+custom.getID()+"' AND Animal.nameAnimal='"+animal.getName()+"'";
 		ResultSet myResult;
 		boolean bool = false;
 		
 		try
 		{
 			myResult=myStatement.executeQuery(QuerySample);
-			if (myResult == null)
+			
+			myResult.next();
+			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
 			}

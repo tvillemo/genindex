@@ -16,8 +16,9 @@ public class Main {
 		//s.printSample(s);
 
 		Customers c = new Customers(null, 0, null, null, 0);
-		c.setName("Alex", "Robert");
+		c.setName("Manon", "Lanvain");
 		c.setAdressClient(new Adress(23,"rue des Roses",45000,"Orléans"));
+		c.getAdressClient().setIdAdress(6);
 		c.setPro(false);
 		
 		d.saveCustomer(c);

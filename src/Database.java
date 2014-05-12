@@ -901,8 +901,7 @@ class Database
 	 */
 	public void saveSpecies(String species, int idCategory) 
 	{
-		String QuerySample="Insert into Species (nameSpecies,idCategory) values('"+species+"',"+idCategory+")";
-		System.out.println(QuerySample);
+		String QuerySample="Insert into Species values(1,'"+species+"',"+idCategory+")";
 		try
 		{
 			myStatement.executeQuery(QuerySample);

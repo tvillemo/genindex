@@ -294,25 +294,32 @@ class Database
 	}
 		
 	//DONE
+	//Créer un Sample avec ID == 0 pour les requètes non ID
 	/**
 	 * This function know if a customer already exist
 	 */
 	public boolean IfCustomerExist(Customers custom) 
 	{
-		String QuerySample="";
-		String QuerySamplePro="";
+		
+		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
+		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient=lenom AND firstNameClient=leprenom AND num=lenum AND CP=lecp AND town=laville AND street=larue;";
+		String QueryCustomPro="idClient FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName=lenomEntreprise AND num=lenum AND CP=lecp AND town=laville AND street=larue;";
 		ResultSet myResult;
 		boolean bool = false;
 		
 		try
 		{
-			if (custom.pro)
+			if (custom.getID() != 0)
 			{
-				myResult=myStatement.executeQuery(QuerySamplePro);
+				myResult=myStatement.executeQuery(QueryCustomId);
+			}
+			else if (custom.pro)
+			{
+				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
-				myResult=myStatement.executeQuery(QuerySample);
+				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			
 			if (myResult.wasNull())

@@ -259,7 +259,7 @@ class Database
 				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
 
 
-				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
+				//mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
 
 				myOrder.addSample(mySample);
 			}
@@ -473,26 +473,48 @@ class Database
 		return maListe;
 	}
 
+<<<<<<< HEAD
+	//DONE and WORKS (Peut être rajouter la liste des analyses)
+	@SuppressWarnings("deprecation")
+	public Samples searchSample(int id) 
+=======
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
+<<<<<<< HEAD
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, STATUTSAMPLE, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
+=======
 		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
+<<<<<<< HEAD
+			resultsSample.next();
+			
+=======
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
-			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+<<<<<<< HEAD
+			mySample = new Samples( resultsSample.getInt("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+			
+			if (resultsSample.getString("STATUTSAMPLE").equals("Analyse"))
+=======
+			//mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
+>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 			{
 				mySample.setAnalyzed();
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête Sample");
 		}
 
@@ -553,7 +575,7 @@ class Database
 	/**
 	 * This function permits to get the user that use this session.
 	 */
-	public Users getUser() {
+	public Users getUser(int id) {
 		// Bouml preserved body begin 00043502
 		return user;
 		// Bouml preserved body end 00043502
@@ -597,8 +619,11 @@ class Database
 		// Bouml preserved body end 000235C5
 	}
 
-	public void saveCustomer(Customers cust) {
+	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
+		
+		boolean ClientProInsere = false;
+		boolean ClientInsere = false;
 
 		ResultSet resultsNbAdressSociete = null;
 		ResultSet resultsCustomer = null;
@@ -646,7 +671,7 @@ class Database
 						
 					}
 					
-					resultsClientPro = myStatement.executeQuery(QueryClient);					
+					resultsClientPro = myStatement.executeQuery(QueryClient);
 				}
 			}
 			catch (SQLException ex) {
@@ -720,6 +745,7 @@ class Database
 						}
 					}										
 					resultsAddClientPro = myStatement.executeQuery(QueryClient);
+					ClientProInsere = true;
 				}
 			}
 			catch (SQLException ex) {
@@ -740,7 +766,7 @@ class Database
 				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
 					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
 					
-					resultsCustomer = myStatement.executeQuery(QueryCustomer);											
+					resultsCustomer = myStatement.executeQuery(QueryCustomer);						
 				}
 			}
 			catch (SQLException ex) {
@@ -758,12 +784,20 @@ class Database
 					}
 					
 					resultsClient = myStatement.executeQuery(QueryClient);
+					ClientInsere = true;
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête Client Particulier");
 			}
-		}					
+		}
+		
+		if (ClientProInsere || ClientInsere){
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	public Analysis searchAnalysis(Types_analysis type) {

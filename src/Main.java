@@ -16,11 +16,6 @@ public class Main {
 		//s.printSample(s);
 
 		Customers c = new Customers(null, 0, null, null, 0);
-		c.setName("Manon", "Lanvain");
-		c.setAdressClient(new Adress(23,"rue des Roses",45000,"Orléans"));
-		c.getAdressClient().setIdAdress(6);
-		
-		Customers c = new Customers(null, 0, null, null, 0);
 		c.setName("Aria", "Durand");
 		c.setAdressClient(new Adress(11,"av du Cmdt Gabon",15200,"Mauriac"));
 		c.setNomSociete("Elevage des Babines");
@@ -32,16 +27,12 @@ public class Main {
 		c.setPro(false);
 		
 
-		d.saveCustomer(c);
-
-
 		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
 
 		
 		System.out.println(d.IfCustomerExist(c));
 		
 		System.out.println(d.IfAnimalExist(a,c));
-
 
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
 //		

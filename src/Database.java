@@ -285,15 +285,28 @@ class Database
 		
 		try
 		{
+			saveInvoice(order.getInvoice());
+			saveCustomer(order.getCustomer());
 			for (Samples s : order.getSamples())
 			{
 				saveSample(s);
 			}
+			
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requête saveOrder");
+		}
+	}
+	
+	@SuppressWarnings("deprecation")
+	public void saveInvoice(Invoice in){
+		try {
+			myStatement.execute("insert into Invoice (idInvoice,dateInvoice,priceWithTVA,priceWithoutTVA) values("+in.getID()+",trunc(sysdate),"+in.getPrice()+","+in.getPriceNoTVA()+")");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 		

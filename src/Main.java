@@ -26,13 +26,11 @@ public class Main {
 		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
 		c.setPro(false);
 		
-
-		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
-
+		System.out.println(d.searchSample(1));
 		
-		System.out.println(d.IfCustomerExist(c));
-		
-		System.out.println(d.IfAnimalExist(a,c));
+//		System.out.println(d.IfCustomerExist(c));
+//		
+//		System.out.println(d.IfAnimalExist(a,c));
 
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
 //		

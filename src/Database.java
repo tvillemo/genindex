@@ -479,18 +479,21 @@ class Database
 	}
 
 	//DONE (Peut être rajouter la liste des analyses)
-	public Samples searchSample(String id) 
+	public Samples searchSample(int id) 
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
 
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
+			System.out.println(resultsSample.getDate("DATESAMPLING"));
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
+			System.out.println("2");
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
+			System.out.println("3");
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
@@ -518,7 +521,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				listS.add(searchSample(resultsSamples.getString("IDSAMPLE")));
+				listS.add(searchSample(resultsSamples.getInt("IDSAMPLE")));
 			}
 		}
 		catch (SQLException ex) 

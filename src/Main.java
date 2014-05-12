@@ -8,8 +8,15 @@ public class Main {
 		Database d = new Database();
 		
 		
+		//boolean bool = d.verifSpecies("BBB");
+		//System.out.println("le booléen est "+bool);
 		
-		d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
+		int id = d.getIdCategory("Oiseaux");
+		System.out.println("l'id est"+id);
+		
+		d.saveSpecies("Limousine", 5);
+		
+		//d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
 		
 		//Samples s = d.searchSample(""+2);
 		

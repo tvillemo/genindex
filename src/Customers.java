@@ -34,7 +34,7 @@ class Customers {
   
   private String departementFacturation; // departement de facturation, facultatif
   
-  boolean pro; // vrai si le client est un professionnel
+  private boolean pro; // vrai si le client est un professionnel
 
   public Customers(String last, int num, String rue, String phone, int ID) {
     // Bouml preserved body begin 00040A82

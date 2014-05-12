@@ -57,6 +57,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
     {
 		if (point.getSource()==valideButton)
 		{
+
 			if (d.verifSpecies(nomField.getText()))
 			{
 				//System.out.println(catBox.getSelectedItem().toString());
@@ -75,6 +76,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				       options, options[1]);
 			}
+
 		}
 		if (point.getSource()==annuleButton)
 		{

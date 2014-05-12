@@ -69,7 +69,7 @@ class Database
 	//				results= myStatement.executeQuery(query);
 	//				while (results.next()) 
 	//				{	
-	//					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
+	//					System.out.println(results.getString("CORPORATIONNAME")));
 	//				}
 	//				results.close();
 	//			}
@@ -279,15 +279,15 @@ class Database
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-/*<<<<<<< HEAD
-	public void saveOrder(Orders order) {
-=======*/
+
 	public void saveOrder(Orders order) 
 	{
 		String QuerySample="";
 		
 		try
 		{
+			saveInvoice(order.getInvoice());
+			saveCustomer(order.getCustomer());
 			for (Samples s : order.getSamples())
 			{
 				saveSample(s);
@@ -299,8 +299,18 @@ class Database
 			System.out.println("Erreur requête saveOrder");
 		}
 	}
+	
+	@SuppressWarnings("deprecation")
+	public void saveInvoice(Invoice in){
+		try {
+			myStatement.execute("insert into Invoice (idInvoice,dateInvoice,priceWithTVA,priceWithoutTVA) values("+in.getID()+",trunc(sysdate),"+in.getPrice()+","+in.getPriceNoTVA()+")");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 		
-	//DONE
+	//DONE and WORKS
 	//Créer un Sample avec ID == 0 pour les requètes non ID
 	/**
 	 * This function know if a customer already exist
@@ -308,9 +318,9 @@ class Database
 	public boolean IfCustomerExist(Customers custom) 
 	{
 		
-		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient='"+custom.getID()+"'";
-		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num='"+custom.getAdressClient().getNumber()+"' AND CP='"+custom.getAdressClient().getZipCode()+"' AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient()+"'";
-		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num='"+custom.getAdressClient().getNumber()+"' AND CP='"+custom.getAdressClient().getZipCode()+"' AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient()+"'";
+		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
+		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
+		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
 		boolean bool = false;
 		
@@ -328,7 +338,8 @@ class Database
 			{
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
-			if (myResult == null)
+			myResult.next();
+			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
 			}
@@ -346,20 +357,23 @@ class Database
 		return bool;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function know if an animal already exist
 	 */
-	public boolean IfAnimalExist(Animals aminal) 
+	public boolean IfAnimalExist(Animals animal, Customers custom) 
 	{
-		String QuerySample="";
+		String QuerySample="SELECT COUNT(Animal.idAnimal) FROM Animal, Sample, Lot, Client WHERE Animal.idAnimal=Sample.idAnimal AND Sample.idLot=Lot.idLot AND Lot.idClient=Client.idClient AND Client.idClient='"+custom.getID()+"' AND Animal.nameAnimal='"+animal.getName()+"'";
 		ResultSet myResult;
 		boolean bool = false;
 		
 		try
 		{
 			myResult=myStatement.executeQuery(QuerySample);
-			if (myResult == null)
+			
+			myResult.next();
+			System.out.println(QuerySample);
+			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
 			}
@@ -376,14 +390,16 @@ class Database
 		return bool;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
-	 * This function permits to save in the database the order in parameter.
+	 * This function permits to get all categories of the database
+	 * @return : ArrayList of string of Categories names
+	 * @author jeremy & mathilde
 	 */
 	public ArrayList<String> getAllCategory() 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameCategory FROM Category";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -391,24 +407,27 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getAllCategory");
 		}
 		return maListe;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
-	 * This function permits to get species by categories
+	 * This function permits to get all species by categories
+	 * @return : ArrayList of string of Species 
+	 * @author jeremy & mathilde
 	 */
-	public ArrayList<String> getSpeciesByCategory() 
+	public ArrayList<String> getSpeciesByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameSpecies, Species.idSpecies FROM Category, Species WHERE Category.idCategory=Species.idCategory AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -416,7 +435,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
@@ -426,14 +445,16 @@ class Database
 		return maListe;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get analyse by categories
+	 * @return : ArrayList of string of analysis
+	 * @author jeremy & mathilde
 	 */
-	public ArrayList<String> getAnalyseByCategory() 
+	public ArrayList<String> getAnalyseByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="Insert into ";
+		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -441,21 +462,16 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("IDSAMPLE"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getAnalyseByCategory");
 		}
 		return maListe;
 	}
-/*>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
-
-		// Bouml preserved body begin 00043082
-		this.order =order;
-		// Bouml preserved body end 00043082
-	}*/
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
@@ -839,19 +855,22 @@ class Database
 	/**
 	 * This function permits to verify if the name of the species is on the database, it returns true if it isn't in.
 	 * @param : name of the species
+	 * @return : false si l'espece existe déjà
 	 * @author mathilde
 	 */
 	public boolean verifSpecies(String species) {
-		String QuerySample="Select COUNT From Species Where nameSpecies = species";
+		String QuerySample="Select COUNT(Species.idSpecies) From Species Where Species.nameSpecies = '"+species+"'";
 		try
 		{
 			ResultSet monRes = myStatement.executeQuery(QuerySample);
-			if (monRes.getString(1) == "0") {
+			monRes.next();
+			if (Integer.parseInt(monRes.getString(1)) == 0) {
 				return(true);
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête vérification species dans la base");
 		}
 		return(false);
@@ -860,18 +879,21 @@ class Database
 	/**
 	 * This function permits to get the id of a Sting name Category
 	 * @param : name of the species
+	 * @return : -1 if the id dosn't exist
 	 * @author mathilde
 	 */
 	public int getIdCategory(String category) 
 	{
-		String QuerySample="Select idCateg From Category Where nameCategory = category";
+		String QuerySample="Select idCategory From Category Where nameCategory = '"+category+"'";
 		try
 		{
 			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
 			return(Integer.parseInt(monRes.getString(1)));
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête recupere idCategory");
 		}
 		return(-1);
@@ -884,13 +906,14 @@ class Database
 	 */
 	public void saveSpecies(String species, int idCategory) 
 	{
-		String QuerySample="Insert into Species values(1,idCategory,species)";
+		String QuerySample="Insert into Species values(1,'"+species+"',"+idCategory+")";
 		try
 		{
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête insert species");
 		}
 	}

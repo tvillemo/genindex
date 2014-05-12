@@ -141,7 +141,8 @@ class Customers {
    * return last name of customer
    */
   public String getLastName() {
-    // Bouml preserved body begin 00040B82	
+    // Bouml preserved body begin 00040B82
+	  //System.out.println(lastName);
 	  return lastName;
 
     // Bouml preserved body end 00040B82
@@ -151,7 +152,8 @@ class Customers {
    * accessor to attribute name
    */
   public String getFirstName() {
-    // Bouml preserved body begin 00040B02	  
+    // Bouml preserved body begin 00040B02
+	  //System.out.println(firstName);
 	  return firstName;
     // Bouml preserved body end 00040B02
   }
@@ -178,7 +180,8 @@ class Customers {
    * accessor to attribute ID
    */
   public int getID() {
-    // Bouml preserved body begin 00040D02	  
+    // Bouml preserved body begin 00040D02
+	 // System.out.println(ID);
 	  return ID;
     // Bouml preserved body end 00040D02
   }
@@ -187,7 +190,8 @@ class Customers {
    * accessor to attribute Email
    */
   public String getEmail() {
-    // Bouml preserved body begin 00040D82	  
+    // Bouml preserved body begin 00040D82
+	  //System.out.println(emailFacturation);
 	  return emailFacturation;
     // Bouml preserved body end 00040D82
   }

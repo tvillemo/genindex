@@ -149,7 +149,7 @@ public class InterfaceUS2 extends JFrame
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
 	    panelButton = new JPanel();
-	    panelButton.add(panButton);
+	    panelButton.add(panButton); 
 	    
 	    this.add(panelButton, BorderLayout.SOUTH);
 	    

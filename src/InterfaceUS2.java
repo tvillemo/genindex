@@ -16,6 +16,8 @@ import javax.swing.*;
 
 public class InterfaceUS2 extends JPanel
 {
+	JLabel label1;
+	
 	public InterfaceUS2()
 	{
 		JRadioButton proButton   = new JRadioButton("Professionnel"  , false);

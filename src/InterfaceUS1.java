@@ -17,7 +17,7 @@ public class InterfaceUS1 extends JPanel implements ActionListener{
     
      private JButton valider;
      private JRadioButton proButton;
-    private JRadioButton parButton;
+     private JRadioButton parButton;
     
     public InterfaceUS1 (){
         /* Panel du haut avec les radioButton*/

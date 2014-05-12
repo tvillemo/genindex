@@ -9,11 +9,13 @@ public class Main {
 		
 		
 		
-		d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
+		//d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
 		
 		//Samples s = d.searchSample(""+2);
 		
 		//s.printSample(s);
+		
+		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
 		
 //		
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");

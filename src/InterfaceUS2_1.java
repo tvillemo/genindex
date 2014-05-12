@@ -14,7 +14,7 @@ import javax.swing.*;
  * @author Anne-So
  */
 
-public class InterfaceUS2 extends JFrame
+public class InterfaceUS2_1 extends JFrame
 {
 	private JRadioButton proButton;  
 	private JPanel radioPanel;
@@ -55,7 +55,7 @@ public class InterfaceUS2 extends JFrame
 	private JPanel panButton;
 	private JPanel panelButton;
 	
-	public InterfaceUS2()
+	public InterfaceUS2_1()
 	{
 		proButton   = new JRadioButton("Professionnel"  , false);
 		radioPanel = new JPanel();
@@ -152,8 +152,7 @@ public class InterfaceUS2 extends JFrame
 	    panelButton.add(panButton); 
 	    
 	    this.add(panelButton, BorderLayout.SOUTH);
-	    
-	    
+ 
 	    
 	 // visibilité
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -164,7 +163,7 @@ public class InterfaceUS2 extends JFrame
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2 us = new InterfaceUS2();
+       InterfaceUS2_1 us = new InterfaceUS2_1();
     }
 
 }

@@ -32,7 +32,7 @@ class Customers {
   
   private String nomSociete; // nom de la société dans le cas d'un client pro
   
-  private String departementFacturation; // departement de facturation 
+  private String departementFacturation; // departement de facturation, facultatif
   
   boolean pro; // vrai si le client est un professionnel
 

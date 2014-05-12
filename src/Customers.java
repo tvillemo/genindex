@@ -34,7 +34,7 @@ class Customers {
   
   private String departementFacturation; // departement de facturation, facultatif
   
-  boolean pro; // vrai si le client est un professionnel
+  private boolean pro; // vrai si le client est un professionnel
 
   public Customers(String last, int num, String rue, String phone, int ID) {
     // Bouml preserved body begin 00040A82
@@ -142,7 +142,7 @@ class Customers {
    */
   public String getLastName() {
     // Bouml preserved body begin 00040B82
-	  System.out.println(lastName);
+	  //System.out.println(lastName);
 	  return lastName;
 
     // Bouml preserved body end 00040B82
@@ -153,7 +153,7 @@ class Customers {
    */
   public String getFirstName() {
     // Bouml preserved body begin 00040B02
-	  System.out.println(firstName);
+	  //System.out.println(firstName);
 	  return firstName;
     // Bouml preserved body end 00040B02
   }
@@ -181,7 +181,7 @@ class Customers {
    */
   public int getID() {
     // Bouml preserved body begin 00040D02
-	  System.out.println(ID);
+	 // System.out.println(ID);
 	  return ID;
     // Bouml preserved body end 00040D02
   }
@@ -191,7 +191,7 @@ class Customers {
    */
   public String getEmail() {
     // Bouml preserved body begin 00040D82
-	  System.out.println(emailFacturation);
+	  //System.out.println(emailFacturation);
 	  return emailFacturation;
     // Bouml preserved body end 00040D82
   }

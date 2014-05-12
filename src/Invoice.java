@@ -8,19 +8,18 @@ class Invoice {
   private int id;
 
   private double price;
-  
-  private boolean paid;
-
+  private double priceNoTVA;
+  private final double TVA=0.196;
   /**
    * It is the number of analysis of the order.
    */
-  private int numberAnalysis;
 
-  public  Invoice(double price, int numberA, int id) {
+  public  Invoice(double priceNoTVA) {
     // Bouml preserved body begin 00021A45
-	  this.id=id;
+	  this.id=0;
+	  this.priceNoTVA=priceNoTVA;
+	  double price=priceNoTVA+priceNoTVA*TVA;
 	  this.price=price;
-	  this.numberAnalysis=numberA;
     // Bouml preserved body end 00021A45
   }
 
@@ -32,7 +31,6 @@ class Invoice {
 	  System.out.print("Invoice for the order n ?");
 	  System.out.println(id);
 	  System.out.print("Number of analysis : ");
-	  System.out.println(numberAnalysis);
 	  
 	  
 	  System.out.println("Details of analysis : ");
@@ -58,5 +56,13 @@ class Invoice {
 	  return this.price;
     // Bouml preserved body end 00043482
   }
+  
+  public int getID(){
+	  return this.id;
+  }
+
+public double getPriceNoTVA() {
+	return priceNoTVA;
+}
 
 }

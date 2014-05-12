@@ -13,11 +13,12 @@ import javax.swing.*;
  * @author Robin
  */
 
-public class InterfaceUS1 extends JPanel implements ActionListener{
+public class InterfaceUS1 extends JPanel {
     
+<<<<<<< HEAD
      private JButton valider;
      private JRadioButton proButton;
-     private JRadioButton parButton;
+    private JRadioButton parButton;
     
     public InterfaceUS1 (){
         /* Panel du haut avec les radioButton*/
@@ -112,12 +113,11 @@ public class InterfaceUS1 extends JPanel implements ActionListener{
     adresse.add(zone4);
     
     adresse.setBorder(BorderFactory.createTitledBorder(
-          BorderFactory.createEtchedBorder(), "Adresse du client :"));
+           BorderFactory.createEtchedBorder(), "Adresse du client :"));
     
      /*Buton valider*/
-     JButton valider = new JButton ("Valider");
-    valider.addActionListener(this);
-    //valider.setSize( new Dimension( 50, 24 ) );
+    JButton valider = new JButton ("Valider");
+    valider.setSize(1,2);
     
     /*Info client*/
     JPanel infoClient = new JPanel();
@@ -146,29 +146,7 @@ public class InterfaceUS1 extends JPanel implements ActionListener{
     frame.setVisible(true);
     }
     
-     @Override
-    public void actionPerformed(ActionEvent e) {
-        if ((JButton) e.getSource() == valider )
-        {
-            Customers C = new Customers();
-            if ((JRadioButton) e.getSource() == proButton )
-        {
-            
-        }
-        
-        if ((JRadioButton) e.getSource() == parButton )
-        {
-            
-        }
-        }
-        
-        
-    }
-    
-    
     public static void main(String[] args) {    
-        Database D =new Database();
                 InterfaceUS1 us = new InterfaceUS1();
-        D.close();
     }
 }

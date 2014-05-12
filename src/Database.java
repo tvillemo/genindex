@@ -361,7 +361,7 @@ class Database
 		return bool;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function know if an animal already exist
 	 */
@@ -376,6 +376,7 @@ class Database
 			myResult=myStatement.executeQuery(QuerySample);
 			
 			myResult.next();
+			System.out.println(QuerySample);
 			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
@@ -393,7 +394,7 @@ class Database
 		return bool;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get all categories of the database
 	 * @return : ArrayList of string of Categories names
@@ -407,9 +408,7 @@ class Database
 		
 		try
 		{
-			System.out.println("1");
 			resultsSamples = myStatement.executeQuery(QuerySample);
-			System.out.println("2");
 			while(resultsSamples.next())
 			{
 				maListe.add(resultsSamples.getString(1));
@@ -423,7 +422,7 @@ class Database
 		return maListe;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get all species by categories
 	 * @return : ArrayList of string of Species 
@@ -451,7 +450,7 @@ class Database
 		return maListe;
 	}
 	
-	//DONE
+	//DONE and WORKS
 	/**
 	 * This function permits to get analyse by categories
 	 * @return : ArrayList of string of analysis
@@ -460,7 +459,7 @@ class Database
 	public ArrayList<String> getAnalyseByCategory(String category) 
 	{
 		ResultSet resultsSamples;
-		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"';";
+		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
 		
 		try
@@ -468,7 +467,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString("1"));
+				maListe.add(resultsSamples.getString(1));
 			}
 		}
 		catch (SQLException ex) 
@@ -478,14 +477,6 @@ class Database
 		}
 		return maListe;
 	}
-	
-	
-/*>>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
-
-		// Bouml preserved body begin 00043082
-		this.order =order;
-		// Bouml preserved body end 00043082
-	}*/
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 

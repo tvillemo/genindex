@@ -181,7 +181,7 @@ class Customers {
    */
   public int getID() {
     // Bouml preserved body begin 00040D02
-	  //System.out.println(ID);
+	 // System.out.println(ID);
 	  return ID;
     // Bouml preserved body end 00040D02
   }
@@ -191,7 +191,7 @@ class Customers {
    */
   public String getEmail() {
     // Bouml preserved body begin 00040D82
-	  System.out.println(emailFacturation);
+	  //System.out.println(emailFacturation);
 	  return emailFacturation;
     // Bouml preserved body end 00040D82
   }

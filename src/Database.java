@@ -57,7 +57,7 @@ class Database
 		ConnectBDD();
 
 	}
-	
+
 	//	/**
 	//	 * Lance une requète et l'affiche pour les tests
 	//	 */
@@ -79,7 +79,7 @@ class Database
 	//			System.out.println("Erreur requète test");
 	//		}
 	//	}
-	
+
 	/**
 	 * Lance une requète et l'affiche pour les tests
 	 */
@@ -259,7 +259,7 @@ class Database
 				Date di = new Date(resultsEch.getDate("dateSampling").getDay(),resultsEch.getDate("dateSampling").getMonth(),resultsEch.getDate("dateSampling").getYear());
 
 
-				mySample= new Samples(resultsEch.getString("idSample"), resultsEch.getString("nameType"), di, myAnimal);
+				mySample= new Samples(resultsEch.getInt("idSample"), resultsEch.getString("nameType"), di, myAnimal);
 
 				myOrder.addSample(mySample);
 			}
@@ -280,19 +280,20 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 
+	//DONE
 	public void saveOrder(Orders order) 
 	{
-		String QuerySample="";
-		
+		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+order.getCustomer().getID()+","+order.getTest().getId()+", trunc(sysdate)";
+
 		try
 		{
-			saveInvoice(order.getInvoice());
-			saveCustomer(order.getCustomer());
+			//saveInvoice(order.getInvoice());
+			//saveCustomer(order.getCustomer());
 			for (Samples s : order.getSamples())
 			{
-				saveSample(s);
+				saveSample(s,order.getId());
 			}
-			
+
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
@@ -300,7 +301,7 @@ class Database
 			System.out.println("Erreur requête saveOrder");
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
 	public void saveInvoice(Invoice in){
 		try {
@@ -310,7 +311,7 @@ class Database
 			e.printStackTrace();
 		}
 	}
-		
+
 	//DONE and WORKS
 	//Créer un Sample avec ID == 0 pour les requètes non ID
 	/**
@@ -318,28 +319,25 @@ class Database
 	 */
 	public boolean IfCustomerExist(Customers custom) 
 	{
-		
+
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
 		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
 		boolean bool = false;
-		
+
 		try
 		{
 			if (custom.getID() != 0)
 			{
-				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
-				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
-				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			myResult.next();
@@ -356,8 +354,8 @@ class Database
 		{
 			System.out.println("Erreur requête IfCustomerExist");
 		}
-		
-		
+
+
 		return bool;
 	}
 	
@@ -370,11 +368,11 @@ class Database
 		String QuerySample="SELECT COUNT(Animal.idAnimal) FROM Animal, Sample, Lot, Client WHERE Animal.idAnimal=Sample.idAnimal AND Sample.idLot=Lot.idLot AND Lot.idClient=Client.idClient AND Client.idClient='"+custom.getID()+"' AND Animal.nameAnimal='"+animal.getName()+"'";
 		ResultSet myResult;
 		boolean bool = false;
-		
+
 		try
 		{
 			myResult=myStatement.executeQuery(QuerySample);
-			
+
 			myResult.next();
 			System.out.println(QuerySample);
 			if (myResult.getInt(1) == 0)
@@ -390,10 +388,10 @@ class Database
 		{
 			System.out.println("Erreur requête IfAnimalExist");
 		}
-		
+
 		return bool;
 	}
-	
+
 	//DONE and WORKS
 	/**
 	 * This function permits to get all categories of the database
@@ -405,7 +403,7 @@ class Database
 		ResultSet resultsSamples;
 		String QuerySample="SELECT nameCategory FROM Category";
 		ArrayList<String> maListe = new ArrayList<String>();
-		
+
 		try
 		{
 			resultsSamples = myStatement.executeQuery(QuerySample);
@@ -421,6 +419,7 @@ class Database
 		}
 		return maListe;
 	}
+
 	
 	//DONE and WORKS
 	/**
@@ -433,7 +432,7 @@ class Database
 		ResultSet resultsSamples;
 		String QuerySample="SELECT nameSpecies, Species.idSpecies FROM Category, Species WHERE Category.idCategory=Species.idCategory AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
-		
+
 		try
 		{
 			resultsSamples = myStatement.executeQuery(QuerySample);
@@ -444,12 +443,11 @@ class Database
 		}
 		catch (SQLException ex) 
 		{
-			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getSpeciesByCategory");
 		}
 		return maListe;
 	}
-	
+
 	//DONE and WORKS
 	/**
 	 * This function permits to get analyse by categories
@@ -461,7 +459,7 @@ class Database
 		ResultSet resultsSamples;
 		String QuerySample="SELECT nameTest, TestType.idTest FROM Category, Species, Can, TestType WHERE  Category.idCategory=Species.idCategory AND Species.idSpecies=Can.idSpecies AND Can.idTest=TestType.idTest AND nameCategory='"+category+"'";
 		ArrayList<String> maListe = new ArrayList<String>();
-		
+
 		try
 		{
 			resultsSamples = myStatement.executeQuery(QuerySample);
@@ -494,6 +492,7 @@ class Database
 			System.out.println("2");
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			System.out.println("3");
+
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
@@ -532,23 +531,38 @@ class Database
 		return(listS);
 	}
 
-	public void saveSample(Samples sample) 
+	public void saveSample(Samples sample,int IDlot) 
 	{
-		//		
-		//		ResultSet resultsSamples = null;
-		//		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
-		//		String QuerySample="Insert into SAMPLE values("+sample.getId();
-		//		
-		//		try
-		//		{
-		//			resultsSamples = myStatement.executeQuery(QuerySample);
-		//		}
-		//		catch (SQLException ex) 
-		//		{
-		//			System.out.println("Erreur requête Sample");
-		//		}
+		int IDSample=0;
+		ResultSet resultsSamples = null;
+		try {
+			resultsSamples=myStatement.executeQuery("select count(*) from SAMPLETYPE where nameType='"+sample.getType()+"'");
+			resultsSamples.next();
+			if (resultsSamples.getInt(1)==0){
+				String QuerySampleType="Insert into SAMPLETYPE values(1,"+sample.getType()+")";
+				myStatement.execute(QuerySampleType);
+			}
+			resultsSamples=myStatement.executeQuery("select idType from SAMPLETYPE where nameType='"+sample.getType()+"'");
+			resultsSamples.next();
+			IDSample=resultsSamples.getInt("idType");
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		String QuerySample="Insert into SAMPLE values("+sample.getId()+","+sample.getAnimal().getId()+","+IDlot+","+IDSample+","+sample.getFirst()+",'En Attente',trunc(sysdate))";
 
-		this.sample = sample;
+		try
+		{
+			System.out.println(QuerySample);
+			myStatement.execute(QuerySample);
+			System.out.println(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+
 	}
 
 	public Animals searchAnimal(String specie) 
@@ -617,59 +631,62 @@ class Database
 		ResultSet resultsNbPro = null;
 		ResultSet resultsIdAdressFact = null;
 		ResultSet resultsNbAdressClient = null;
-		
+
 		// Si c'est un professionnel
 		if (cust.isPro()){
 			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
 			String QueryNbAdressSociete = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
-				
+
 			try {
 				resultsNbAdressSociete = myStatement.executeQuery(QueryNbAdressSociete);
-				
+
 				// Si elle n'existe pas, on l'ajoute
+
 				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
 					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
-					
+
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
 			}				
-			
+
 			// vérifier si le client existe déjà dans la BDD
 			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
-			
+
 			try {
 				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);
-					
+
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + "," + cust.getNomSociete() + "," + cust.getLastName() + "," + cust.getPhone() + "," + cust.getFax() + "," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
 					else {
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + "," + cust.getNomSociete() + "," + cust.getLastName() + "," + cust.getPhone() + ", null," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
 					}
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête Client");
 			}	
-			
+
 			// Si on a une adresse de facturation
 			if (cust.getAdressFacturation() != null) {				
 				// on vérifie si elle existe dans la BDD avec l'id
 				String QueryNbAdressFacturation = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressFacturation().getIdAdress();
-			
+
 				try {									
 					resultsNbAdressFacturation = myStatement.executeQuery(QueryNbAdressFacturation);
-					
+
 					// Si elle n'existe pas, on l'ajoute
+
 					if (Integer.parseInt(resultsNbAdressFacturation.getString("nbAdress")) == 0){
 						String QueryAdressPro = "INSERT INTO Adress VALUES (1,"+cust.getAdressFacturation().getNumber() + cust.getAdressFacturation().getZipCode() + cust.getAdressFacturation().getCity() + cust.getAdressFacturation().getStreet()+")";
-						
+
+
 						resultsAdressFact = myStatement.executeQuery(QueryAdressPro);
 					}	
 				}
@@ -677,32 +694,32 @@ class Database
 					System.out.println("Erreur requête adresseFacturation");
 				}
 			}
-			
+
 			// On vérifie si le client pro existe dans la table ProfessionnalClient
-			String QueryNbPro = "SELECT COUNT(corporationName) AS nbPro FROM ProfessionalClient WHERE corporationName="+cust.getNomSociete();
+			String QueryNbPro = "SELECT COUNT(corporationName) AS nbPro FROM ProfessionalClient WHERE corporationName='"+cust.getNomSociete() +"'";
 			String QueryIdAdressFact = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressFacturation().getIdAdress();
-			
+
 			try {
 				resultsNbPro = myStatement.executeQuery(QueryNbPro);	
 				resultsIdAdressFact = myStatement.executeQuery(QueryIdAdressFact);
-					
+
 				// Si il n'existe pas, on l'ajoute (il faut vérifier si on a un mail de facturation et un departement de paiement pour le customer donné
-				if (Integer.parseInt(resultsNbPro.getString("nbPro")) == 0){
-					int idA = Integer.parseInt(resultsIdAdressFact.getString("idAdress"));
+				if (resultsNbPro.getInt("nbPro") == 0){
+					int idA = resultsIdAdressFact.getInt("idAdress");
 					if (cust.getEmail() != null) {	
 						if (cust.getDepartementFacturation() != null) {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + "," + cust.getEmail() + "," + cust.getDepartementFacturation() +")";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ",'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
 						}
 						else {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + "," + cust.getEmail() + ", null)";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ",'" + cust.getEmail() + "', null)";
 						}
 					}
 					else {
 						if (cust.getDepartementFacturation() != null) {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + ", null," + cust.getDepartementFacturation() +")";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ", null,'" + cust.getDepartementFacturation() +"')";
 						}
 						else {
-							String QueryClient = "INSERT INTO ProfessionalClient VALUES (" + cust.getNomSociete() + "," + idA + ", null, null)";
+							String QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idA + ", null, null)";
 						}
 					}
 				}
@@ -711,48 +728,59 @@ class Database
 				System.out.println("Erreur requête ClientPro");
 			}						
 		}
-		
+
 		// Sinon c'est un particulier
 		else {
 			// vérifier si l'adresse du client n'existe pas déjà dans la base de données avec l'id
+
 			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();
-				
+
 			try {
+
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
+
 				
-				// Si elle n'existe pas, on l'ajoute
+				resultsNbAdressClient.next();
+
 				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
 					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
-					
+
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
+				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+					
+					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
+
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête AdressSociete");
+				System.out.println("Erreur requête AdressClient");
 			}	
-			
+
 			// vérifier si le client existe déjà dans la BDD
 			String QueryIdAdress = "SELECT idAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();			
-			
+
 			try {
 				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);
-					
+				resultsIdAdress = myStatement.executeQuery(QueryIdAdress);				
+				
 				//Si il n'existe pas, on l'ajoute
 				if (!IfCustomerExist(cust)){
-					int idA = Integer.parseInt(resultsIdAdress.getString("idAdress"));
+					System.out.println("Client existe pas !!");
+					int idA = resultsIdAdress.getInt("idAdress");
 					if (cust.getFax() != null) {					
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + ", null," + cust.getLastName() + "," + cust.getPhone() + "," + cust.getFax() + "," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
 					else {
-						String QueryClient = "INSERT INTO Client VALUES (1,null," + idA + ", null," + cust.getLastName() + "," + cust.getPhone() + ", null," + cust.getFirstName() + ")";
+						String QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FISTNAMECLIENT) VALUES (null," + idA + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
 					}
 				}
 			}
 			catch (SQLException ex) {
-				System.out.println("Erreur requête Client");
+				System.out.println("Erreur requête Client Particulier");
 			}	
 		}				
-		
+
 		// Bouml preserved body end 00023645
 	}
 
@@ -857,7 +885,7 @@ class Database
 	}
 
 	// Bouml preserved body end 00023945
-	
+
 	/**
 	 * This function permits to verify if the name of the species is on the database, it returns true if it isn't in.
 	 * @param : name of the species
@@ -881,7 +909,7 @@ class Database
 		}
 		return(false);
 	}
-	
+
 	/**
 	 * This function permits to get the id of a Sting name Category
 	 * @param : name of the species
@@ -904,7 +932,7 @@ class Database
 		}
 		return(-1);
 	}
-	
+
 	/**
 	 * This function permits to save a species in the database
 	 * @param : name of the species, id of the category
@@ -923,7 +951,5 @@ class Database
 			System.out.println("Erreur requête insert species");
 		}
 	}
-
-	
 }
 

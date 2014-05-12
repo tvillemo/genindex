@@ -13,8 +13,7 @@ import javax.swing.*;
  * @author Robin
  */
 
-public class InterfaceUS1 extends JPanel {
-    
+public class InterfaceUS1 extends JPanel {  
 
      private JButton valider;
      private JRadioButton proButton;

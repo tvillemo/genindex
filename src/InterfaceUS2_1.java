@@ -58,6 +58,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	public InterfaceUS2_1()
 	{
 		proButton   = new JRadioButton("Professionnel"  , false);
+		proButton.addActionListener(this);
 		radioPanel = new JPanel();
 		radioPanel.setLayout(new GridLayout(1, 1));
 	    radioPanel.add(proButton);	    
@@ -84,7 +85,8 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	    panel3.add(fieldNumC);
 	    
 	    labCorporation = new JLabel("Corporation :");	    
-	    fieldCorp = new JTextField();	 
+	    fieldCorp = new JTextField();	
+	    fieldCorp.setEditable(false);
 	    JPanel panel4 = new JPanel();
 	    panel4.setLayout(new GridLayout(1,2));
 	    panel4.add(labCorporation);
@@ -144,7 +146,9 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	            BorderFactory.createEtchedBorder(), "Saisie de l'adresse du client :"));
 	    
 	    butAnnuler = new JButton("Annuler");
+	    butAnnuler.addActionListener(this);
 	    butValider = new JButton("Valider");
+	    butValider.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -163,7 +167,120 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent point)
     {
-
+		if (point.getSource()==proButton)
+		{
+			if (proButton.isSelected())
+			{
+				fieldCorp.setEditable(true);
+			}
+			else
+			{
+				fieldCorp.setEditable(false);
+			}
+		}
+		
+		if (point.getSource()==butValider)
+		{
+			boolean bool = true;
+			if(fieldNumA.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le numéro de l'adresse", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);
+				 bool = false;
+			}
+			if(fieldRue.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le nom de la rue", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);	
+				bool = false;
+			}
+			if(fieldCP.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le code postal", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);	
+				bool = false;
+			}
+			if(fieldVille.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le nom de la ville", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);	
+				bool = false;
+			}
+			if(fieldNumC.getText().length()==0)
+			{
+				if( fieldNomC.getText().length()==0 | fieldPrenomC.getText().length()==0 )
+				{
+					if(proButton.isSelected())
+					{
+						if(fieldNumC.getText().length()==0)
+						{
+							Object[] options = { "OK" };
+							int n = JOptionPane.showOptionDialog(new JFrame(),
+									"Veuillez remplir le numéro du client", "",
+							       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+							       options, options);
+							bool = false;
+						}
+						if(fieldCorp.getText().length()==0)
+						{
+							Object[] options = { "OK" };
+							int n = JOptionPane.showOptionDialog(new JFrame(),
+									"Veuillez remplir le nom de la société", "",
+							       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+							       options, options);
+							bool = false;
+						}
+					}
+					else
+					{
+						if(fieldNumC.getText().length()==0)
+						{
+							Object[] options = { "OK" };
+							int n = JOptionPane.showOptionDialog(new JFrame(),
+									"Veuillez remplir le numéro du client", "",
+									JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+									options, options);
+							bool = false;
+						}
+					}
+					
+				}
+			}
+			else
+			{
+				if(proButton.isSelected())
+				{
+					if(fieldCorp.getText().length()==0)
+					{
+						Object[] options = { "OK" };
+						int n = JOptionPane.showOptionDialog(new JFrame(),
+								"Veuillez remplir le nom de la société", "",
+						       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+						       options, options);
+						bool = false;
+					}
+				}
+			}
+			
+			if(bool == true)
+			{
+				InterfaceUS2_2 test = new InterfaceUS2_2();
+	    		this.dispose();
+			}
+		}
+		
     }
 	
 	public static void main(String[] args) 

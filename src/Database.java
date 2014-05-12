@@ -306,8 +306,8 @@ class Database
 	{
 		
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
-		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient=lenom AND firstNameClient=leprenom AND num=lenum AND CP=lecp AND town=laville AND street=larue;";
-		String QueryCustomPro="idClient FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName=lenomEntreprise AND num=lenum AND CP=lecp AND town=laville AND street=larue;";
+		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient="+custom.getLastName()+" AND firstNameClient="+custom.getFirstName()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
+		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName="+custom.getNomSociete()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
 		ResultSet myResult;
 		boolean bool = false;
 		
@@ -317,7 +317,7 @@ class Database
 			{
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
-			else if (custom.pro)
+			else if (custom.isPro())
 			{
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
@@ -325,8 +325,7 @@ class Database
 			{
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
-			
-			if (myResult.wasNull())
+			if (myResult == null)
 			{
 				bool = false;
 			}
@@ -357,7 +356,7 @@ class Database
 		try
 		{
 			myResult=myStatement.executeQuery(QuerySample);
-			if (myResult.wasNull())
+			if (myResult == null)
 			{
 				bool = false;
 			}

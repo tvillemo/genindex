@@ -14,8 +14,12 @@ public class Main {
 		//Samples s = d.searchSample(""+2);
 		
 		//s.printSample(s);
+		Customers c = new Customers(null, 0, null, null, 0);
+		c.setName("Auguste", "Dupond");
+		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
+		c.setPro(false);
 		
-		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
+		System.out.println(d.IfCustomerExist(c));
 		
 //		
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");

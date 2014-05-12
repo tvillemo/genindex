@@ -42,9 +42,9 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
-	public InterfaceUS2_3()
+	public InterfaceUS2_3(Customers custom)
 	{
-		labNomClient = new JLabel("Nom du client :");
+		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);
 		

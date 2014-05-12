@@ -276,9 +276,33 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 			
 			if(bool == true)
 			{
-				InterfaceUS2_2 test = new InterfaceUS2_2();
-	    		this.dispose();
+				Customers custom;
+				if(fieldNumC.getText().length()!=0)
+				{
+					//custom= new Customers();
+				}
+				else
+	    		{
+					//custom=" ";
+	    		}
+				Database d = new Database();
+				if(d.IfCustomerExist(custom)==true)
+				{
+					InterfaceUS2_2 test = new InterfaceUS2_2(custom);
+		    		this.dispose();
+				}
+				else
+				{
+					InterfaceUS1 test = new InterfaceUS1();
+		    		this.dispose();
+				}
+				
+	    		
 			}
+		}
+		if (point.getSource()==butAnnuler)
+		{
+			this.dispose();
 		}
 		
     }

@@ -16,14 +16,15 @@ public class Main {
 		//s.printSample(s);
 
 		Customers c = new Customers(null, 0, null, null, 0);
-		c.setName("Auguste", "Dupond");
-		c.setAdressClient(new Adress(56,"rue des Pivers",59000,"Dunkerque"));
+		c.setName("Alex", "Robert");
+		c.setAdressClient(new Adress(23,"rue des Roses",45000,"Orléans"));
 		c.setPro(false);
 		
-
-		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
+		d.saveCustomer(c);
 		
-		System.out.println(d.IfCustomerExist(c));
+		/*System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
+		
+		System.out.println(d.IfCustomerExist(c));*/		
 
 //		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
 //		

@@ -88,14 +88,12 @@ class Database
 		ResultSet results = null;
 		try
 		{
-			if (myStatement.execute(query)){
-				results= myStatement.executeQuery(query);
-				while (results.next()) 
-				{	
-					System.out.println(results.getString(results.findColumn("CORPORATIONNAME")));
-				}
-				results.close();
+			results= myStatement.executeQuery(query);
+			while (results.next()) 
+			{	
+				System.out.println(results.getString("NAMETYPE"));
 			}
+			results.close();
 		}
 		catch (SQLException ex) 
 		{
@@ -197,7 +195,7 @@ class Database
 			{
 				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
-				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer);
+				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
 
 				liste.add(myOrder);
 			}
@@ -242,7 +240,7 @@ class Database
 			Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
 			//Creation du lot
-			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer);
+			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer,new Types_analysis("PCR",95));
 			//Ajout des echantillons
 
 			//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)
@@ -276,15 +274,174 @@ class Database
 		// Bouml preserved body end 00042F82
 	}
 
+	
+	//DONE
 	/**
 	 * This function permits to save in the database the order in parameter.
 	 */
-	public void saveOrder(Orders order) {
-
-		// Bouml preserved body begin 00043082
-		this.order =order;
-		// Bouml preserved body end 00043082
+	public void saveOrder(Orders order) 
+	{
+		String QuerySample="";
+		
+		try
+		{
+			for (Samples s : order.getSamples())
+			{
+				saveSample(s);
+			}
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête saveOrder");
+		}
 	}
+		
+	//DONE
+	/**
+	 * This function know if a customer already exist
+	 */
+	public boolean IfCustomerExist(Customers custom) 
+	{
+		String QuerySample="";
+		String QuerySamplePro="";
+		ResultSet myResult;
+		boolean bool = false;
+		
+		try
+		{
+			if (custom.pro)
+			{
+				myResult=myStatement.executeQuery(QuerySamplePro);
+			}
+			else
+			{
+				myResult=myStatement.executeQuery(QuerySample);
+			}
+			
+			if (myResult.wasNull())
+			{
+				bool = false;
+			}
+			else
+			{
+				bool = true;
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête IfCustomerExist");
+		}
+		
+		
+		return bool;
+	}
+	
+	//DONE
+	/**
+	 * This function know if an animal already exist
+	 */
+	public boolean IfAnimalExist(Animals aminal) 
+	{
+		String QuerySample="";
+		ResultSet myResult;
+		boolean bool = false;
+		
+		try
+		{
+			myResult=myStatement.executeQuery(QuerySample);
+			if (myResult.wasNull())
+			{
+				bool = false;
+			}
+			else
+			{
+				bool = true;
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête IfAnimalExist");
+		}
+		
+		return bool;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to save in the database the order in parameter.
+	 */
+	public ArrayList<String> getAllCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getAllCategory");
+		}
+		return maListe;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to get species by categories
+	 */
+	public ArrayList<String> getSpeciesByCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getSpeciesByCategory");
+		}
+		return maListe;
+	}
+	
+	//DONE
+	/**
+	 * This function permits to get analyse by categories
+	 */
+	public ArrayList<String> getAnalyseByCategory() 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="Insert into ";
+		ArrayList<String> maListe = new ArrayList<String>();
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("IDSAMPLE"));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête getAnalyseByCategory");
+		}
+		return maListe;
+	}
+
 
 	//DONE (Peut être rajouter la liste des analyses)
 	public Samples searchSample(String id) 
@@ -292,17 +449,20 @@ class Database
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
+		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE="+id+";";
 
 		try
 		{
+			System.out.println("1");
 			resultsSample = myStatement.executeQuery(QuerySample);
+			System.out.println("2");
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
 			mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
 			{
 				mySample.setAnalyzed();
 			}
+			System.out.println("3");
 		}
 		catch (SQLException ex) 
 		{
@@ -382,7 +542,7 @@ class Database
 
 	public Customers searchCustomerName(String name) {
 		// Bouml preserved body begin 00023545
-		if(name.equals(customer.getLastName()))
+		/*if(name.equals(customer.getLastName()))
 		{
 			return customer;
 		}
@@ -390,13 +550,14 @@ class Database
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 00023545
 	}
 
 	public Customers searchCustomerID(int ID) {
 		// Bouml preserved body begin 000235C5
-		if(customer.getID()==ID)
+		/*if(customer.getID()==ID)
 		{
 			return customer;
 		}
@@ -404,20 +565,59 @@ class Database
 		{
 			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
 			return cust;
-		}
+		}*/
+		return customer;
 		// Bouml preserved body end 000235C5
 	}
 
 	public void saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
-		if(cust.getID()==customer.getID())
-		{
-			customer=cust;
+
+		if (cust.isPro()){
+			// vérifier si l'adresse de la société n'existe pas déjà dans la base de données avec l'id
+			
+			
+			
+				// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client existe déjà dans la BDD
+				
+				//Si il n'existe pas, on l'ajoute
+			
+			// Sinon, si on a une adresse de facturation
+			
+				// on vérifie si elle existe dans la BDD avec l'id
+			
+					// Si elle n'existe pas, on l'ajoute
+			
+			// Sinon, on vérifie si le client pro existe
+				
+				// Si il n'existe pas, on l'ajoute
 		}
-		else
-		{
-			System.out.println("new data record");
+		
+		else {
+			
 		}
+		
+		/*ResultSet resultsSamples = null;
+		String QuerySampleType="Insert into SAMPLETYPE values("+sample.getType()+")";
+		String QuerySample="Insert into SAMPLE values("+sample.getId();
+			
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
+		
+		String query="insert into Analysis values ("+analysis.getID()+","+analysis.getSecondReader().getId()+","+analysis.getFirstReader().getId()+","+analysis.getIDMother()+","+analysis.getIDFather()+","+analysis.getID()+","+analysis.getStatut()+","+analysis.getResult1()+","+analysis.getResult2()+")";
+
+		try {
+			myStatement.execute(query);
+		} */
+		
 		// Bouml preserved body end 00023645
 	}
 
@@ -512,13 +712,7 @@ class Database
 		int testID=0;
 		int typeID=0;
 		try {
-			result = myStatement.executeQuery("select idtype from sampletype where nametype="+typeAnalysis.getTestname());
-			result.next();
-			typeID=result.getInt("idtype");
-			result = myStatement.executeQuery("select idtest from testtype where nametest="+typeAnalysis.getType());
-			result.next();
-			testID=result.getInt("idtest");
-			String query="insert into cost values ("+typeID+","+testID+","+typeAnalysis.getPrice()+")";
+			String query="insert into cost values ("+typeID+",0)";
 			myStatement.execute(query);
 		}
 		catch (SQLException e) {
@@ -528,5 +722,64 @@ class Database
 	}
 
 	// Bouml preserved body end 00023945
+	
+	/**
+	 * This function permits to verify if the name of the species is on the database, it returns true if it isn't in.
+	 * @param : name of the species
+	 * @author mathilde
+	 */
+	public boolean verifSpecies(String species) {
+		String QuerySample="Select COUNT From Species Where nameSpecies = species";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			if (monRes.getString(1) == "0") {
+				return(true);
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête vérification species dans la base");
+		}
+		return(false);
+	}
+	
+	/**
+	 * This function permits to get the id of a Sting name Category
+	 * @param : name of the species
+	 * @author mathilde
+	 */
+	public int getIdCategory(String category) 
+	{
+		String QuerySample="Select idCateg From Category Where nameCategory = category";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête recupere idCategory");
+		}
+		return(-1);
+	}
+	
+	/**
+	 * This function permits to save a species in the database
+	 * @param : name of the species, id of the category
+	 * @author mathilde
+	 */
+	public void saveSpecies(String species, int idCategory) 
+	{
+		String QuerySample="Insert into Species values(1,idCategory,species)";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête insert species");
+		}
+	}
 }
 

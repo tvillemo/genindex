@@ -69,7 +69,7 @@ class Database
 	//				results= myStatement.executeQuery(query);
 	//				while (results.next()) 
 	//				{	
-	//					System.out.println(results.getObject(results.findColumn("CORPORATIONNAME")));
+	//					System.out.println(results.getString("CORPORATIONNAME")));
 	//				}
 	//				results.close();
 	//			}
@@ -322,8 +322,8 @@ class Database
 	{
 		
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
-		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient="+custom.getLastName()+" AND firstNameClient="+custom.getFirstName()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
-		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName="+custom.getNomSociete()+" AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town="+custom.getAdressClient().getCity()+" AND street="+custom.getAdressClient()+";";
+		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
+		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
 		boolean bool = false;
 		
@@ -331,17 +331,21 @@ class Database
 		{
 			if (custom.getID() != 0)
 			{
+				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
+				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
+				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
-			if (myResult == null)
+			myResult.next();
+			if (myResult.getInt(1) == 0)
 			{
 				bool = false;
 			}

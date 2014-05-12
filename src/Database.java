@@ -728,19 +728,22 @@ class Database
 	/**
 	 * This function permits to verify if the name of the species is on the database, it returns true if it isn't in.
 	 * @param : name of the species
+	 * @return : false si l'espece existe déjà
 	 * @author mathilde
 	 */
 	public boolean verifSpecies(String species) {
-		String QuerySample="Select COUNT From Species Where nameSpecies = species";
+		String QuerySample="Select COUNT(Species.idSpecies) From Species Where Species.nameSpecies = '"+species+"'";
 		try
 		{
 			ResultSet monRes = myStatement.executeQuery(QuerySample);
-			if (monRes.getString(1) == "0") {
+			monRes.next();
+			if (Integer.parseInt(monRes.getString(1)) == 0) {
 				return(true);
 			}
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête vérification species dans la base");
 		}
 		return(false);
@@ -749,18 +752,21 @@ class Database
 	/**
 	 * This function permits to get the id of a Sting name Category
 	 * @param : name of the species
+	 * @return : -1 if the id dosn't exist
 	 * @author mathilde
 	 */
 	public int getIdCategory(String category) 
 	{
-		String QuerySample="Select idCateg From Category Where nameCategory = category";
+		String QuerySample="Select idCategory From Category Where nameCategory = '"+category+"'";
 		try
 		{
 			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
 			return(Integer.parseInt(monRes.getString(1)));
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête recupere idCategory");
 		}
 		return(-1);
@@ -773,13 +779,15 @@ class Database
 	 */
 	public void saveSpecies(String species, int idCategory) 
 	{
-		String QuerySample="Insert into Species values(1,idCategory,species)";
+		String QuerySample="Insert into Species (nameSpecies,idCategory) values('"+species+"',"+idCategory+")";
+		System.out.println(QuerySample);
 		try
 		{
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
 		{
+			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête insert species");
 		}
 	}

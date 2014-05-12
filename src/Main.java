@@ -43,21 +43,9 @@ public class Main {
 //		
 		
 		d.close();
-	}
 
-}
 
-		System.out.println(d.IfCustomerExist(c));
 
-//		ArrayList<Types_analysis> t =  d.searchTypesAnalysis("plume", "Sexage");
-//		
-//		for (int i = 0; i < t.size(); i++)
-//		{
-//			System.out.println(i);
-//		}
-//		
-		
-		d.close();
 	}
 
 }

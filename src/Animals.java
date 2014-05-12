@@ -5,6 +5,8 @@ class Animals {
   /**
    * The animal belongs to a specie.
    */
+private String name;
+	
   private String specie;
 
   private String numberBirthday;
@@ -39,5 +41,13 @@ class Animals {
 	  this.numberBirthday = new_NumberBirthday;
     // Bouml preserved body end 00022E03
   }
+
+public String getName() {
+	return name;
+}
+
+public void setName(String name) {
+	this.name = name;
+}
 
 }

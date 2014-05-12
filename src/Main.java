@@ -6,7 +6,8 @@ public class Main {
 	public static void main(String[] args) 
 	{
 		Database d = new Database();
-		
+
+		System.out.println(d.IfCustomerExist(new Customers(null, 0, null, null, 1)));
 		
 		
 		//d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");

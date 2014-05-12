@@ -197,7 +197,7 @@ class Database
 			{
 				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
-				myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
+				//myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
 
 				liste.add(myOrder);
 			}
@@ -242,7 +242,7 @@ class Database
 			Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
 
 			//Creation du lot
-			myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer,new Types_analysis("PCR",95));
+			//myOrder = new Orders(Integer.parseInt(resultsNbEch.getString("nb")), d, myCustomer,new Types_analysis("PCR",95));
 			//Ajout des echantillons
 
 			//			Samples(String Identifier, String Type_sample, Date D_sampling, Animals anim)

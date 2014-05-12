@@ -14,7 +14,7 @@ import javax.swing.*;
  * @author Anne-So
  */
 
-public class InterfaceUS2_1 extends JFrame
+public class InterfaceUS2_1 extends JFrame implements ActionListener
 {
 	private JRadioButton proButton;  
 	private JPanel radioPanel;
@@ -160,6 +160,11 @@ public class InterfaceUS2_1 extends JFrame
         this.setSize(400,500);
         this.setVisible(true);
 	}
+	
+	public void actionPerformed(ActionEvent point)
+    {
+
+    }
 	
 	public static void main(String[] args) 
 	{    

@@ -11,7 +11,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 {
 
 	private JPanel ajoutPanel;
-	private JLabel titreLabel, nomLabel, catLabel;
+	private JLabel nomLabel, catLabel;
 	private JTextField nomField;
 	private JComboBox catBox;
 	private JButton valideButton, annuleButton;
@@ -20,20 +20,21 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 	{
 		
 		// création du panel et des labels
-		ajoutPanel = new JPanel(new GridLayout(2,2));
-		titreLabel = new JLabel("Ajout d'une espèce");
+		ajoutPanel = new JPanel(new GridLayout(3,2));
 		nomLabel = new JLabel("Nom de l'espèce :");
 		catLabel = new JLabel("Catégorie associée :");
 		nomField = new JTextField();
 		catBox = new JComboBox();
-		valideButton = new JButton();
+		valideButton = new JButton("valider");
 		valideButton.addActionListener(this);
-		annuleButton = new JButton();
+		annuleButton = new JButton("annuler");
 		annuleButton.addActionListener(this);
+
+	    ajoutPanel.setBorder(BorderFactory.createTitledBorder(
+	            BorderFactory.createEtchedBorder(), "Ajout d'une espèce :"));
 		
 		// ajout des labels dans le panel ajoutPanel
 		this.add(ajoutPanel, BorderLayout.CENTER);
-		this.add(titreLabel, BorderLayout.NORTH);
 		ajoutPanel.add(nomLabel);
 		ajoutPanel.add(nomField);
 		ajoutPanel.add(catLabel);
@@ -42,9 +43,11 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 		ajoutPanel.add(annuleButton);
 		
 		// visibilité
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
         this.setSize(400,150);
         this.setVisible(true);
+
     }
 			
 	
@@ -52,7 +55,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
     {
 		if (point.getSource()==valideButton)
 		{
-			
+			//verifSpecies();
 		}
 		if (point.getSource()==annuleButton)
 		{

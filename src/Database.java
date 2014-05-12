@@ -281,19 +281,16 @@ class Database
 	 */
 
 	//DONE
-	public void saveOrder(Orders order) 
+	public void saveOrder(Orders order,int analyse,int idClient) 
 	{
-		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+order.getCustomer().getID()+","+order.getTest().getId()+", trunc(sysdate)";
-
+		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
 		try
 		{
-			//saveInvoice(order.getInvoice());
-			//saveCustomer(order.getCustomer());
 			for (Samples s : order.getSamples())
 			{
 				saveSample(s,order.getId());
 			}
-
+			System.out.println(QuerySample);
 			myStatement.executeQuery(QuerySample);
 		}
 		catch (SQLException ex) 
@@ -361,7 +358,7 @@ class Database
 
 		return bool;
 	}
-	
+
 	//DONE and WORKS
 	/**
 	 * This function know if an animal already exist
@@ -541,6 +538,7 @@ class Database
 		int IDAnimal=0;
 		ResultSet resultsSamples = null;
 		try {
+			//récupération de l'id type
 			resultsSamples=myStatement.executeQuery("select count(*) from SAMPLETYPE where nameType='"+sample.getType()+"'");
 			resultsSamples.next();
 			if (resultsSamples.getInt(1)==0){
@@ -550,36 +548,35 @@ class Database
 			resultsSamples=myStatement.executeQuery("select idType from SAMPLETYPE where nameType='"+sample.getType()+"'");
 			resultsSamples.next();
 			IDSample=resultsSamples.getInt("idType");
-			
+
 			resultsSamples=myStatement.executeQuery("select count(*) from Animal where nameAnimal='"+sample.getAnimal().getName()+"'");
 			resultsSamples.next();
 			if (resultsSamples.getInt(1)==0){
 				resultsSamples=myStatement.executeQuery("select idSpecies from Species where nameSpecies='"+sample.getAnimal().getSpecie()+"'");
 				resultsSamples.next();
 				int idSpecie=resultsSamples.getInt(1);
-				String QuerySampleType="Insert into Animal values(1,"+idSpecie+","+sample.getAnimal().getName()+",0,"+sample.getAnimal().getNumberBirthday()+")";
+				String QuerySampleType="Insert into Animal values(1,"+idSpecie+",'"+sample.getAnimal().getName()+"',0,TO_DATE('"+sample.getAnimal().getNumberBirthday()+"','YYYY-MM-DD'))";
 				myStatement.execute(QuerySampleType);
 			}
-			resultsSamples=myStatement.executeQuery("select idAnimal from Animal where nameAnimal='"+sample.getAnimal().getIdAnimal()+"'");
+			resultsSamples=myStatement.executeQuery("select idAnimal from Animal where nameAnimal='"+sample.getAnimal().getName()+"'");
 			resultsSamples.next();
-			IDAnimal=resultsSamples.getInt("idAnimal");
+			IDAnimal=resultsSamples.getInt(1);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		//String QuerySample="Insert into SAMPLE values("+sample.getId()+","+sample.getAnimal().getId()+","+IDlot+","+IDSample+","+sample.getFirst()+",'En Attente',trunc(sysdate))";
 
-//		try
-//		{
-////			System.out.println(QuerySample);
-////			myStatement.execute(QuerySample);
-////			System.out.println(QuerySample);
-//		}
-//		catch (SQLException ex) 
-//		{
-//			System.out.println("Erreur requête Sample");
-//		}
+		String QuerySample="Insert into SAMPLE values("+sample.getId()+","+IDAnimal+","+IDlot+","+IDSample+",0,'En attente',trunc(sysdate))";
+
+		try
+		{
+			System.out.println(QuerySample);
+			myStatement.execute(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requête Sample");
+		}
 
 	}
 
@@ -593,8 +590,15 @@ class Database
 	/**
 	 * This function permits to get the user that use this session.
 	 */
-	public Users getUser() {
+	public Users getUser(int id) {
 		// Bouml preserved body begin 00043502
+		String query="select * from Client where idClient="+id;
+		try {
+			myStatement.execute(query);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return user;
 		// Bouml preserved body end 00043502
 	}
@@ -623,18 +627,29 @@ class Database
 	}
 
 	public Customers searchCustomerID(int ID) {
-		// Bouml preserved body begin 000235C5
-		/*if(customer.getID()==ID)
-		{
-			return customer;
+		// Bouml preserved body begin 00043502
+		ResultSet resultClient = null;
+		ResultSet resultAdress = null;
+		Customers c = new Customers(null, 1, null, null, 1);
+		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
+		try {
+			resultClient=myStatement.executeQuery(query);
+			resultClient.next();
+			
+			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
+			
+			
+			String nameClient=resultClient.getString("nameClient");
+			String phoneClient=resultClient.getString("phoneClient");
+			resultAdress=myStatement.executeQuery(query);
+			resultAdress.next();
+			
+			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else
-		{
-			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
-			return cust;
-		}*/
-		return customer;
-		// Bouml preserved body end 000235C5
+		return c;
 	}
 
 	public void saveCustomer(Customers cust) {
@@ -750,16 +765,16 @@ class Database
 
 			try {
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
-//				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
-//					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
-//
-//					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
-//				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
-//					//String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
-//					
-//					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
-//
-				}
+				//				if (Integer.parseInt(resultsNbAdressSociete.getString("nbAdress")) == 0){
+				//					String QueryCustomer = "INSERT INTO Adress VALUES (1,"+cust.getAdressClient().getNumber() + cust.getAdressClient().getZipCode() + cust.getAdressClient().getCity() + cust.getAdressClient().getStreet()+")";
+				//
+				//					resultsCustomer = myStatement.executeQuery(QueryCustomer);	
+				//				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+				//					//String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
+				//					
+				//					resultsCustomer = myStatement.executeQuery(QueryCustomer);					
+				//
+			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
 			}	
@@ -955,8 +970,8 @@ class Database
 			System.out.println("Erreur requête insert species");
 		}
 	}
-	
-	
+
+
 	/**
 	 * This function permits to verify if the name of the category is on the database, it returns true if it isn't in.
 	 * @param : name of the category

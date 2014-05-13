@@ -74,6 +74,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 		butAnnuler = new JButton("Annuler");
 	    butValider = new JButton("Valider");
 	    butValider.addActionListener(this);
+	    butAnnuler.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -120,6 +121,6 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_2 us = new InterfaceUS2_2();
+       InterfaceUS2_2 us = new InterfaceUS2_2(new Customers("dupond", 86000,"Poitiers", "090909",1));
     }
 }

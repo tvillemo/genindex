@@ -30,6 +30,13 @@ class Orders {
   private Invoice invoice;
   
   private Types_analysis test;
+  
+  private int nbTotSample;
+  
+  private int nbSampleAnalysed;
+  
+  private String status;
+  
 
   /**
    * TRUE if the invoice is paid, FALSE if not.
@@ -199,6 +206,30 @@ public Types_analysis getTest() {
 
 public void setTest(Types_analysis test) {
 	this.test = test;
+}
+
+public int getNbTotSample() {
+	return nbTotSample;
+}
+
+public void setNbTotSample(int nbTotSample) {
+	this.nbTotSample = nbTotSample;
+}
+
+public int getNbSampleAnalysed() {
+	return nbSampleAnalysed;
+}
+
+public void setNbSampleAnalysed(int nbSampleAnalysed) {
+	this.nbSampleAnalysed = nbSampleAnalysed;
+}
+
+public String getStatus() {
+	return status;
+}
+
+public void setStatus(String status) {
+	this.status = status;
 }
 
 }

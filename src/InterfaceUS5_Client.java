@@ -1,10 +1,14 @@
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 /**
 *
@@ -19,16 +23,24 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 	private JPanel panelChoix;
 	
 	private JButton butAnnuler;
+	private JButton butValider;
+	
+	private JLabel labChoixNum;
+	private JTextField fieldChoixNum;
 
-	public InterfaceUS5_Client(Customers c)
+	public InterfaceUS5_Client(ArrayList<Customers> liste)
 	{
 		panelListe = new JPanel();
 		
-	    butAnnuler = new JButton("Annuler");
-	    butAnnuler.addActionListener(this);
+		butAnnuler = new JButton("Annuler");
+		butAnnuler.addActionListener(this);
+		butValider = new JButton("Valider");
+		butValider.addActionListener(this);
 	    
 		panelButton = new JPanel();
+		panelButton.setLayout(new GridLayout(1, 2));
 		panelButton.add(butAnnuler);
+		panelButton.add(butValider);
 		
 	    panelChoix = new JPanel();
 	    panelChoix.add(panelListe);

@@ -53,6 +53,8 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	public InterfaceUS5() 
 	{
 
+		d = new Database();
+
 		proButton   = new JRadioButton("Professionnel"  , false);
 		proButton.addActionListener(this);
 		radioPanel = new JPanel();
@@ -113,10 +115,6 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 
 		panelButton = new JPanel();
 		panelButton.setLayout(new GridLayout(1, 2));
-
-		panelButton.add(butAnnuler);
-		panelButton.add(butValider);
-		panelButton = new JPanel();
 		panelButton.add(butAnnuler);
 		panelButton.add(butValider);
 
@@ -156,8 +154,6 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 		if (point.getSource()==butValider)
 		{
 			Customers c;
-			//ArrayList l = new ArrayList();
-			//l.add(c);
 			boolean bool = true;
 
 			if(proButton.isSelected())
@@ -178,36 +174,42 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 				{
 					if ((fieldNomC.getText().length()==0) || (fieldPrenomC.getText().length()==0))
 					{
-							Object[] options = { "OK" };
-							int n = JOptionPane.showOptionDialog(new JFrame(),
-									"Veuillez saisir l'identifiant ou le nom et le prénom du client", "",
-									JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
-									options, options);
-							bool = false;
+						Object[] options = { "OK" };
+						int n = JOptionPane.showOptionDialog(new JFrame(),
+								"Veuillez saisir l'identifiant ou le nom et le prénom du client", "",
+								JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+								options, options);
+						bool = false;
 					}
 				}
-				
-				if(bool == true)
+			}	
+			if(bool == true)
+			{
+				if (fieldNumC.getText().length()!=0)
 				{
-					if (fieldNumC.getText().length()!=0)
-					{
-						Integer s = Integer.parseInt(fieldNumC.getText());
-						c=d.searchCustomerID(s.intValue());
-						InterfaceUS5_Client test = new InterfaceUS5_Client(c);
-						this.dispose();
-					}
-					else if ((fieldNomC.getText().length()!=0) && (fieldPrenomC.getText().length()!=0))
-					{
-						//l = d.searchCustomersByName(fieldPrenomC.getText(), fieldPrenomC.getText());
-						//InterfaceUS5_Client test = new InterfaceUS5_Client(c);
-						this.dispose();
-					}
-					else if (proButton.isSelected() && fieldCorp.getText().length()!=0)
-					{
-
-					}
+					int s = Integer.parseInt(fieldNumC.getText());
+					c=d.searchCustomerID(s);
+					ArrayList<Customers> liste = new ArrayList<Customers>();
+					liste.add(c);
+					InterfaceUS5_Commande test = new InterfaceUS5_Commande();
+					this.dispose();
+				}
+				else if ((fieldNomC.getText().length()!=0) && (fieldPrenomC.getText().length()!=0))
+				{
+					ArrayList<Customers> liste = new ArrayList<Customers>();
+					liste = d.searchCustomersByName(fieldPrenomC.getText(), fieldPrenomC.getText());
+					InterfaceUS5_Client test = new InterfaceUS5_Client(liste);
+					this.dispose();
+				}
+				else 
+				{
+					ArrayList<Customers> liste = new ArrayList<Customers>();
+					liste = d.searchCustomersByCorporation(fieldCorp.getText());
+					InterfaceUS5_Client test = new InterfaceUS5_Client(liste);
+					this.dispose();
 				}
 			}
+
 			if (point.getSource()==butAnnuler)
 			{
 				this.dispose();
@@ -219,7 +221,6 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	public static void main(String[] args)
 	{
 		InterfaceUS5 test = new InterfaceUS5();
-
 	}
 
 }

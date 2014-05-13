@@ -180,36 +180,45 @@ class Database
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
-	public ArrayList<Orders> searchOrder(Customers customer) {
-
+	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
+	{
 		ResultSet resultsOrder = null;
+		ResultSet resultsCountTot = null;
+		ResultSet resultsCountAnalyzed = null;
 		ArrayList<Orders> liste= new ArrayList<Orders>();
 		Orders myOrder = null;
 
-
-		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
-
+		String QueryOrder="SELECT idLot, dateLot, Statute, nameTest FROM Lot, TestType WHERE Lot.idTest=TestType.idTest AND idClient='"+customer.getID()+"'";
+		
 		try
 		{
 			resultsOrder = myStatement.executeQuery(QueryOrder);
 
 			while(resultsOrder.next())
 			{
-				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+				@SuppressWarnings("deprecation")
+				Date d = new Date(resultsOrder.getDate("dateLot").getDay(),resultsOrder.getDate("dateLot").getMonth(),resultsOrder.getDate("dateLot").getYear());
 
-				//myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
+				myOrder= new Orders(resultsOrder.getInt("idLot"), d, customer,new Types_analysis(resultsOrder.getString("nameTest"),0));
+				myOrder.setStatus(resultsOrder.getString("Statute"));
+				
+				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
+				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
+				
+				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				
+				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
+				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));
 
 				liste.add(myOrder);
 			}
-
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requête search Order");
 		}
-		// Bouml preserved body begin 00042F02
 		return(liste);
-		// Bouml preserved body end 00042F02
 	}
 
 	//DONE
@@ -605,8 +614,41 @@ class Database
 		// Bouml preserved body end 000234C5
 	}
 
+	//DONE
 	//Recherche de customers par nom et prénom
 	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
+	{
+		ArrayList<Customers> result = new ArrayList<Customers>();
+		
+		ResultSet resultsSamples;
+		String QuerySample="SELECT idClient FROM Client WHERE nameClient='"+lastName+"' AND firstNameClient='"+firstName+"'";
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			System.out.println(QuerySample);
+			//resultsSamples.
+			while (resultsSamples.next())
+			{
+				System.out.println("2");
+				result.add(searchCustomerID(resultsSamples.getInt(1)));
+				
+			}
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête searchCustomerName");
+		}
+		
+		return result;
+	}
+	
+	
+	//DONE
+	//Recherche de customers par entreprise
+	public ArrayList<Customers> searchCustomersByCorporation(String firstName, String lastName) 
 	{
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
@@ -630,8 +672,10 @@ class Database
 		return result;
 	}
 
-	public Customers searchCustomerID(int ID) {
-		// Bouml preserved body begin 00043502
+	//DONE and works
+	//Recherche de customer via ID
+	public Customers searchCustomerID(int ID) 
+	{
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
 		Customers c = new Customers(null, 1, null, null, 1);
@@ -658,8 +702,10 @@ class Database
 		return c;
 	}
 
-	public void saveCustomer(Customers cust) {
-		// Bouml preserved body begin 00023645
+	//DONE
+	//Sauvegarde un customer
+	public void saveCustomer(Customers cust) 
+	{
 
 		ResultSet resultsNbAdressSociete = null;
 		ResultSet resultsCustomer = null;

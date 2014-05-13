@@ -1357,7 +1357,7 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println(ex.getMessage());
-			System.out.println("Erreur requête getTestType");
+			System.out.println("Erreur requête createBatch");
 		}
 	}
 	

@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 * @author Audrey
 */
 
-public class InterfaceUS5_Client extends JFrame implements ActionListener
+public class InterfaceUS5_Commande extends JFrame implements ActionListener
 {
 
 	private JPanel panelListe;
@@ -20,11 +20,11 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 	
 	private JButton butAnnuler;
 
-	public InterfaceUS5_Client()
+	public InterfaceUS5_Commande()
 	{
 		panelListe = new JPanel();
 		
-	    butAnnuler = new JButton("Annuler");
+	    butAnnuler = new JButton("Retour à la liste des clients");
 	    butAnnuler.addActionListener(this);
 	    
 		panelButton = new JPanel();
@@ -50,14 +50,14 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
     {
 		if (point.getSource()==butAnnuler)
 		{
-			InterfaceUS5 retour = new InterfaceUS5();
+			InterfaceUS5_Client retour = new InterfaceUS5_Client();
     		this.dispose();
 		}
     }
 	
 	public static void main(String[] args)
 	{
-		InterfaceUS5_Client test = new InterfaceUS5_Client();
+		InterfaceUS5_Commande test = new InterfaceUS5_Commande();
 
 	}
 }

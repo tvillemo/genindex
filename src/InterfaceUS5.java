@@ -7,7 +7,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 
 
@@ -19,6 +21,9 @@ import javax.swing.JTextField;
 public class InterfaceUS5 extends JFrame implements ActionListener
 {
 
+	private JRadioButton proButton;  
+	private JPanel radioPanel;
+	
 	private JPanel panelChoix;
 	private JPanel panelDonnees;	
 	private JPanel panelButton;
@@ -27,7 +32,7 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	private JLabel labNomC;
 	private JLabel labPrenomC;
 	private JLabel labCorp;
-	private JLabel labSeparation1, labSeparation2;
+	private JLabel labSeparation1, labSeparation2, labSeparation3, labSeparation4;
 
 	private JPanel panelNum;
 	private JPanel panelNom;
@@ -44,6 +49,12 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	
 	public InterfaceUS5() 
 	{
+
+		proButton   = new JRadioButton("Professionnel"  , false);
+		proButton.addActionListener(this);
+		radioPanel = new JPanel();
+		radioPanel.setLayout(new GridLayout(1, 1));
+	    radioPanel.add(proButton);
 	    
 	    labNumC = new JLabel("Numéro du client :");
 	    fieldNumC = new JTextField();
@@ -68,6 +79,7 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	    
 	    labCorp = new JLabel("Corporation :");	    
 	    fieldCorp = new JTextField();
+	    fieldCorp.setEditable(false);
 	    panelCorp = new JPanel();
 	    panelCorp.setLayout(new GridLayout(1,2));
 	    panelCorp.add(labCorp);
@@ -75,16 +87,21 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 	    
 	    labSeparation1 = new JLabel();
 	    labSeparation2 = new JLabel();
-	    
+	    labSeparation3 = new JLabel();
+	    labSeparation4 = new JLabel();
+
 	    panelDonnees = new JPanel();
-	    panelDonnees.setLayout(new GridLayout(6, 1));
+	    panelDonnees.setLayout(new GridLayout(9, 1));
 	    
-	    panelDonnees.add(panelNum);
+	    panelDonnees.add(radioPanel);
 	    panelDonnees.add(labSeparation1);
+	    panelDonnees.add(panelNum);
+	    panelDonnees.add(labSeparation2);
 	    panelDonnees.add(panelNom);
 	    panelDonnees.add(panelPrenom);
-	    panelDonnees.add(labSeparation2);
+	    panelDonnees.add(labSeparation3);
 	    panelDonnees.add(panelCorp);
+	    panelDonnees.add(labSeparation4);
 
 	    butAnnuler = new JButton("Annuler");
 	    butAnnuler.addActionListener(this);
@@ -114,20 +131,44 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 		 // visibilité
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        this.setSize(300, 250);
+        this.setSize(300, 330);
         this.setVisible(true);
 	}
 
 	
 	public void actionPerformed(ActionEvent point)
     {
+		if (point.getSource()==proButton)
+		{
+			if (proButton.isSelected())
+			{
+				fieldCorp.setEditable(true);
+			}
+			else
+			{
+				fieldCorp.setEditable(false);
+			}
+		}
 		if (point.getSource()==butValider)
 		{
-			
+			boolean bool = true;
+			if ((fieldNumC.getSelectedText() == null) || (fieldNomC.getSelectedText() == null))
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez saisir l'identifiant ou le nom et le prénom du client", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);
+				 bool = false;
+			}
+			if (fieldNumC.getSelectedText() != null)
+			{
+				
+			}
 		}
 		if (point.getSource()==butAnnuler)
 		{
-			
+			this.dispose();
 		}
     }
 	

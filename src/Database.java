@@ -289,7 +289,7 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 
-	public void saveOrder(Orders order) 
+	public void saveOrder(Orders order,int idClient,int analyse) 
 	{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
 		try
@@ -969,9 +969,7 @@ class Database
 			return false;
 		}
 
-		}				
-
-	}
+	}				
 	
 
 	public Analysis searchAnalysis(Types_analysis type) {

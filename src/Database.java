@@ -741,6 +741,16 @@ class Database
 		ResultSet resultsNbPro = null;
 		ResultSet resultsIdAdressFact = null;
 		ResultSet resultsNbAdressClient = null;
+		
+		ResultSet resultsClientPro;
+		ResultSet resultsAddClientPro;
+		ResultSet resultsClient;
+		String QueryClient;
+		String QueryClientPro;
+		ResultSet resultsIdA = null;
+		ResultSet resultsIdAFact = null;
+		int idAdressFact = 0;
+		ResultSet resultsIdAClient = null;
 
 		// Si c'est un professionnel
 		if (cust.isPro()){
@@ -1248,7 +1258,7 @@ class Database
 		}
 	}
 	
-<<<<<<< HEAD
+
 	/**
 	 * This function permits to get list length
 	 * @return : integer of length of the list
@@ -1387,7 +1397,7 @@ class Database
 			System.out.println("Erreur requête getTestType");
 		}
 	}
-=======
+
 	public int UserConnexion(String login,String mdp){
 		int ok=0;
 		String query="select idClient from Client where login=(select login from user where login='"+login+"' and password='"+mdp+"')";
@@ -1404,6 +1414,5 @@ class Database
 		return ok;
 	}
 
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex
 }
 

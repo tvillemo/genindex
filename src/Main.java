@@ -24,7 +24,7 @@ public class Main {
 		ArrayList<Customers> x =  d.searchCustomersByName("Sansa", "Clement");
 		System.out.println(x.size());
 		*/
-=======
+
 
 		//d.DisplayResultsQuery("Select IDSAMPLE, NAMETYPE from SAMPLE where IDSAMPLE=2;");
 

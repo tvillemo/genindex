@@ -85,12 +85,10 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
     
     private boolean save;
     
-    private static Database d;
+    private Database d = new Database();
     
     
     public InterfaceUS1 (){
-    	
-    	d = new Database();
     	
         /* Panel du haut avec les radioButton*/
 	    proButton   = new JRadioButton("Professionnel"  , false);
@@ -351,7 +349,12 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
         		rTF.getText(),// rue
         		tTF.getText(),// telephone
         		0);// Id
-	        C.setFax(fTF.getText());
+	        if(!fTF.getText().isEmpty()) {
+	        	C.setFax(fTF.getText());
+	        }
+	        else {
+	        	C.setFax(null);
+	        }
 	        C.setPro(pro);
 	        C.setName(pTF.getText(),nTF.getText());
 	        adress = new Adress(Integer.parseInt(nRTF.getText()),rTF.getText(),Integer.parseInt(cDTF.getText()),vTF.getText());
@@ -362,9 +365,14 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
 	        	C.setEmail(mailTF.getText());
 	        	adressPro = new Adress(Integer.parseInt(nRTF2.getText()),rTF2.getText(),Integer.parseInt(cDTF2.getText()),vTF2.getText());
 	        	C.setAdressFacturation(adressPro);
-	        }
+	        }	        	      
+	        
+	        
 	        
 	        save = d.saveCustomer(C);
+	        
+	        d.close();
+	       
 	        
 	        if (save) {
 	        	JOptionPane.showMessageDialog(this, "Le client a bien été ajouté", "Enregistrement", JOptionPane.ERROR_MESSAGE);
@@ -377,9 +385,8 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
     
     
 
-    public static void main(String[] args) {        	        
+    public static void main(String[] args) { 
     	InterfaceUS1 us = new InterfaceUS1();
-    	d.close();
                               
     }
 }

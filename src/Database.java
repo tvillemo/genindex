@@ -616,6 +616,11 @@ class Database
 		ResultSet resultsAddClientPro;
 		ResultSet resultsClient;
 		String QueryClient;
+		String QueryClientPro;
+		ResultSet resultsIdA = null;
+		ResultSet resultsIdAFact = null;
+		int idAdressFact = 0;
+		ResultSet resultsIdAClient = null;
 		
 		// Si c'est un professionnel
 		if (cust.isPro()){
@@ -637,24 +642,41 @@ class Database
 				System.out.println("Erreur requête AdressSociete");
 			}										
 			
-			try {		
-					
+			
+			String QueryAdress = "SELECT idAdress FROM Adress WHERE num="+cust.getAdressClient().getNumber()+" AND CP ="+cust.getAdressClient().getZipCode()+" AND town ='"+cust.getAdressClient().getCity()+"' AND street='"+cust.getAdressClient().getStreet()+"'";
+			
+			try {	
+				
 				//Si le client n'existe pas, on l'ajoute dans la table Client
-				if (!IfCustomerExist(cust)){					
+				if (!IfCustomerExist(cust)){
+					
+					resultsIdA = myStatement.executeQuery(QueryAdress);	
+					
+					resultsIdA.next();
+					
 					if (cust.getFax() != null) {							
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + cust.getAdressClient().getIdAdress() + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
-					else {						
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + cust.getAdressClient().getIdAdress() + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
-						
+					else {	
+						System.out.println(resultsIdA.getInt("idAdress"));
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
+						System.out.println("Query");
 					}
+					
+					/******************************/
+					/***Exécute pas la Query !!!***/
+					/******************************/	
+					
+					System.out.println(QueryClient);
 					
 					resultsClientPro = myStatement.executeQuery(QueryClient);
+					
+					System.out.println("Query Ok");
 				}
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête Client");
-			}	
+			}			
 			
 			// Si on a une adresse de facturation
 			if (cust.getAdressFacturation() != null) {				
@@ -675,6 +697,17 @@ class Database
 				catch (SQLException ex) {
 					System.out.println("Erreur requête adresseFacturation");
 				}
+								
+				String QueryAdressFact = "SELECT idAdress FROM Adress WHERE num="+cust.getAdressFacturation().getNumber()+" AND CP ="+cust.getAdressFacturation().getZipCode()+" AND town ='"+cust.getAdressFacturation().getCity()+"' AND street='"+cust.getAdressFacturation().getStreet()+"'";
+				
+				try {
+					resultsIdAFact = myStatement.executeQuery(QueryAdressFact);
+					resultsIdAFact.next();
+					idAdressFact = resultsIdAFact.getInt(1);
+				}
+				catch (SQLException ex) {
+					System.out.println("Erreur requête SelectAdresseFacturation");
+				}
 			}
 			
 			// On vérifie si le client pro existe dans la table ProfessionnalClient
@@ -686,43 +719,43 @@ class Database
 				resultsNbPro.next();
 				// Si il n'existe pas, on l'ajoute (il faut vérifier si on a un mail de facturation et un departement de paiement pour le customer donné
 				if (resultsNbPro.getInt("nbPro") == 0){		
-					if(cust.getAdressFacturation() != null){
+					if(idAdressFact != 0){
 						if (cust.getEmail() != null) {	
 							if (cust.getDepartementFacturation() != null) {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + cust.getAdressFacturation().getIdAdress() + ",'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idAdressFact + ",'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
 							}
 							else {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + cust.getAdressFacturation().getIdAdress() + ",'" + cust.getEmail() + "', null)";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idAdressFact + ",'" + cust.getEmail() + "', null)";
 							}
 						}
 						else {
 							if (cust.getDepartementFacturation() != null) {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + cust.getAdressFacturation().getIdAdress() + ", null,'" + cust.getDepartementFacturation() +"')";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idAdressFact + ", null,'" + cust.getDepartementFacturation() +"')";
 							}
 							else {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + cust.getAdressFacturation().getIdAdress() + ", null, null)";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "'," + idAdressFact + ", null, null)";
 							}
 						}
 					}
 					else {
 						if (cust.getEmail() != null) {	
 							if (cust.getDepartementFacturation() != null) {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null,'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null,'" + cust.getEmail() + "','" + cust.getDepartementFacturation() +"')";
 							}
 							else {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null,'" + cust.getEmail() + "', null)";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null,'" + cust.getEmail() + "', null)";
 							}
 						}
 						else {
 							if (cust.getDepartementFacturation() != null) {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null, null,'" + cust.getDepartementFacturation() +"')";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null, null,'" + cust.getDepartementFacturation() +"')";
 							}
 							else {
-								QueryClient = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null, null, null)";
+								QueryClientPro = "INSERT INTO ProfessionalClient VALUES ('" + cust.getNomSociete() + "', null, null, null)";
 							}
 						}
 					}										
-					resultsAddClientPro = myStatement.executeQuery(QueryClient);
+					resultsAddClientPro = myStatement.executeQuery(QueryClientPro);
 					ClientProInsere = true;
 				}
 			}
@@ -734,14 +767,14 @@ class Database
 		// Sinon c'est un particulier
 		else {
 			// vérifier si l'adresse du client n'existe pas déjà dans la base de données avec l'id
-			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE idAdress="+cust.getAdressClient().getIdAdress();						
+			String QueryNbAdressClient = "SELECT COUNT(idAdress) AS nbAdress FROM Adress WHERE num="+cust.getAdressClient().getNumber()+" AND CP ="+cust.getAdressClient().getZipCode()+" AND town ='"+cust.getAdressClient().getCity()+"' AND street='"+cust.getAdressClient().getStreet()+"'";						
 			
 			try {					
 				resultsNbAdressClient = myStatement.executeQuery(QueryNbAdressClient);
 				
 				resultsNbAdressClient.next();
 				// Si elle n'existe pas, on l'ajoute
-				if (resultsNbAdressClient.getInt("nbAdress") == 0){					
+				if (resultsNbAdressClient.getInt("nbAdress") == 0){						
 					String QueryCustomer = "INSERT INTO Adress (NUM, CP, TOWN, STREET) VALUES ("+cust.getAdressClient().getNumber() + "," + cust.getAdressClient().getZipCode() + ",'" + cust.getAdressClient().getCity() + "','" + cust.getAdressClient().getStreet()+"')";
 					
 					resultsCustomer = myStatement.executeQuery(QueryCustomer);						
@@ -749,16 +782,24 @@ class Database
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressClient");
-			}										
-			try {
-				
+			}	
+			
+			String QueryAdressClient = "SELECT idAdress FROM Adress WHERE num="+cust.getAdressClient().getNumber()+" AND CP ="+cust.getAdressClient().getZipCode()+" AND town ='"+cust.getAdressClient().getCity()+"' AND street='"+cust.getAdressClient().getStreet()+"'";
+			
+			try {											
+			
 				//Si le client n'existe pas, on l'ajoute
-				if (!IfCustomerExist(cust)){										
-					if (cust.getFax() != null) {							
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + cust.getAdressClient().getIdAdress() + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
+				if (!IfCustomerExist(cust)){
+					
+					resultsIdAClient = myStatement.executeQuery(QueryAdressClient);	
+					
+					resultsIdAClient.next();
+					
+					if (cust.getFax() != null) {	
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdAClient.getInt("idAdress") + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
 					}
-					else {						
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + cust.getAdressClient().getIdAdress() + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
+					else {			
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdAClient.getInt("idAdress") + ", null,'" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
 					}
 					
 					resultsClient = myStatement.executeQuery(QueryClient);

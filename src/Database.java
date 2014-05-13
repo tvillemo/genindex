@@ -1162,5 +1162,145 @@ class Database
 			return(-1);
 		}
 	}
+	
+	/**
+	 * This function permits to get list length
+	 * @return : integer of length of the list
+	 * @author : mathilde
+	 */
+	public int lengthList(ArrayList<String> list )
+	{
+		return(list.size());
+	}
+	
+	/**
+	 * This function permits to get a list of tests 
+	 * @return : ArrayList of string of tests
+	 * @author : mathilde
+	 */
+	public ArrayList<String> getTestType() 
+	{
+		ResultSet resultsSamples;
+		ArrayList<String> maListe = new ArrayList<String>();
+		String QuerySample="Select nameTest From TestType";
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString(1));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getTestType");
+		}
+		return maListe;
+	}
+	
+	/**
+	 * This function permits to get a list of sample with dates : there are 3 types : to reanalysed, begined order and simple samples
+	 * @param : an interger which illustrate the type of sample (1, 2 or 3)
+	 * @return : ArrayList of string of samples with dates
+	 * @author : mathilde
+	 */
+	public ArrayList<String> getSampleAnalysis(int cas) 
+	{
+		ResultSet resultsSamples;
+		String QuerySample="-1";
+		ArrayList<String> maListe = new ArrayList<String>();
+		if (cas == 1) 
+		{
+			QuerySample="SELECT Sample.idSample, dateSampling FROM Sample, Lot, TestType, Tube, Analysis WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND Sample.idSample=Tube.idSample AND Tube.idTube=Analysis.idTubeStandard AND nameTest='tonNomDeTest' AND statut='reanalyser' ORDER BY dateSampling";
+		}
+		else if (cas == 2) 
+		{
+			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='tonType de test' AND idSample NOT IN (Select idSample FROM Tube) AND Statute='En cours' ORDER BY dateSampling";
+		}
+		else if (cas == 3) 
+		{
+			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='tonType de test' AND Statute='En attente' ORDER BY dateSampling";
+		}
+		else 
+		{
+			System.out.println("Votre saisie n'est pas correcte, attention !");
+		}
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString(1));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getSampleAnalysis");
+		}
+		return maListe;
+	}
+	
+	/**
+	 * This function permits to create a new batch
+	 * @param : length of the batch 
+	 * @author : mathilde
+	 */
+	public void createBatch(int taille) 
+	{
+		String QuerySample="INSERT INTO Batch (length) VALUES ('"+taille+"')";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getTestType");
+		}
+	}
+	
+	/**
+	 * This function permits to get the id of the last batch /!\ = after create our batch
+	 * @return : id of the last batch
+	 * @author : mathilde
+	 */
+	public int getIdBatch() 
+	{
+		String QuerySample="SELECT MAX(idBatch) FROM Batch";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getIdBatch");
+		}
+		return(-1);
+	}
+	
+	/**
+	 * This function permits to add a sample to a batch
+	 * @param : id sample and id batch
+	 * @author : mathilde
+	 */
+	public void addSampleToBatch(int idSample, int idBatch) 
+	{
+		String QuerySample="INSERT INTO Constitute (idSample, idBatch) VALUES ('"+idSample+"', '"+idBatch+"')";
+		try
+		{
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getTestType");
+		}
+	}
 }
+
 

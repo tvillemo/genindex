@@ -120,6 +120,6 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_2 us = new InterfaceUS2_2();
+       //InterfaceUS2_2 us = new InterfaceUS2_2();
     }
 }

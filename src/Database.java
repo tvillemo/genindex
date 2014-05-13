@@ -1301,11 +1301,12 @@ class Database
 	 * @return : ArrayList of string of samples with dates
 	 * @author : mathilde
 	 */
-	public ArrayList<String> getSampleAnalysis(int cas) 
+	public ArrayList<ArrayList<String>> getSampleAnalysis(int cas) 
 	{
 		ResultSet resultsSamples;
 		String QuerySample="-1";
-		ArrayList<String> maListe = new ArrayList<String>();
+		ArrayList<ArrayList<String>> maListe = new ArrayList<ArrayList<String>>();
+		
 		if (cas == 1) 
 		{
 			QuerySample="SELECT Sample.idSample, dateSampling FROM Sample, Lot, TestType, Tube, Analysis WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND Sample.idSample=Tube.idSample AND Tube.idTube=Analysis.idTubeStandard AND nameTest='tonNomDeTest' AND statut='reanalyser' ORDER BY dateSampling";
@@ -1327,7 +1328,10 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				maListe.add(resultsSamples.getString(1));
+				ArrayList<String> aux = new ArrayList<String>();
+				aux.add(resultsSamples.getString("idSample"));
+				aux.add(resultsSamples.getString("dateSampling"));
+				maListe.add(aux);
 			}
 		}
 		catch (SQLException ex) 

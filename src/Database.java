@@ -967,9 +967,8 @@ class Database
 		}
 		else {
 			return false;
-		}
-
-	}				
+		}		
+	}
 	
 
 	public Analysis searchAnalysis(Types_analysis type) {

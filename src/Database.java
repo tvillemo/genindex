@@ -649,12 +649,12 @@ class Database
 	
 	//DONE
 	//Recherche de customers par entreprise
-	public ArrayList<Customers> searchCustomersByCorporation(String firstName, String lastName) 
+	public ArrayList<Customers> searchCustomersByCorporation(String corporation) 
 	{
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
 		ResultSet resultsSamples;
-		String QuerySample="";
+		String QuerySample="SELECT idClient FROM Client WHERE corporationName='"+corporation+"'";
 		
 		try
 		{

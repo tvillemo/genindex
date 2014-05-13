@@ -1284,9 +1284,11 @@ class Database
 		String query="select idClient from Client where login=(select login from user where login='"+login+"' and password='"+mdp+"')";
 		try {
 			ResultSet result=myStatement.executeQuery(query);
-			if (!result.last()){
+			try{
 				result.next();
 				ok=result.getInt(1);
+			}
+			catch(SQLException e){
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block

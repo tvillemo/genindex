@@ -791,43 +791,7 @@ class Database
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
-			}										
-			
-			
-			String QueryAdress = "SELECT idAdress FROM Adress WHERE num="+cust.getAdressClient().getNumber()+" AND CP ="+cust.getAdressClient().getZipCode()+" AND town ='"+cust.getAdressClient().getCity()+"' AND street='"+cust.getAdressClient().getStreet()+"'";
-			
-			try {	
-				
-				//Si le client n'existe pas, on l'ajoute dans la table Client
-				if (!IfCustomerExist(cust)){
-					
-					resultsIdA = myStatement.executeQuery(QueryAdress);	
-					
-					resultsIdA.next();
-					
-					if (cust.getFax() != null) {							
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
-					}
-					else {	
-						System.out.println(resultsIdA.getInt("idAdress"));
-						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
-						System.out.println("Query");
-					}
-					
-					/******************************/
-					/***Exécute pas la Query !!!***/
-					/******************************/	
-					
-					System.out.println(QueryClient);
-					
-					resultsClientPro = myStatement.executeQuery(QueryClient);
-					
-					System.out.println("Query Ok");
-				}
-			}
-			catch (SQLException ex) {
-				System.out.println("Erreur requête Client");
-			}			
+			}																				
 			
 			// Si on a une adresse de facturation
 			if (cust.getAdressFacturation() != null) {				
@@ -912,7 +876,32 @@ class Database
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête ClientPro");
-			}							
+			}	
+			
+			String QueryAdress = "SELECT idAdress FROM Adress WHERE num="+cust.getAdressClient().getNumber()+" AND CP ="+cust.getAdressClient().getZipCode()+" AND town ='"+cust.getAdressClient().getCity()+"' AND street='"+cust.getAdressClient().getStreet()+"'";
+			
+			try {	
+				
+				//Si le client n'existe pas, on l'ajoute dans la table Client
+				if (!IfCustomerExist(cust)){
+					
+					resultsIdA = myStatement.executeQuery(QueryAdress);	
+					
+					resultsIdA.next();
+					
+					if (cust.getFax() != null) {							
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "','" + cust.getFax() + "','" + cust.getFirstName() + "')";
+					}
+					else {	
+						QueryClient = "INSERT INTO Client (LOGIN, IDADRESS, CORPORATIONNAME, NAMECLIENT, PHONECLIENT, FAXCLIENT, FIRSTNAMECLIENT) VALUES (null," + resultsIdA.getInt("idAdress") + ",'" + cust.getNomSociete() + "','" + cust.getLastName() + "','" + cust.getPhone() + "', null,'" + cust.getFirstName() + "')";
+					}
+					
+					resultsClientPro = myStatement.executeQuery(QueryClient);
+				}
+			}
+			catch (SQLException ex) {
+				System.out.println("Erreur requete Client");
+			}	
 		}
 		
 		// Sinon c'est un particulier

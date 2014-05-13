@@ -473,41 +473,26 @@ class Database
 		return maListe;
 	}
 
-<<<<<<< HEAD
+
 	//DONE and WORKS (Peut être rajouter la liste des analyses)
 	@SuppressWarnings("deprecation")
 	public Samples searchSample(int id) 
-=======
-	//DONE (Peut être rajouter la liste des analyses)
-	public Samples searchSample(String id) 
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 	{
 		ResultSet resultsSample = null;
 		Samples mySample = null;
 
-<<<<<<< HEAD
 		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, STATUTSAMPLE, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES where IDSAMPLE ="+id;
-=======
-		String QuerySample="Select IDSAMPLE, NAMETYPE, DATESAMPLING, NAMESPECIES, BIRTHANIMAL from SAMPLE natural join SAMPLETYPE natural join ANIMAL natural join SPECIES";
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 
 		try
 		{
 			resultsSample = myStatement.executeQuery(QuerySample);
-<<<<<<< HEAD
 			resultsSample.next();
 			
-=======
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 			Date d = new Date(resultsSample.getDate("DATESAMPLING").getDay(),resultsSample.getDate("DATESAMPLING").getMonth(),resultsSample.getDate("DATESAMPLING").getYear());
-<<<<<<< HEAD
+
 			mySample = new Samples( resultsSample.getInt("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
 			
 			if (resultsSample.getString("STATUTSAMPLE").equals("Analyse"))
-=======
-			//mySample = new Samples( resultsSample.getString("IDSAMPLE"), resultsSample.getString("NAMETYPE"), d, new Animals(resultsSample.getString("NAMESPECIES"),resultsSample.getString("BIRTHANIMAL")));
-			if (resultsSample.getString("STATUTSAMPLE") == "analyse")
->>>>>>> branch 'master' of https://github.com/tvillemo/genindex.git
 			{
 				mySample.setAnalyzed();
 			}
@@ -535,7 +520,7 @@ class Database
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			while(resultsSamples.next())
 			{
-				listS.add(searchSample(resultsSamples.getString("IDSAMPLE")));
+				listS.add(searchSample(resultsSamples.getInt("IDSAMPLE")));
 			}
 		}
 		catch (SQLException ex) 

@@ -80,7 +80,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
     {
 		if (point.getSource()==valideButton)
 		{
-			if (nomField.getSelectedText() == null)
+			if (nomField.getText().length()==0)
 			{
 				Object[] options = { "OK" };
 				int n = JOptionPane.showOptionDialog(new JFrame(),

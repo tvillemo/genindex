@@ -20,7 +20,7 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 	
 	private JButton butAnnuler;
 
-	public InterfaceUS5_Client()
+	public InterfaceUS5_Client(Customers c)
 	{
 		panelListe = new JPanel();
 		
@@ -55,9 +55,5 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 		}
     }
 	
-	public static void main(String[] args)
-	{
-		InterfaceUS5_Client test = new InterfaceUS5_Client();
 
-	}
 }

@@ -289,7 +289,7 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 
-	public void saveOrder(Orders order) 
+	public void saveOrder(Orders order,int idClient,int analyse) 
 	{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
 		try
@@ -656,9 +656,7 @@ class Database
 			while (resultsSamples.next())
 			{
 				System.out.println(resultsSamples.getInt(1));
-				searchCustomerID(resultsSamples.getInt(1));
-
-//				result.add(c);
+				//result.add(searchCustomerID(resultsSamples.getInt(1)));
 				
 			}
 		}
@@ -675,12 +673,12 @@ class Database
 	
 	//DONE
 	//Recherche de customers par entreprise
-	public ArrayList<Customers> searchCustomersByCorporation(String firstName, String lastName) 
+	public ArrayList<Customers> searchCustomersByCorporation(String corporation) 
 	{
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
 		ResultSet resultsSamples;
-		String QuerySample="";
+		String QuerySample="SELECT idClient FROM Client WHERE corporationName='"+corporation+"'";
 		
 		try
 		{
@@ -971,7 +969,6 @@ class Database
 			return false;
 		}		
 
-	}
 	
 
 	public Analysis searchAnalysis(Types_analysis type) {
@@ -1281,5 +1278,6 @@ class Database
 			return(-1);
 		}
 	}
+
 }
 

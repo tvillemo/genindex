@@ -85,7 +85,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 				Object[] options = { "OK" };
 				int n = JOptionPane.showOptionDialog(new JFrame(),
 						"Veuillez saisir le nom de l'espèce", "",
-				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
 				       options, options);
 			}
 			else if (d.verifSpecies(nomField.getText()))

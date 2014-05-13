@@ -655,8 +655,10 @@ class Database
 
 			while (resultsSamples.next())
 			{
-				System.out.println(resultsSamples.getInt(1));
-				//result.add(searchCustomerID(resultsSamples.getInt(1)));
+				//System.out.println(resultsSamples.getInt(1));
+				
+				result.add(searchCustomerID(resultsSamples.getInt(1)));
+				//System.out.println(result.get(0).getFirstName());
 				
 			}
 		}
@@ -720,14 +722,28 @@ class Database
 		return c;
 	}
 
-	public Customers searchCustomerID(int ID) {
-		// Bouml preserved body begin 00043502
+	public Customers searchCustomerID(int ID) 
+	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
 		Customers c = new Customers(null, 1, null, null, 1);
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
-		try {
-			resultClient=myStatement.executeQuery(query);
+		try 
+		{
+			resultClient=tmpMyStatement.executeQuery(query);
 			resultClient.next();
 			
 			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
@@ -736,13 +752,14 @@ class Database
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
 			String firstName=resultClient.getString("FirstNameClient");
-			resultAdress=myStatement.executeQuery(query);
+			resultAdress=tmpMyStatement.executeQuery(query);
 			resultAdress.next();
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+		} catch (SQLException e) 
+		{
+			System.out.println("test");
 			e.printStackTrace();
 		}
 		return c;

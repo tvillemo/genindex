@@ -291,7 +291,7 @@ class Database
 
 	public void saveOrder(Orders order) 
 	{
-		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
+		String QuerySample="";//"INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
 		try
 		{
 			for (Samples s : order.getSamples())
@@ -971,7 +971,7 @@ class Database
 
 		}				
 
-	}
+	
 	
 
 	public Analysis searchAnalysis(Types_analysis type) {

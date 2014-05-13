@@ -123,11 +123,11 @@ public class InterfaceUS5 extends JFrame implements ActionListener
     {
 		if (point.getSource()==butValider)
 		{
-			
+
 		}
 		if (point.getSource()==butAnnuler)
 		{
-			
+			this.dispose();
 		}
     }
 	

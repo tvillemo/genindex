@@ -180,36 +180,45 @@ class Database
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
-	public ArrayList<Orders> searchOrder(Customers customer) {
-
+	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
+	{
 		ResultSet resultsOrder = null;
+		ResultSet resultsCountTot = null;
+		ResultSet resultsCountAnalyzed = null;
 		ArrayList<Orders> liste= new ArrayList<Orders>();
 		Orders myOrder = null;
 
-
-		String QueryOrder="Select idLot, datelot from LOT WHERE idClient="+customer.getID();
-
+		String QueryOrder="SELECT idLot, dateLot, Statute, nameTest FROM Lot, TestType WHERE Lot.idTest=TestType.idTest AND idClient='"+customer.getID()+"'";
+		
 		try
 		{
 			resultsOrder = myStatement.executeQuery(QueryOrder);
 
 			while(resultsOrder.next())
 			{
-				Date d = new Date(resultsOrder.getDate("datelot").getDay(),resultsOrder.getDate("datelot").getMonth(),resultsOrder.getDate("datelot").getYear());
+				@SuppressWarnings("deprecation")
+				Date d = new Date(resultsOrder.getDate("dateLot").getDay(),resultsOrder.getDate("dateLot").getMonth(),resultsOrder.getDate("dateLot").getYear());
 
-				//myOrder= new Orders(Integer.parseInt(resultsOrder.getString("idLot")), d, customer,new Types_analysis("PCR",95));
+				myOrder= new Orders(resultsOrder.getInt("idLot"), d, customer,new Types_analysis(resultsOrder.getString("nameTest"),0));
+				myOrder.setStatus(resultsOrder.getString("Statute"));
+				
+				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
+				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
+				
+				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				
+				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
+				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));
 
 				liste.add(myOrder);
 			}
-
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requête search Order");
 		}
-		// Bouml preserved body begin 00042F02
 		return(liste);
-		// Bouml preserved body end 00042F02
 	}
 
 	//DONE
@@ -605,23 +614,120 @@ class Database
 		// Bouml preserved body end 000234C5
 	}
 
-	public Customers searchCustomerName(String name) {
-		// Bouml preserved body begin 00023545
-		/*if(name.equals(customer.getLastName()))
-		{
-			return customer;
+	public Customers searchCustomerName(String name,String first,String ville,String rue,int num,int CP) {
+		ResultSet resultClient = null;
+		ResultSet resultAdress = null;
+		Customers c = new Customers(null, 1, null, null, 1);
+		String query="select idClient,nameClient,idAdress,phoneClient,firstNameClient from Client where nameClient='"+name+"' and firstNameClient='"+first+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
+		try {
+			resultClient=myStatement.executeQuery(query);
+			resultClient.next();
+			
+			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
+			
+			
+			String nameClient=resultClient.getString("nameClient");
+			String phoneClient=resultClient.getString("phoneClient");
+			String firstName=resultClient.getString("FirstNameClient");
+			int ID=resultClient.getInt("idClient");
+			
+			c=new Customers(nameClient, num, rue, phoneClient, ID);
+			c.setName(firstName, nameClient);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else
+		return c;
+	}
+	
+	//DONE
+	//Recherche de customers par nom et prénom
+	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
+	{
+		ArrayList<Customers> result = new ArrayList<Customers>();
+		
+		ResultSet resultsSamples;
+		String QuerySample="SELECT idClient FROM Client WHERE nameClient='"+lastName+"' AND firstNameClient='"+firstName+"'";
+		
+		try
 		{
-			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
-			return cust;
-		}*/
-		return customer;
-		// Bouml preserved body end 00023545
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			System.out.println(QuerySample);
+
+			while (resultsSamples.next())
+			{
+				System.out.println(resultsSamples.getInt(1));
+				searchCustomerID(resultsSamples.getInt(1));
+
+//				result.add(c);
+				
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête searchCustomerName");
+		}
+
+		
+		return result;
+	}
+	
+	
+	//DONE
+	//Recherche de customers par entreprise
+	public ArrayList<Customers> searchCustomersByCorporation(String firstName, String lastName) 
+	{
+		ArrayList<Customers> result = new ArrayList<Customers>();
+		
+		ResultSet resultsSamples;
+		String QuerySample="";
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				result.add(searchCustomerID(resultsSamples.getInt(1)));
+			}
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête searchCustomerName");
+		}
+		
+		return result;
+	}
+	
+	public Customers searchCustomerProByCorp(String Corpname,String ville,String rue,int num,int CP)
+	{
+		ResultSet resultClient = null;
+		Customers c = new Customers(null, 1, null, null, 1);
+		String query="select * from Client where CorporationName='"+Corpname+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
+		System.out.println(query);
+		try {
+			resultClient=myStatement.executeQuery(query);
+			resultClient.next();
+			
+			String nameClient=resultClient.getString("nameClient");
+			String phoneClient=resultClient.getString("phoneClient");
+			String firstName=resultClient.getString("FirstNameClient");
+			
+			c=new Customers(nameClient, num, rue, phoneClient, 0);
+			c.setName(firstName, nameClient);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return c;
 	}
 
-	public Customers searchCustomerID(int ID) {
-		// Bouml preserved body begin 00043502
+
+	//DONE and works
+	//Recherche de customer via ID
+	public Customers searchCustomerID(int ID) 
+	{
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
 		Customers c = new Customers(null, 1, null, null, 1);
@@ -648,8 +754,10 @@ class Database
 		return c;
 	}
 
-	public void saveCustomer(Customers cust) {
-		// Bouml preserved body begin 00023645
+	//DONE
+	//Sauvegarde un customer
+	public void saveCustomer(Customers cust) 
+	{
 
 		ResultSet resultsNbAdressSociete = null;
 		ResultSet resultsCustomer = null;
@@ -797,8 +905,8 @@ class Database
 			}	
 		}				
 
-		// Bouml preserved body end 00023645
 	}
+	
 
 	public Analysis searchAnalysis(Types_analysis type) {
 		// Bouml preserved body begin 00023745
@@ -1021,7 +1129,7 @@ class Database
 	 */
 	public ArrayList<String> getSampleType() 
 	{
-		ArrayList<String> listT = new ArrayList<String>(); //La liste des différents types d'echantillons
+		ArrayList<String> listT = new ArrayList<String>(); //La liste des diffÃ©rents types d'echantillons
 		String QuerySample="SELECT nameType FROM SampleType";
 		try
 		{

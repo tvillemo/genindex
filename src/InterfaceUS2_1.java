@@ -227,7 +227,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 				{
 					if(proButton.isSelected())
 					{
-						if(fieldNumC.getText().length()==0)
+						/*if(fieldNumC.getText().length()==0)
 						{
 							Object[] options = { "OK" };
 							int n = JOptionPane.showOptionDialog(new JFrame(),
@@ -235,7 +235,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 							       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
 							       options, options);
 							bool = false;
-						}
+						}*/
 						if(fieldCorp.getText().length()==0)
 						{
 							Object[] options = { "OK" };
@@ -287,11 +287,21 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 					custom=d.searchCustomerID(s.intValue());
 					//custom= new Customers();
 				}
-				else
+				else if (fieldNomC.getText().length()!=0&&fieldPrenomC.getText().length()!=0)
 	    		{
-					//custom=" ";
+					Integer numa=Integer.parseInt(fieldNumA.getText());
+					Integer CPa=Integer.parseInt(fieldCP.getText());
+					custom=d.searchCustomerName(fieldNomC.getText(), fieldPrenomC.getText(), fieldVille.getText(), fieldRue.getText(), numa.intValue(), CPa.intValue());
 	    		}
-				
+				else if(proButton.isSelected()&&fieldCorp.getText().length()!=0)
+				{
+					Integer numa=Integer.parseInt(fieldNumA.getText());
+					Integer CPa=Integer.parseInt(fieldCP.getText());
+					custom=d.searchCustomerProByCorp(fieldCorp.getText(), fieldVille.getText(), fieldRue.getText(), numa.intValue(), CPa.intValue());
+				}
+				else{
+					
+				}
 				if(d.IfCustomerExist(custom))
 				{
 					//custom = new Customers()

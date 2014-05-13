@@ -627,11 +627,13 @@ class Database
 		{
 			resultsSamples = myStatement.executeQuery(QuerySample);
 			System.out.println(QuerySample);
-			//resultsSamples.
+
 			while (resultsSamples.next())
 			{
-				System.out.println("2");
-				result.add(searchCustomerID(resultsSamples.getInt(1)));
+				System.out.println(resultsSamples.getInt(1));
+				searchCustomerID(resultsSamples.getInt(1));
+
+//				result.add(c);
 				
 			}
 			
@@ -641,6 +643,7 @@ class Database
 			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête searchCustomerName");
 		}
+
 		
 		return result;
 	}

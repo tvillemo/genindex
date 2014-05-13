@@ -13,7 +13,9 @@ public class Main {
 		c.setAdressClient(new Adress(15,"avenue Pelletier",17000,"Cognac"));
 
 		ArrayList<Customers> x =  d.searchCustomersByName("Sansa", "Clement");
-		System.out.println(x.size());
+		//System.out.println(x.size());
+		System.out.println(d.searchCustomerID(5).getLastName());
+		System.out.println(d.searchCustomerID(42).getLastName());
 		d.close();
 
 	}

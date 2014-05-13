@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -42,9 +43,14 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private Database d;
+	
+	
 	public InterfaceUS2_3()
 	{
-		labNomClient = new JLabel("Nom du client :");
+		d = new Database();
+		//labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
+		labNomClient = new JLabel("Client :" );
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);
 		
@@ -54,7 +60,14 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	            BorderFactory.createEtchedBorder(), "Client :"));
 		
 		labCategorie = new JLabel("Catégorie de l'animal");
+
 		categorie = new JComboBox();
+		categorie.addActionListener(this);
+		ArrayList<String> items = d.getAllCategory();
+		for (int i=0;i< items.size();i++)
+		{
+			categorie.addItem(items.get(i));
+		}
 		JPanel panelAni1 = new JPanel();
 		panelAni1.setLayout(new GridLayout(1,2));
 		panelAni1.add(labCategorie);
@@ -62,6 +75,7 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 		
 		labSp = new JLabel("Espèce de l'animal");
 		espece = new JComboBox();
+		espece.addActionListener(this);
 		JPanel panelAni2 = new JPanel();
 		panelAni2.setLayout(new GridLayout(1,2));
 		panelAni2.add(labSp);
@@ -120,9 +134,18 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	}
 	
 	public void actionPerformed(ActionEvent point)
-    {
-
-    }
+	{
+		if (point.getSource()==categorie)
+		{
+			espece.setEnabled(false);
+			ArrayList<String> items = d.getSpeciesByCategory(categorie.getSelectedItem().toString());
+			for (int i=0;i< items.size();i++)
+			{
+				espece.addItem(items.get(i));
+			}
+		}
+	}
+   
 	
 	public static void main(String[] args) 
 	{    

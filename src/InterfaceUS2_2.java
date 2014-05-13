@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 
@@ -16,6 +17,7 @@ import javax.swing.*;
 public class InterfaceUS2_2 extends JFrame implements ActionListener
 {
 	private JLabel labNomClient;
+	private JLabel labNomC;
 	private JPanel panelClient;
 	
 	private JLabel labNomAnimal;
@@ -31,9 +33,9 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
-	public InterfaceUS2_2()
+	public InterfaceUS2_2(Customers custom)
 	{
-		labNomClient = new JLabel("Nom du client :");
+		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);	
 	
@@ -44,6 +46,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 		
 		labNomAnimal = new JLabel("Nom de l'animal");
 		nomAnimal = new JTextField();
+		nomAnimal.addActionListener(this);
 		JPanel panelAn1 = new JPanel();
 		panelAn1.setLayout(new GridLayout(1,2));
 		panelAn1.add(labNomAnimal);
@@ -51,6 +54,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 		
 		labIDAnimal = new JLabel("Identifiant de l'animal");
 		IDAnimal = new JTextField();
+		IDAnimal.addActionListener(this);
 		JPanel panelAn2 = new JPanel();
 		panelAn2.setLayout(new GridLayout(1,2));
 		panelAn2.add(labIDAnimal);
@@ -69,6 +73,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 		
 		butAnnuler = new JButton("Annuler");
 	    butValider = new JButton("Valider");
+	    butValider.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -87,11 +92,34 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
     
 	public void actionPerformed(ActionEvent point)
     {
-
+		if (point.getSource()==butValider)
+		{
+			boolean bool = true;
+			if(nomAnimal.getText().length()==0) 
+			{
+				if(IDAnimal.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez remplir au moins un des champs", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);
+					bool=false;
+				}
+			}
+			if(bool=true)
+			{
+				
+			}
+		}
+		if(point.getSource()==butAnnuler)
+		{
+			this.dispose();
+		}
     }
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_2 us = new InterfaceUS2_2();
+       //InterfaceUS2_2 us = new InterfaceUS2_2();
     }
 }

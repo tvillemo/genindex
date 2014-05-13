@@ -55,6 +55,9 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private  Customers custom;
+	private Database d=new Database();
+	
 	public InterfaceUS2_1()
 	{
 		proButton   = new JRadioButton("Professionnel"  , false);
@@ -224,7 +227,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 				{
 					if(proButton.isSelected())
 					{
-						if(fieldNumC.getText().length()==0)
+						/*if(fieldNumC.getText().length()==0)
 						{
 							Object[] options = { "OK" };
 							int n = JOptionPane.showOptionDialog(new JFrame(),
@@ -232,7 +235,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 							       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
 							       options, options);
 							bool = false;
-						}
+						}*/
 						if(fieldCorp.getText().length()==0)
 						{
 							Object[] options = { "OK" };
@@ -276,16 +279,58 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 			
 			if(bool == true)
 			{
-				InterfaceUS2_2 test = new InterfaceUS2_2();
-	    		this.dispose();
+				
+				//Customers custom;
+				if(fieldNumC.getText().length()!=0)
+				{
+					Integer s = Integer.parseInt(fieldNumC.getText());
+					custom=d.searchCustomerID(s.intValue());
+					//custom= new Customers();
+				}
+				else if (fieldNomC.getText().length()!=0&&fieldPrenomC.getText().length()!=0)
+	    		{
+					Integer numa=Integer.parseInt(fieldNumA.getText());
+					Integer CPa=Integer.parseInt(fieldCP.getText());
+					custom=d.searchCustomerName(fieldNomC.getText(), fieldPrenomC.getText(), fieldVille.getText(), fieldRue.getText(), numa.intValue(), CPa.intValue());
+	    		}
+				else if(proButton.isSelected()&&fieldCorp.getText().length()!=0)
+				{
+					Integer numa=Integer.parseInt(fieldNumA.getText());
+					Integer CPa=Integer.parseInt(fieldCP.getText());
+					custom=d.searchCustomerProByCorp(fieldCorp.getText(), fieldVille.getText(), fieldRue.getText(), numa.intValue(), CPa.intValue());
+				}
+				else{
+					
+				}
+				if(d.IfCustomerExist(custom))
+				{
+					//custom = new Customers()
+					InterfaceUS2_2 test = new InterfaceUS2_2(custom);
+		    		this.dispose();
+				}
+				else
+				{
+					InterfaceUS1 test = new InterfaceUS1();
+		    		this.dispose();
+				}
+				
+	    		
 			}
 		}
+		d.close();
+		if (point.getSource()==butAnnuler)
+		{
+			this.dispose();
+		}
+		
+		
 		
     }
 	
 	public static void main(String[] args) 
 	{    
        InterfaceUS2_1 us = new InterfaceUS2_1();
+       
     }
 
 }

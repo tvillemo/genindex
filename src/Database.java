@@ -605,19 +605,29 @@ class Database
 		// Bouml preserved body end 000234C5
 	}
 
-	public Customers searchCustomerName(String name) {
-		// Bouml preserved body begin 00023545
-		/*if(name.equals(customer.getLastName()))
+	//Recherche de customers par nom et prénom
+	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
+	{
+		ArrayList<Customers> result = new ArrayList<Customers>();
+		
+		ResultSet resultsSamples;
+		String QuerySample="";
+		
+		try
 		{
-			return customer;
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				result.add(searchCustomerID(resultsSamples.getInt(1)));
+			}
 		}
-		else
+		catch (SQLException ex) 
 		{
-			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
-			return cust;
-		}*/
-		return customer;
-		// Bouml preserved body end 00023545
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête searchCustomerName");
+		}
+		
+		return result;
 	}
 
 	public Customers searchCustomerID(int ID) {
@@ -797,7 +807,6 @@ class Database
 			}	
 		}				
 
-		// Bouml preserved body end 00023645
 	}
 
 	public Analysis searchAnalysis(Types_analysis type) {

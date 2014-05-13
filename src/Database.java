@@ -1279,6 +1279,22 @@ class Database
 			return(-1);
 		}
 	}
+	
+	public int UserConnexion(String login,String mdp){
+		int ok=0;
+		String query="select idClient from Client where login=(select login from user where login='"+login+"' and password='"+mdp+"')";
+		try {
+			ResultSet result=myStatement.executeQuery(query);
+			if (!result.last()){
+				result.next();
+				ok=result.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return ok;
+	}
 
 }
 

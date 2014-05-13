@@ -55,6 +55,9 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private  Customers custom;
+	private Database d;
+	
 	public InterfaceUS2_1()
 	{
 		proButton   = new JRadioButton("Professionnel"  , false);
@@ -276,18 +279,22 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 			
 			if(bool == true)
 			{
-				Customers custom;
+				d = new Database();
+				//Customers custom;
 				if(fieldNumC.getText().length()!=0)
 				{
+					Integer s = Integer.parseInt(fieldNumC.getText());
+					custom=d.searchCustomerID(s.intValue());
 					//custom= new Customers();
 				}
 				else
 	    		{
 					//custom=" ";
 	    		}
-				Database d = new Database();
-				if(d.IfCustomerExist(custom)==true)
+				
+				if(d.IfCustomerExist(custom))
 				{
+					//custom = new Customers()
 					InterfaceUS2_2 test = new InterfaceUS2_2(custom);
 		    		this.dispose();
 				}
@@ -304,6 +311,8 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 		{
 			this.dispose();
 		}
+		
+		d.close();
 		
     }
 	

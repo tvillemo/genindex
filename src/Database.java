@@ -605,20 +605,55 @@ class Database
 		// Bouml preserved body end 000234C5
 	}
 
-	public Customers searchCustomerName(String name) {
-		// Bouml preserved body begin 00023545
-		/*if(name.equals(customer.getLastName()))
-		{
-			return customer;
+	public Customers searchCustomerName(String name,String first,String ville,String rue,int num,int CP) {
+		ResultSet resultClient = null;
+		ResultSet resultAdress = null;
+		Customers c = new Customers(null, 1, null, null, 1);
+		String query="select idClient,nameClient,idAdress,phoneClient,firstNameClient from Client where nameClient='"+name+"' and firstNameClient='"+first+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
+		try {
+			resultClient=myStatement.executeQuery(query);
+			resultClient.next();
+			
+			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
+			
+			
+			String nameClient=resultClient.getString("nameClient");
+			String phoneClient=resultClient.getString("phoneClient");
+			String firstName=resultClient.getString("FirstNameClient");
+			int ID=resultClient.getInt("idClient");
+			
+			c=new Customers(nameClient, num, rue, phoneClient, ID);
+			c.setName(firstName, nameClient);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		else
-		{
-			Customers cust = new Customers("jean", "dupond", 86000,"Poitiers", "090909",1);
-			return cust;
-		}*/
-		return customer;
-		// Bouml preserved body end 00023545
+		return c;
 	}
+	
+	public Customers searchCustomerProByCorp(String Corpname,String ville,String rue,int num,int CP)
+	{
+		ResultSet resultClient = null;
+		Customers c = new Customers(null, 1, null, null, 1);
+		String query="select * from Client where CorporationName='"+Corpname+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
+		System.out.println(query);
+		try {
+			resultClient=myStatement.executeQuery(query);
+			resultClient.next();
+			
+			String nameClient=resultClient.getString("nameClient");
+			String phoneClient=resultClient.getString("phoneClient");
+			String firstName=resultClient.getString("FirstNameClient");
+			
+			c=new Customers(nameClient, num, rue, phoneClient, 0);
+			c.setName(firstName, nameClient);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return c;
+	}
+
 
 	public Customers searchCustomerID(int ID) {
 		// Bouml preserved body begin 00043502
@@ -799,6 +834,7 @@ class Database
 
 		// Bouml preserved body end 00023645
 	}
+	
 
 	public Analysis searchAnalysis(Types_analysis type) {
 		// Bouml preserved body begin 00023745

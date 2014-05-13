@@ -631,9 +631,7 @@ class Database
 			while (resultsSamples.next())
 			{
 				System.out.println(resultsSamples.getInt(1));
-				searchCustomerID(resultsSamples.getInt(1));
-
-//				result.add(c);
+				//result.add(searchCustomerID(resultsSamples.getInt(1)));
 				
 			}
 			
@@ -1165,5 +1163,6 @@ class Database
 			return(-1);
 		}
 	}
+
 }
 

@@ -56,7 +56,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	private JPanel panelButton;
 	
 	private  Customers custom;
-	private Database d;
+	private Database d=new Database();
 	
 	public InterfaceUS2_1()
 	{
@@ -279,7 +279,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 			
 			if(bool == true)
 			{
-				d = new Database();
+				
 				//Customers custom;
 				if(fieldNumC.getText().length()!=0)
 				{
@@ -307,18 +307,20 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	    		
 			}
 		}
+		d.close();
 		if (point.getSource()==butAnnuler)
 		{
 			this.dispose();
 		}
 		
-		d.close();
+		
 		
     }
 	
 	public static void main(String[] args) 
 	{    
        InterfaceUS2_1 us = new InterfaceUS2_1();
+       
     }
 
 }

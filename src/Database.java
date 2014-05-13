@@ -1021,7 +1021,7 @@ class Database
 	 */
 	public ArrayList<String> getSampleType() 
 	{
-		ArrayList<String> listT = new ArrayList<String>(); //La liste des diffÃ©rents types d'echantillons
+		ArrayList<String> listT = new ArrayList<String>(); //La liste des différents types d'echantillons
 		String QuerySample="SELECT nameType FROM SampleType";
 		try
 		{

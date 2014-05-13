@@ -17,7 +17,7 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 {
 
 	private JPanel ajoutPanel;
-	private JLabel nomLabel, catLabel, label1, label2;
+	private JLabel nomLabel, catLabel, labelSeparation1, labelSeparation2;
 	private JTextField nomField;
 	private JComboBox catBox;
 	private JButton valideButton, annuleButton;
@@ -33,8 +33,8 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 		
 		nomLabel = new JLabel("Nom de l'espèce :");
 		catLabel = new JLabel("Catégorie associée :");
-		label1 = new JLabel();
-		label2 = new JLabel();
+		labelSeparation1 = new JLabel();
+		labelSeparation2 = new JLabel();
 		
 		nomField = new JTextField();
 		
@@ -62,8 +62,8 @@ public class InterfaceUS3 extends JFrame implements ActionListener
 		ajoutPanel.add(nomField);
 		ajoutPanel.add(catLabel);
 		ajoutPanel.add(catBox);
-		ajoutPanel.add(label1);
-		ajoutPanel.add(label2);
+		ajoutPanel.add(labelSeparation1);
+		ajoutPanel.add(labelSeparation2);
 		ajoutPanel.add(valideButton);
 		ajoutPanel.add(annuleButton);
 		

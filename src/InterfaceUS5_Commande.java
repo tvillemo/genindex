@@ -48,9 +48,10 @@ public class InterfaceUS5_Commande extends JFrame implements ActionListener
 	
 	public void actionPerformed(ActionEvent point)
     {
+		Customers c;
 		if (point.getSource()==butAnnuler)
 		{
-			InterfaceUS5_Client retour = new InterfaceUS5_Client();
+			InterfaceUS5_Client retour = new InterfaceUS5_Client(c);
     		this.dispose();
 		}
     }

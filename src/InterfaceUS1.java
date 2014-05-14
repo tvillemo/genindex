@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 
@@ -13,22 +14,91 @@ import javax.swing.*;
  * @author Robin
  */
 
-public class InterfaceUS1 extends JPanel {  
+
+public class InterfaceUS1 extends JFrame implements  ActionListener{
+    
+  
 
      private JButton valider;
      private JRadioButton proButton;
+
     private JRadioButton parButton;
+    private String last;
+    private JTextField nRTF;
+    private JTextField rTF;
+    private JTextField cDTF;        
+    private JTextField vTF;        
+    private JTextField nTF;        
+    private JTextField pTF;        
+    private JTextField tTF;         
+    private JTextField fTF; 
+    private boolean pro = false;
+    private JFrame frame;
+    private JPanel adresse;
+    private JPanel radioPanel;
+    private ButtonGroup bgroup;
+    private JLabel numRue;
+    private JLabel rue;
+    private JPanel zone1;
+    private JPanel zone3;
+    private JPanel zone4;
+    private JPanel zone5;
+    private JPanel zone6;
+    private JPanel zone7;
+    private JPanel zone2;
+    private JPanel zone8;
+    private JLabel codePostal;
+    private JLabel ville;
+    private JLabel nom;
+    private JLabel prenom;
+    private JLabel telephone;
+    private JLabel fax;
+    private JLabel champ;
+    private JPanel infoClient;
+    private JTextField nSTF;
+    private JTextField nRTF2;
+    private JTextField rTF2;
+    private JTextField cDTF2;        
+    private JTextField vTF2;  
+    private JTextField depTF;
+    private JTextField mailTF;
+    private JPanel infoPar;
+    
+    private JLabel nomSociete;
+    private JPanel zone10;
+    private JPanel zone11;
+    private JLabel numRue2;
+    private JLabel rue2;
+    private JPanel zone22;
+    private JLabel codePostal2;
+    private JLabel ville2;
+    private JPanel zone44;
+    private JPanel zone33;
+    private JLabel dep;
+    private JPanel zone43;
+    private JPanel adressePro;
+    private JLabel mailF;      
+    private JPanel infoPro;
+    private JPanel zone42;
+    private Adress adressPro;
+    private Adress adress;
+    
+    private boolean save;
+    
+    private Database d = new Database();
+    
     
     public InterfaceUS1 (){
+    	
         /* Panel du haut avec les radioButton*/
-    JRadioButton proButton   = new JRadioButton("Professionnel"  , false);
-    JRadioButton parButton    = new JRadioButton("Particulier"   , false);
-    
-    ButtonGroup bgroup = new ButtonGroup();
+	    proButton   = new JRadioButton("Professionnel"  , false);
+	    parButton    = new JRadioButton("Particulier"   , false);
+	    
+    bgroup = new ButtonGroup();
     bgroup.add(proButton);
     bgroup.add(parButton);
     
-    JPanel radioPanel = new JPanel();
+    radioPanel = new JPanel();
     radioPanel.setLayout(new GridLayout(2, 1));
     radioPanel.add(proButton);
     radioPanel.add(parButton);
@@ -36,75 +106,72 @@ public class InterfaceUS1 extends JPanel {
     radioPanel.setBorder(BorderFactory.createTitledBorder(
            BorderFactory.createEtchedBorder(), "Type de client :"));
     
+    proButton.addActionListener(this);
+    
        /*Panel avec les info du client*/
   
-    JLabel nomSociete = new JLabel("* Nom de Societe :");
-    JTextField nSTF = new JTextField ();
-    JPanel zone = new JPanel();
-    zone.setLayout(new GridLayout(1,2));
-    zone.add(nomSociete);
-    zone.add(nSTF);
+   
     
-    JLabel numRue = new JLabel(" Numero de rue :");
-    JTextField nRTF = new JTextField ();
-    JPanel zone1 = new JPanel();
+    numRue = new JLabel(" Numero de rue :");
+    nRTF = new JTextField ();
+    zone1 = new JPanel();
     zone1.setLayout(new GridLayout(1,2));
     zone1.add(numRue);
     zone1.add(nRTF);
     
-    JLabel rue = new JLabel(" Nom de rue :");
-    JTextField rTF = new JTextField ();
-    JPanel zone2 = new JPanel();
+    rue = new JLabel(" Nom de rue :");
+    rTF = new JTextField ();
+    zone2 = new JPanel();
     zone2.setLayout(new GridLayout(1,2));
     zone2.add(rue);
     zone2.add(rTF);
     
-    JLabel codePostal = new JLabel("Code postal :");
-    JTextField cDTF = new JTextField ();
-    JPanel zone3 = new JPanel();
+    codePostal = new JLabel("Code postal :");
+    cDTF = new JTextField ();
+    zone3 = new JPanel();
     zone3.setLayout(new GridLayout(1,2));
     zone3.add(codePostal);
     zone3.add(cDTF);
     
-    JLabel ville = new JLabel("Nom de la ville :");
-    JTextField vTF = new JTextField ();
-    JPanel zone4 = new JPanel();
+    ville = new JLabel("Nom de la ville :");
+    vTF = new JTextField ();
+    zone4 = new JPanel();
     zone4.setLayout(new GridLayout(1,2));
     zone4.add(ville);
     zone4.add(vTF);
     
-    JLabel nom = new JLabel("*Nom du client :");
-    JTextField nTF = new JTextField ();
-    JPanel zone5 = new JPanel();
+    nom = new JLabel("*Nom du client :");
+    nTF = new JTextField ();
+    zone5 = new JPanel();
     zone5.setLayout(new GridLayout(1,2));
     zone5.add(nom);
     zone5.add(nTF);
     
-    JLabel prenom = new JLabel("*Prenom du client :");
-    JTextField pTF = new JTextField ();
-    JPanel zone6 = new JPanel();
+    prenom = new JLabel("*Prenom du client :");
+    pTF = new JTextField ();
+    zone6 = new JPanel();
     zone6.setLayout(new GridLayout(1,2));
     zone6.add(prenom);
     zone6.add(pTF);
     
-    JLabel telephone = new JLabel("*Telephone du client :");
-    JTextField tTF = new JTextField ();
-    JPanel zone7 = new JPanel();
+    telephone = new JLabel("*Telephone du client :");
+    tTF = new JTextField ();
+    zone7 = new JPanel();
     zone7.setLayout(new GridLayout(1,2));
     zone7.add(telephone);
     zone7.add(tTF);
     
-    JLabel fax = new JLabel("Fax du client :");
-    JTextField fTF = new JTextField ();
-    JPanel zone8 = new JPanel();
+    fax = new JLabel("Fax du client :");
+    fTF = new JTextField ();
+    zone8 = new JPanel();
     zone8.setLayout(new GridLayout(1,2));
     zone8.add(fax);
     zone8.add(fTF);
     
-    JLabel champ = new JLabel("* : Champ obligatoire");
+    champ = new JLabel("* : Champ obligatoire");
     
     /*Adresse*/
-    JPanel adresse = new JPanel();
+    adresse = new JPanel();
     adresse.setLayout(new GridLayout(2, 2));
     adresse.add(zone1);
     adresse.add(zone2);
@@ -115,37 +182,211 @@ public class InterfaceUS1 extends JPanel {
            BorderFactory.createEtchedBorder(), "Adresse du client :"));
     
      /*Buton valider*/
-    JButton valider = new JButton ("Valider");
-    valider.setSize(1,2);
+
+     valider = new JButton ("Valider");
+     valider.addActionListener(this);
+     
+     
+     
+     
+    infoPar = new JPanel();
+    infoPar.setLayout(new GridLayout(6, 2));
+    infoPar.add(zone5);
+    infoPar.add(zone6);
+    infoPar.add(zone7);
+    infoPar.add(zone8);
+    infoPar.add(adresse);
+    infoPar.add(champ);
+    infoPar.setBorder(BorderFactory.createTitledBorder(
+           BorderFactory.createEtchedBorder(), "Saisie des informations relatives au client particulier :"));
+
     
-    /*Info client*/
-    JPanel infoClient = new JPanel();
-    infoClient.setLayout(new GridLayout(9, 2));
-    infoClient.add(zone);
-    infoClient.add(adresse);
-    infoClient.add(zone5);
-    infoClient.add(zone6);
-    infoClient.add(zone7);
-    infoClient.add(zone8);
-    infoClient.add(champ);
-    infoClient.add(valider);
+    
+    //infoClient
+    infoClient = new JPanel();
+    infoClient.setLayout(new GridLayout(1,1));
+    infoClient.add(infoPar);
     infoClient.setBorder(BorderFactory.createTitledBorder(
            BorderFactory.createEtchedBorder(), "Saisie des informations relatives au client :"));
     
     
-   
+   /*Info Pro*/
+    
+        
+    nomSociete = new JLabel("* Nom de Societe :");
+    nSTF = new JTextField ();
+    zone10 = new JPanel();
+    zone10.setLayout(new GridLayout(1,2));
+    zone10.add(nomSociete);
+    zone10.add(nSTF);
+    
+    numRue2 = new JLabel(" *Numero de rue :");
+    nRTF2 = new JTextField ();
+    zone11 = new JPanel();
+    zone11.setLayout(new GridLayout(1,2));
+    zone11.add(numRue2);
+    zone11.add(nRTF2);
+    
+    rue2 = new JLabel(" *Nom de rue :");
+    rTF2 = new JTextField ();
+    zone22 = new JPanel();
+    zone22.setLayout(new GridLayout(1,2));
+    zone22.add(rue2);
+    zone22.add(rTF2);
+    
+    codePostal2 = new JLabel("*Code postal :");
+    cDTF2 = new JTextField ();
+    zone33 = new JPanel();
+    zone33.setLayout(new GridLayout(1,2));
+    zone33.add(codePostal2);
+    zone33.add(cDTF2);
+    
+    ville2 = new JLabel("*Nom de la ville :");
+    vTF2 = new JTextField ();
+    zone44 = new JPanel();
+    zone44.setLayout(new GridLayout(1,2));
+    zone44.add(ville2);
+    zone44.add(vTF2);
+    
+    dep = new JLabel("*Departement de facturation :");
+    depTF = new JTextField ();
+    zone42 = new JPanel();
+    zone42.setLayout(new GridLayout(1,2));
+    zone42.add(dep);
+    zone42.add(depTF);
+    
+    mailF = new JLabel("*Mail de Facturation :");
+    mailTF = new JTextField ();
+    zone43 = new JPanel();
+    zone43.setLayout(new GridLayout(1,2));
+    zone43.add(mailF);
+    zone43.add(mailTF);
+    
+    /*Adresse*/
+    adressePro = new JPanel();
+    adressePro.setLayout(new GridLayout(2, 1));
+    adressePro.add(zone11);
+    adressePro.add(zone22);
+    adressePro.add(zone33);
+    adressePro.add(zone44);
+    
+    adressePro.setBorder(BorderFactory.createTitledBorder(
+          BorderFactory.createEtchedBorder(), "*Adresse de facturation :"));
+    
+    
+    
+    /*Info client pro*/
+    infoPro = new JPanel();
+    //infoPro.setLayout(new GridLayout(9, 2));
+    infoPro.add(zone10);
+    infoPro.add(zone42);
+    infoPro.add(zone43);
+    infoPro.add(adressePro);
+    infoPro.setBorder(BorderFactory.createTitledBorder(
+           BorderFactory.createEtchedBorder(), "Saisie des informations relatives au client Profesionnel :"));
+    
+    
+    
+    
     /*On ajoute tout au putain de frame*/
-    JFrame frame = new JFrame("US1");
+    frame = new JFrame("US1");
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.add(radioPanel, BorderLayout.PAGE_START);
-    frame.add(infoClient, BorderLayout.PAGE_END);
+    frame.add(infoClient);
+    frame.add(valider, BorderLayout.PAGE_END);
     JFrame.setDefaultLookAndFeelDecorated(true);
         
     frame.pack();
     frame.setVisible(true);
     }
     
-    public static void main(String[] args) {    
-                InterfaceUS1 us = new InterfaceUS1();
+
+    
+    
+    /********************************************************************/
+    
+   
+   
+    
+     @Override
+    public void actionPerformed(ActionEvent e) {
+        if ( e.getSource() == proButton )
+        {
+            if (proButton.isSelected()) {
+                System.out.println("Pro");
+                     pro = true;  
+                     infoClient.removeAll();
+                     infoClient.setLayout(new GridLayout(2, 2));
+                     infoClient.add(infoPar);
+                     infoClient.add(infoPro);                    
+                     infoClient.setBorder(BorderFactory.createTitledBorder(
+                               BorderFactory.createEtchedBorder(), "Saisie des informations relatives au client :"));
+
+                     
+                     frame.revalidate();
+                }
+            else {  
+                pro = false;
+                infoClient.removeAll();
+                //infoClient.setLayout(new GridLayout(9, 2));
+                infoClient.add(adresse);
+                infoClient.add(zone5);
+                infoClient.add(zone6);
+                infoClient.add(zone7);
+                infoClient.add(zone8);
+                infoClient.add(champ);
+                infoClient.add(valider);
+                infoClient.setBorder(BorderFactory.createTitledBorder(
+                          BorderFactory.createEtchedBorder(), "Saisie des informations relatives au client :"));
+
+                infoClient.revalidate();
+            }
+        }
+        if ( e.getSource() == valider ) {
+        	System.out.println("Valide ok");
+        	Customers C = new Customers (nTF.getText(),//Nom
+        		Integer.parseInt(nRTF.getText()),// numero rue
+        		rTF.getText(),// rue
+        		tTF.getText(),// telephone
+        		0);// Id
+	        if(!fTF.getText().isEmpty()) {
+	        	C.setFax(fTF.getText());
+	        }
+	        else {
+	        	C.setFax(null);
+	        }
+	        C.setPro(pro);
+	        C.setName(pTF.getText(),nTF.getText());
+	        adress = new Adress(Integer.parseInt(nRTF.getText()),rTF.getText(),Integer.parseInt(cDTF.getText()),vTF.getText());
+	        C.setAdressClient(adress);
+	        if (pro) {
+	        	C.setNomSociete(nSTF.getText());
+	        	C.setDepartementFacturation(depTF.getText());
+	        	C.setEmail(mailTF.getText());
+	        	adressPro = new Adress(Integer.parseInt(nRTF2.getText()),rTF2.getText(),Integer.parseInt(cDTF2.getText()),vTF2.getText());
+	        	C.setAdressFacturation(adressPro);
+	        }	        	      
+	        
+	        
+	        
+	        save = d.saveCustomer(C);
+	        
+	        d.close();
+	       
+	        
+	        if (save) {
+	        	JOptionPane.showMessageDialog(this, "Le client a bien été ajouté", "Enregistrement", JOptionPane.ERROR_MESSAGE);
+	        }
+	        else {
+	        	JOptionPane.showMessageDialog(this, "Le client existe déjà dans la base de données", "Enregistrement", JOptionPane.ERROR_MESSAGE);
+	        }
+        }             
+    }
+    
+    
+
+    public static void main(String[] args) { 
+    	InterfaceUS1 us = new InterfaceUS1();
+                              
     }
 }

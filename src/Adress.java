@@ -116,6 +116,6 @@ class Adress {
   
   public String toString()
   {
-  	return number+" "+street+" "+zipcode+" "+city;
+  	return number+" "+street+" "+zipCode+" "+city;
   }
 }

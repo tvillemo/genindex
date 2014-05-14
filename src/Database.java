@@ -797,7 +797,7 @@ class Database
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
 		try 
 		{
-			resultClient=tmpMyStatement.executeQuery(query);
+			resultClient=myStatement.executeQuery(query);
 			resultClient.next();
 			
 			query="select num,street,cp,town from Adress where idAdress="+resultClient.getInt("idAdress");

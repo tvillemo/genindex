@@ -17,6 +17,13 @@ private String name;
 	  this.numberBirthday = birthday;
     // Bouml preserved body end 00020D83
   }
+  
+  public Animals(int id, String nameAnimal) {
+	    // Bouml preserved body begin 00020D83
+		  this.IdAnimal = id;
+		  this.name = nameAnimal;
+	    // Bouml preserved body end 00020D83
+	  }
 
   public String getSpecie() {
     // Bouml preserved body begin 00022C83

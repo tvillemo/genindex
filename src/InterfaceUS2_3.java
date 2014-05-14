@@ -43,14 +43,19 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
-	private Database d;
+	private Customers custom;
+	
+	private Database d = new Database();
 	
 	
-	public InterfaceUS2_3()
+	public InterfaceUS2_3(Customers custom)
 	{
+		System.out.println("coucou");
 		d = new Database();
-		//labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
-		labNomClient = new JLabel("Client :" );
+		this.custom=custom;
+		System.out.println("coucou pito");
+		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
+		System.out.println("coucou pito pito");
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);
 		
@@ -144,11 +149,16 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 				espece.addItem(items.get(i));
 			}
 		}
+		
+		if (point.getSource()==butAnnuler)
+		{
+			this.dispose();
+		}
 	}
    
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_3 us = new InterfaceUS2_3();
+       InterfaceUS2_3 us = new InterfaceUS2_3(new Customers("dupond", 86000,"Poitiers", "090909",1));
     }
 }

@@ -223,7 +223,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 			}
 			if(fieldNumC.getText().length()==0)
 			{
-				if( fieldNomC.getText().length()==0 | fieldPrenomC.getText().length()==0 )
+				if( fieldNomC.getText().length()==0 || fieldPrenomC.getText().length()==0 )
 				{
 					if(proButton.isSelected())
 					{
@@ -285,7 +285,6 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 				{
 					Integer s = Integer.parseInt(fieldNumC.getText());
 					custom=d.searchCustomerID(s.intValue());
-					//custom= new Customers();
 				}
 				else if (fieldNomC.getText().length()!=0&&fieldPrenomC.getText().length()!=0)
 	    		{
@@ -330,6 +329,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	public static void main(String[] args) 
 	{    
        InterfaceUS2_1 us = new InterfaceUS2_1();
+
        
     }
 

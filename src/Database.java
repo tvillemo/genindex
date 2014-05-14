@@ -182,6 +182,21 @@ class Database
 	 */
 	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
 	{
+		Statement tmp1MyStatement = null;
+		Statement tmp2MyStatement = null;
+		try 
+		{
+			tmp1MyStatement = myConnexion.createStatement();
+			tmp2MyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 		ResultSet resultsOrder = null;
 		ResultSet resultsCountTot = null;
 		ResultSet resultsCountAnalyzed = null;
@@ -205,8 +220,11 @@ class Database
 				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
 				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
 				
-				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
-				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				resultsCountTot =  tmp1MyStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = tmp2MyStatement.executeQuery(QueryOrderAnalyzed);
+				
+				resultsCountTot.next();
+				resultsCountAnalyzed.next();
 				
 				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
 				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));
@@ -289,9 +307,10 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 
-	public void saveOrder(Orders order,int idClient,int analyse) 
+	//DONE
+	public void saveOrder(Orders order,int analyse,int idClient,int nbEch,int prio) 
 	{
-		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
+		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
 		{
 			for (Samples s : order.getSamples())
@@ -392,8 +411,14 @@ class Database
 		{
 			System.out.println("Erreur requête IfAnimalExist");
 		}
+		catch(NullPointerException e)
+		{
+			System.out.println("coucou");
+		}
+		
 		
 		return bool;
+		
 	}
 	
 	//DONE and WORKS
@@ -478,6 +503,31 @@ class Database
 		}
 		return maListe;
 	}
+	
+	//Author : Anne-So/Marion
+	public ArrayList<String> getAnalyseByAnimal(int idAnimal) 
+	{
+		ArrayList<String> maListe = new ArrayList<String>();
+		ResultSet resultsSamples;
+		String QuerySample="SELECT nameCategory FROM Category, Species, Animal WHERE Category.idCategory=Species.idCategory AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
+		String nomCat;
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples.next();
+			nomCat=resultsSamples.getString("nameCategory");
+			maListe=getAnalyseByCategory(nomCat);
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getAnalyseByAnimal");
+		}
+		return maListe;
+	}
+	
 
 	//DONE and WORKS (Peut être rajouter la liste des analyses)
 	@SuppressWarnings("deprecation")
@@ -750,8 +800,7 @@ class Database
 			resultClient=tmpMyStatement.executeQuery(query);
 			resultClient.next();
 			
-			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
-			
+			query="select num,street,cp,town from Adress where idAdress="+resultClient.getInt("idAdress");
 			
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
@@ -761,12 +810,13 @@ class Database
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
+			c.setAdressClient(new Adress(resultClient.getInt("num"),resultClient.getString("street"),resultClient.getInt("cp"),resultClient.getString("town")));
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
 		return c;
-	}
+	}	
 
 	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
@@ -1129,6 +1179,23 @@ class Database
 		return(-1);
 	}
 	
+	public int getIdTest(String test) 
+	{
+		String QuerySample="Select idTest From testType Where nameTest = '"+test+"'";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête recupere idCategory");
+		}
+		return(-1);
+	}
+	
 	/**
 	 * This function permits to save a species in the database
 	 * @param : name of the species, id of the category
@@ -1288,6 +1355,23 @@ class Database
 		}
 	}
 	
+
+	public java.sql.Date dateJour()
+	{
+		String QuerySample="SELECT sysdate as ate FROM DUAL";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(monRes.getDate("ate"));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete selection de la date");
+			return(null);
+		}
+	}
+
 
 	/**
 	 * This function permits to get list length
@@ -1449,6 +1533,45 @@ class Database
 		}
 		return ok;
 	}
+	
+	public void printOrder(ArrayList<Orders> listOrder){
+		System.out.println("%>");
+		System.out.println("<span id=\"order\">");
+		System.out.println("<table>");
+		System.out.println("<tr>");
+		System.out.println("<td>");
+		System.out.println("Numéro de commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Statut de la commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon analysés");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon totaux");
+		System.out.println("</td>");
+		System.out.println("</tr>");
+		for (Orders o : listOrder){
+			System.out.println("<tr>");
+			System.out.println("<td>");
+			System.out.println(o.getId());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getStatus());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbSampleAnalysed());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbTotSample());
+			System.out.println("</td>");
+			System.out.println("</tr>");
+		}
 
+		System.out.println("</table>");
+		System.out.println("</span>");
+		System.out.println("<%");
+	}
 }
 

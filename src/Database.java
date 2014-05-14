@@ -693,6 +693,20 @@ class Database
 	//Recherche de customers par nom et prénom
 	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
 	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+		
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
 		ResultSet resultsSamples;
@@ -700,7 +714,7 @@ class Database
 		
 		try
 		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples = tmpMyStatement.executeQuery(QuerySample);
 			System.out.println(QuerySample);
 			//resultsSamples.
 			while (resultsSamples.next())
@@ -715,7 +729,7 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println(ex.getMessage());
-			System.out.println("Erreur requête searchCustomerName");
+			System.out.println("Erreur requête searchCustomerByName");
 		}
 
 		

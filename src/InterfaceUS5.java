@@ -191,13 +191,13 @@ public class InterfaceUS5 extends JFrame implements ActionListener
 					c=d.searchCustomerID(s);
 					ArrayList<Customers> liste = new ArrayList<Customers>();
 					liste.add(c);
-					InterfaceUS5_Commande test = new InterfaceUS5_Commande();
+					InterfaceUS5_Commande test = new InterfaceUS5_Commande(liste);
 					this.dispose();
 				}
-				else if ((fieldNomC.getText().length()!=0) && (fieldPrenomC.getText().length()!=0))
+				else if ((fieldPrenomC.getText().length()!=0) && (fieldNomC.getText().length()!=0))
 				{
 					ArrayList<Customers> liste = new ArrayList<Customers>();
-					liste = d.searchCustomersByName(fieldPrenomC.getText(), fieldPrenomC.getText());
+					liste = d.searchCustomersByName(fieldPrenomC.getText(), fieldNomC.getText());
 					InterfaceUS5_Client test = new InterfaceUS5_Client(liste);
 					this.dispose();
 				}

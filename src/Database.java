@@ -182,6 +182,21 @@ class Database
 	 */
 	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
 	{
+		Statement tmp1MyStatement = null;
+		Statement tmp2MyStatement = null;
+		try 
+		{
+			tmp1MyStatement = myConnexion.createStatement();
+			tmp2MyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 		ResultSet resultsOrder = null;
 		ResultSet resultsCountTot = null;
 		ResultSet resultsCountAnalyzed = null;
@@ -205,8 +220,11 @@ class Database
 				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
 				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
 				
-				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
-				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				resultsCountTot =  tmp1MyStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = tmp2MyStatement.executeQuery(QueryOrderAnalyzed);
+				
+				resultsCountTot.next();
+				resultsCountAnalyzed.next();
 				
 				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
 				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));

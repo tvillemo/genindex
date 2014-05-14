@@ -91,7 +91,6 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 		panelButton.add(butValider);
 
 	    panelChoix = new JPanel();
-	    panelButton.setLayout(new GridLayout(3, 1));
 	    panelChoix.add(scrollpane);
 	    panelChoix.add(panelChoixNum);
 	    panelChoix.add(panelButton);

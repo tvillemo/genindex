@@ -800,8 +800,7 @@ class Database
 			resultClient=tmpMyStatement.executeQuery(query);
 			resultClient.next();
 			
-			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
-			
+			query="select num,street,cp,town from Adress where idAdress="+resultClient.getInt("idAdress");
 			
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
@@ -811,12 +810,13 @@ class Database
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
+			c.setAdressClient(new Adress(resultClient.getInt("num"),resultClient.getString("street"),resultClient.getInt("cp"),resultClient.getString("town")));
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
 		return c;
-	}
+	}	
 
 	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645

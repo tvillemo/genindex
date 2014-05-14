@@ -22,9 +22,9 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	private JPanel panelClient;
 	
 	private JLabel labCategorie;
-	private JComboBox categorie;
+	private JComboBox<String> categorie;
 	private JLabel labSp;
-	private JComboBox espece;
+	private JComboBox<String> espece = new JComboBox<String>();
 	private JLabel labNomAn;
 	private JTextField nomAnimal;
 	private JLabel labSexe;
@@ -43,19 +43,27 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private Animals animal;
+	
+	private int count=0;
 	private Customers custom;
 	
 	private Database d = new Database();
 	
 	
-	public InterfaceUS2_3(Customers custom)
+	public InterfaceUS2_3(Customers custom, String nomEntre)
 	{
-		System.out.println("coucou");
+		//System.out.println("coucou");
+		
 		d = new Database();
-		this.custom=custom;
-		System.out.println("coucou pito");
+		this.custom=custom; 
+		
+		//System.out.println("coucou pito"); 
+		
 		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
-		System.out.println("coucou pito pito");
+		
+		//System.out.println("coucou pito pito");
+		
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);
 		
@@ -66,28 +74,30 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 		
 		labCategorie = new JLabel("Catégorie de l'animal");
 
-		categorie = new JComboBox();
+		categorie = new JComboBox<String>();
+				
 		categorie.addActionListener(this);
 		ArrayList<String> items = d.getAllCategory();
-		for (int i=0;i< items.size();i++)
+		
+		for (String s: items)
 		{
-			categorie.addItem(items.get(i));
+			categorie.addItem(s);
 		}
+		
 		JPanel panelAni1 = new JPanel();
 		panelAni1.setLayout(new GridLayout(1,2));
 		panelAni1.add(labCategorie);
 		panelAni1.add(categorie);
 		
 		labSp = new JLabel("Espèce de l'animal");
-		espece = new JComboBox();
-		espece.addActionListener(this);
 		JPanel panelAni2 = new JPanel();
 		panelAni2.setLayout(new GridLayout(1,2));
 		panelAni2.add(labSp);
 		panelAni2.add(espece);
 		
+		
 		labNomAn = new JLabel("Nom de l'animal");
-		nomAnimal = new JTextField();
+		nomAnimal = new JTextField(nomEntre);
 		JPanel panelAni3 = new JPanel();
 		panelAni3.setLayout(new GridLayout(1,2));
 		panelAni3.add(labNomAn);
@@ -95,6 +105,8 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 		
 		labSexe = new JLabel("Sexe de l'animal");
 		sexe = new JComboBox();
+		sexe.addItem("Male");
+		sexe.addItem("Femelle");
 		JPanel panelAni4 = new JPanel();
 		panelAni4.setLayout(new GridLayout(1,2));
 		panelAni4.add(labSexe);
@@ -122,6 +134,8 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 		
 		butAnnuler = new JButton("Annuler");
 	    butValider = new JButton("Valider");
+	    butValider.addActionListener(this);
+	    butAnnuler.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -141,12 +155,58 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	public void actionPerformed(ActionEvent point)
 	{
 		if (point.getSource()==categorie)
-		{
-			espece.setEnabled(false);
+		{	
 			ArrayList<String> items = d.getSpeciesByCategory(categorie.getSelectedItem().toString());
+			InterfaceUS2_3.this.espece.removeAllItems();
 			for (int i=0;i< items.size();i++)
 			{
-				espece.addItem(items.get(i));
+				System.out.println(items.get(i));
+				InterfaceUS2_3.this.espece.addItem(items.get(i));
+			}
+
+			InterfaceUS2_3.this.espece.repaint();
+		}
+		
+		if(point.getSource()==butValider)
+		{
+			boolean bool=true;
+			if(nomAnimal.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le nom de l'animal", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);
+				 bool = false;
+			}
+			if(dateNaissance.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir la date de naissance de l'animal", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);
+				 bool = false;
+			}
+			if(bool=true)
+			{
+				int sex=1;
+				String s=sexe.getSelectedItem().toString();
+				if(sexe.getSelectedItem().toString()=="Male")
+				{
+					sex=1;
+				}
+				else
+				{
+					sex=0;
+				}
+				animal = new Animals(sex, nomAnimal.getText(), espece.getSelectedItem().toString(), dateNaissance.getText());
+				d.saveAnimal(animal);
+				int idTmp;
+				idTmp = d.getMaxID();
+				animal.setIdAnimal(idTmp);
+				InterfaceUS2_4 test = new InterfaceUS2_4(animal,custom);
+	    		this.dispose();
 			}
 		}
 		
@@ -159,6 +219,6 @@ public class InterfaceUS2_3 extends JFrame implements ActionListener
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_3 us = new InterfaceUS2_3(new Customers("dupond", 86000,"Poitiers", "090909",1));
+       InterfaceUS2_3 us = new InterfaceUS2_3(new Customers("dupond", 86000,"Poitiers", "090909",1), "pp");
     }
 }

@@ -176,6 +176,7 @@ class Database
 		// Bouml preserved body end 0003D002
 	}
 
+
 	//DONE
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
@@ -290,7 +291,7 @@ class Database
 	 */
 
 	//DONE
-	public void saveOrder(Orders order,int analyse,int idClient) 
+	public void saveOrder(Orders order,int analyse,int idClient, int nbEch, int prio) 
 	{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
@@ -491,15 +492,16 @@ class Database
 	{
 		ArrayList<String> maListe = new ArrayList<String>();
 		ResultSet resultsSamples;
-		String QuerySample="SELECT nameCategory FROM Category, Species, Animal WHERE Category.idCategory=Species.idCategory AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
-		String nomCat;
+		String QuerySample="SELECT nameTest FROM TestType, Can, Species, Animal WHERE TestType.idTest=Can.idTest AND Can.idSpecies=Species.idSpecies AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
 		
 		try
 		{
+			System.out.println(QuerySample);
 			resultsSamples = myStatement.executeQuery(QuerySample);
-			resultsSamples.next();
-			nomCat=resultsSamples.getString("nameCategory");
-			maListe=getAnalyseByCategory(nomCat);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("nameTest"));
+			}
 			
 		}
 		catch (SQLException ex) 
@@ -508,6 +510,29 @@ class Database
 			System.out.println("Erreur requête getAnalyseByAnimal");
 		}
 		return maListe;
+	}
+	
+	public int getMaxID()
+	{
+		ResultSet resultsSamples;
+		String QuerySample="SELECT MAX(idAnimal) as max FROM Animal";
+		
+		try
+		{
+			System.out.println(QuerySample);
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples.next();
+			return Integer.parseInt(resultsSamples.getString("max"));
+			
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getMAxID");
+			return -1;
+		}
+		
 	}
 	
 
@@ -1243,6 +1268,20 @@ class Database
 			System.out.println("Erreur requete insert category");
 		}
 	}
+	
+	public void saveAnimal(Animals animal) 
+	{
+		String QuerySample="INSERT INTO Animal (idSpecies, NameAnimal, SexAnimal,birthAnimal) VALUES ('"+getIdSpecies(animal.getSpecie())+"', '"+animal.getName()+"', '"+animal.getSexe()+"', '"+animal.getNumberBirthday()+"')";
+		try
+		{
+			System.out.println(QuerySample);
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete insert animal");
+		}
+	}
 
 	/**
 	 * This function permits to have the list of all sample type in the database
@@ -1333,6 +1372,24 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requete selection des types d'Ã©chantillons");
+			return(-1);
+		}
+	}
+	
+	public Integer getIdSpecies(String name) 
+	{
+		String QuerySample="SELECT idSpecies FROM Species WHERE nameSpecies='"+name+"'";
+		try
+		{
+			
+			ResultSet monRes = myStatement.executeQuery(QuerySample);		
+			monRes.next();
+			return(Integer.parseInt(monRes.getString("idSpecies")));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requete selection de l'id species");
 			return(-1);
 		}
 	}

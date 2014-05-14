@@ -8,11 +8,11 @@ public class Main {
 		Database d = new Database();
 
 		
-		ArrayList<Customers> test = d.searchCustomersByName("Sansa", "Clement");
+		Customers c = d.searchCustomerID(5);
 		
-		System.out.println(test.get(0).getFirstName());
-		System.out.println(test.get(1));
-
+		System.out.println(c.getFirstName());
+		System.out.println(c.getLastName());
+		System.out.println(c.getAdressClient().getNumber());
 		d.close();
 
 	}

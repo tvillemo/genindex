@@ -797,7 +797,7 @@ class Database
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
 		try 
 		{
-			resultClient=tmpMyStatement.executeQuery(query);
+			resultClient=myStatement.executeQuery(query);
 			resultClient.next();
 			
 			query="select num,street,cp,town from Adress where idAdress="+resultClient.getInt("idAdress");
@@ -810,7 +810,7 @@ class Database
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
-			c.setAdressClient(new Adress(resultClient.getInt("num"),resultClient.getString("street"),resultClient.getInt("cp"),resultClient.getString("town")));
+			c.setAdressClient(new Adress(resultAdress.getInt("num"),resultAdress.getString("street"),resultAdress.getInt("cp"),resultAdress.getString("town")));
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();

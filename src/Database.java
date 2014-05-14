@@ -290,9 +290,9 @@ class Database
 	 */
 
 	//DONE
-	public void saveOrder(Orders order,int analyse,int idClient) 
+	public void saveOrder(Orders order,int analyse,int idClient, int nbEch, int prio) 
 	{
-		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
+		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
 		{
 			for (Samples s : order.getSamples())
@@ -393,8 +393,14 @@ class Database
 		{
 			System.out.println("Erreur requête IfAnimalExist");
 		}
+		catch(NullPointerException e)
+		{
+			System.out.println("coucou");
+		}
+		
 		
 		return bool;
+		
 	}
 	
 	//DONE and WORKS
@@ -479,6 +485,31 @@ class Database
 		}
 		return maListe;
 	}
+	
+	//Author : Anne-So/Marion
+	public ArrayList<String> getAnalyseByAnimal(int idAnimal) 
+	{
+		ArrayList<String> maListe = new ArrayList<String>();
+		ResultSet resultsSamples;
+		String QuerySample="SELECT nameCategory FROM Category, Species, Animal WHERE Category.idCategory=Species.idCategory AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
+		String nomCat;
+		
+		try
+		{
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples.next();
+			nomCat=resultsSamples.getString("nameCategory");
+			maListe=getAnalyseByCategory(nomCat);
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getAnalyseByAnimal");
+		}
+		return maListe;
+	}
+	
 
 	//DONE and WORKS (Peut être rajouter la liste des analyses)
 	@SuppressWarnings("deprecation")
@@ -1057,6 +1088,23 @@ class Database
 		return(-1);
 	}
 	
+	public int getIdTest(String test) 
+	{
+		String QuerySample="Select idTest From testType Where nameTest = '"+test+"'";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête recupere idCategory");
+		}
+		return(-1);
+	}
+	
 	/**
 	 * This function permits to save a species in the database
 	 * @param : name of the species, id of the category
@@ -1213,6 +1261,22 @@ class Database
 		{
 			System.out.println("Erreur requete selection des types d'Ã©chantillons");
 			return(-1);
+		}
+	}
+	
+	public java.sql.Date dateJour()
+	{
+		String QuerySample="SELECT sysdate as ate FROM DUAL";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(monRes.getDate("ate"));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete selection de la date");
+			return(null);
 		}
 	}
 }

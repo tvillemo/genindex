@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.*;
 
@@ -36,9 +37,15 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButtons;
 	
-	public InterfaceUS2_4()
+	private Customers custom;
+	private Animals animal;
+	
+	private Database d = new Database();
+	
+	public InterfaceUS2_4(Animals animal,Customers custom)
 	{
-		labNomClient = new JLabel("Nom du client :");
+		this.custom=custom;
+		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);
 		
@@ -56,6 +63,12 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 		
 		labAnalyse = new JLabel("Analyse");
 		analyse = new JComboBox();
+		ArrayList<String> items = d.getAnalyseByAnimal(animal.getIdAnimal());
+		for (int i=0;i< items.size();i++)
+		{
+			analyse.addItem(items.get(i));
+		}
+		
 		JPanel panel2 = new JPanel();
 		panel2.setLayout(new GridLayout(1,2));
 		panel2.add(labAnalyse);
@@ -79,6 +92,8 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 		
 		butAnnuler = new JButton("Annuler");
 	    butValider = new JButton("Valider la commande");
+	    butAnnuler.addActionListener(this);
+	    butValider.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -95,13 +110,55 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 	
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void actionPerformed(ActionEvent point)
     {
-
+		if (point.getSource()==butValider)
+		{
+			boolean bool=true;
+			if(nbEch.getText().length()==0)
+			{
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Veuillez remplir le nombre d'échantillon(s)", "",
+				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+				       options, options);	
+				bool = false;
+			}
+		
+			if(bool=true)
+			{
+				int prio;
+				if(buttonPrio.isSelected())
+				{
+					prio=1;
+				}
+				else
+				{
+					prio=0;
+				}
+				//Creation du test en java
+				java.sql.Date date = d.dateJour();
+				Types_analysis t= new Types_analysis(analyse.getSelectedItem().toString(), 0);
+				Orders o= new Orders(Integer.parseInt(nbEch.getText()), new Date(date.getDay(),date.getMonth(),date.getYear()), custom ,t);
+				d.saveOrder(o, d.getIdTest(analyse.getSelectedItem().toString()), custom.getID(), Integer.parseInt(nbEch.getText()), prio);
+				
+				Object[] options = { "OK" };
+				int n = JOptionPane.showOptionDialog(new JFrame(),
+						"Votre commande a bien été enregistrée", "",
+				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+				       options, options);
+			}
+		}
+		
+		if (point.getSource()==butAnnuler)
+		{
+			this.dispose();
+		}
     }
 	
 	public static void main(String[] args) 
 	{    
-       InterfaceUS2_4 us = new InterfaceUS2_4();
+	      InterfaceUS2_4 us = new InterfaceUS2_4(new Animals (12, "choupette"),new Customers("dupond", 86000,"Poitiers", "090909",1));
     }
 }

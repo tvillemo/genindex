@@ -29,6 +29,7 @@ class Orders {
 
   private Invoice invoice;
   
+  
   private Types_analysis test;
   
   private int nbTotSample;

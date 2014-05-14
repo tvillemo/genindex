@@ -33,8 +33,13 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private  Customers custom;
+	private Animals animal;
+	private Database d=new Database();
+	
 	public InterfaceUS2_2(Customers custom)
 	{
+		this.custom=custom;
 		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);	
@@ -110,7 +115,22 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 			}
 			if(bool=true)
 			{
+				animal = new Animals(Integer.parseInt(IDAnimal.getText()), nomAnimal.getText());
 				
+				//System.out.println(nomAnimal.getText());			
+				//System.out.println(animal.getName());
+				System.out.println(custom.getID());
+				
+				if(d.IfAnimalExist(animal,custom))
+				{
+					InterfaceUS2_4 test = new InterfaceUS2_4(animal,custom);
+		    		this.dispose();
+				}
+				else
+				{
+					InterfaceUS2_3 test = new InterfaceUS2_3(custom);
+		    		this.dispose();
+				}
 			}
 		}
 		if(point.getSource()==butAnnuler)

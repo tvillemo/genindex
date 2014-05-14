@@ -176,12 +176,28 @@ class Database
 		// Bouml preserved body end 0003D002
 	}
 
+
 	//DONE
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
 	 */
 	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
 	{
+		Statement tmp1MyStatement = null;
+		Statement tmp2MyStatement = null;
+		try 
+		{
+			tmp1MyStatement = myConnexion.createStatement();
+			tmp2MyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 		ResultSet resultsOrder = null;
 		ResultSet resultsCountTot = null;
 		ResultSet resultsCountAnalyzed = null;
@@ -205,8 +221,11 @@ class Database
 				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
 				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
 				
-				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
-				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				resultsCountTot =  tmp1MyStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = tmp2MyStatement.executeQuery(QueryOrderAnalyzed);
+				
+				resultsCountTot.next();
+				resultsCountAnalyzed.next();
 				
 				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
 				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));
@@ -289,9 +308,11 @@ class Database
 	 * This function permits to save in the database the order in parameter.
 	 */
 
-	public void saveOrder(Orders order,int idClient,int analyse) 
-	{
-		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot) VALUES ("+idClient+","+analyse+", trunc(sysdate))";
+	//DONE
+
+	public void saveOrder(Orders order,int analyse,int idClient, int nbEch, int prio) 
+{
+		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
 		{
 			for (Samples s : order.getSamples())
@@ -323,25 +344,29 @@ class Database
 	 */
 	public boolean IfCustomerExist(Customers custom) 
 	{
-		
+		boolean bool = false;
+		try{
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
 		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
-		boolean bool = false;
+		
 		
 		try
 		{
 			if (custom.getID() != 0)
 			{
+				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
+				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
+				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			myResult.next();
@@ -358,7 +383,9 @@ class Database
 		{
 			System.out.println("Erreur requête IfCustomerExist");
 		}
-		
+		}catch(NullPointerException ex){
+			
+		}
 		
 		return bool;
 	}
@@ -392,8 +419,14 @@ class Database
 		{
 			System.out.println("Erreur requête IfAnimalExist");
 		}
+		catch(NullPointerException e)
+		{
+			System.out.println("coucou");
+		}
+		
 		
 		return bool;
+		
 	}
 	
 	//DONE and WORKS
@@ -478,6 +511,55 @@ class Database
 		}
 		return maListe;
 	}
+	
+	//Author : Anne-So/Marion
+	public ArrayList<String> getAnalyseByAnimal(int idAnimal) 
+	{
+		ArrayList<String> maListe = new ArrayList<String>();
+		ResultSet resultsSamples;
+		String QuerySample="SELECT nameTest FROM TestType, Can, Species, Animal WHERE TestType.idTest=Can.idTest AND Can.idSpecies=Species.idSpecies AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
+		
+		try
+		{
+			System.out.println(QuerySample);
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("nameTest"));
+			}
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getAnalyseByAnimal");
+		}
+		return maListe;
+	}
+	
+	public int getMaxID()
+	{
+		ResultSet resultsSamples;
+		String QuerySample="SELECT MAX(idAnimal) as max FROM Animal";
+		
+		try
+		{
+			System.out.println(QuerySample);
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples.next();
+			return Integer.parseInt(resultsSamples.getString("max"));
+			
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getMAxID");
+			return -1;
+		}
+		
+	}
+	
 
 	//DONE and WORKS (Peut être rajouter la liste des analyses)
 	@SuppressWarnings("deprecation")
@@ -616,7 +698,7 @@ class Database
 	public Customers searchCustomerName(String name,String first,String ville,String rue,int num,int CP) {
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select idClient,nameClient,idAdress,phoneClient,firstNameClient from Client where nameClient='"+name+"' and firstNameClient='"+first+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		try {
 			resultClient=myStatement.executeQuery(query);
@@ -643,6 +725,20 @@ class Database
 	//Recherche de customers par nom et prénom
 	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
 	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+		
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
 		ResultSet resultsSamples;
@@ -650,20 +746,22 @@ class Database
 		
 		try
 		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples = tmpMyStatement.executeQuery(QuerySample);
 			System.out.println(QuerySample);
 			//resultsSamples.
 			while (resultsSamples.next())
 			{
-				System.out.println(resultsSamples.getInt(1));
-				//result.add(searchCustomerID(resultsSamples.getInt(1)));
+				//System.out.println(resultsSamples.getInt(1));
+				
+				result.add(searchCustomerID(resultsSamples.getInt(1)));
+				//System.out.println(result.get(0).getFirstName());
 				
 			}
 		}
 		catch (SQLException ex) 
 		{
 			System.out.println(ex.getMessage());
-			System.out.println("Erreur requête searchCustomerName");
+			System.out.println("Erreur requête searchCustomerByName");
 		}
 
 		
@@ -700,7 +798,7 @@ class Database
 	public Customers searchCustomerProByCorp(String Corpname,String ville,String rue,int num,int CP)
 	{
 		ResultSet resultClient = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select * from Client where CorporationName='"+Corpname+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		System.out.println(query);
 		try {
@@ -720,16 +818,32 @@ class Database
 		return c;
 	}
 
+
 	//DONE and works
 	//Recherche de customer via ID
 	public Customers searchCustomerID(int ID) 
 	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
-		try {
-			resultClient=myStatement.executeQuery(query);
+		try 
+		{
+			resultClient=tmpMyStatement.executeQuery(query);
 			resultClient.next();
 			
 			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
@@ -738,17 +852,18 @@ class Database
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
 			String firstName=resultClient.getString("FirstNameClient");
-			resultAdress=myStatement.executeQuery(query);
+			resultAdress=tmpMyStatement.executeQuery(query);
 			resultAdress.next();
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			c.setAdressClient(new Adress(resultAdress.getInt("num"),resultAdress.getString("street"),resultAdress.getInt("cp"),resultAdress.getString("town")));
+		} catch (SQLException e) 
+		{
 			e.printStackTrace();
 		}
 		return c;
-	}
+	}	
 
 	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
@@ -793,7 +908,6 @@ class Database
 			}
 			catch (SQLException ex) {
 				System.out.println("Erreur requête AdressSociete");
-
 			}										
 				
 			// Si on a une adresse de facturation
@@ -1112,6 +1226,23 @@ class Database
 		return(-1);
 	}
 	
+	public int getIdTest(String test) 
+	{
+		String QuerySample="Select idTest From testType Where nameTest = '"+test+"'";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(Integer.parseInt(monRes.getString(1)));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête recupere idCategory");
+		}
+		return(-1);
+	}
+	
 	/**
 	 * This function permits to save a species in the database
 	 * @param : name of the species, id of the category
@@ -1175,6 +1306,20 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requete insert category");
+		}
+	}
+	
+	public void saveAnimal(Animals animal) 
+	{
+		String QuerySample="INSERT INTO Animal (idSpecies, NameAnimal, SexAnimal,birthAnimal) VALUES ('"+getIdSpecies(animal.getSpecie())+"', '"+animal.getName()+"', '"+animal.getSexe()+"', '"+animal.getNumberBirthday()+"')";
+		try
+		{
+			System.out.println(QuerySample);
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete insert animal");
 		}
 	}
 
@@ -1271,6 +1416,41 @@ class Database
 		}
 	}
 	
+	public Integer getIdSpecies(String name) 
+	{
+		String QuerySample="SELECT idSpecies FROM Species WHERE nameSpecies='"+name+"'";
+		try
+		{
+			
+			ResultSet monRes = myStatement.executeQuery(QuerySample);		
+			monRes.next();
+			return(Integer.parseInt(monRes.getString("idSpecies")));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requete selection de l'id species");
+			return(-1);
+		}
+	}
+	
+
+	public java.sql.Date dateJour()
+	{
+		String QuerySample="SELECT sysdate as ate FROM DUAL";
+		try
+		{
+			ResultSet monRes = myStatement.executeQuery(QuerySample);
+			monRes.next();
+			return(monRes.getDate("ate"));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete selection de la date");
+			return(null);
+		}
+	}
+
 
 	/**
 	 * This function permits to get list length
@@ -1451,6 +1631,45 @@ class Database
 		}
 		return ok;
 	}
+	
+	public void printOrder(ArrayList<Orders> listOrder){
+		System.out.println("%>");
+		System.out.println("<span id=\"order\">");
+		System.out.println("<table>");
+		System.out.println("<tr>");
+		System.out.println("<td>");
+		System.out.println("Numéro de commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Statut de la commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon analysés");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon totaux");
+		System.out.println("</td>");
+		System.out.println("</tr>");
+		for (Orders o : listOrder){
+			System.out.println("<tr>");
+			System.out.println("<td>");
+			System.out.println(o.getId());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getStatus());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbSampleAnalysed());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbTotSample());
+			System.out.println("</td>");
+			System.out.println("</tr>");
+		}
 
+		System.out.println("</table>");
+		System.out.println("</span>");
+		System.out.println("<%");
+	}
 }
 

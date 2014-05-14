@@ -8,6 +8,7 @@ class Animals {
 private String name;
 	private int IdAnimal;
   private String specie;
+  private int sexe;
 
   private String numberBirthday;
 
@@ -17,6 +18,22 @@ private String name;
 	  this.numberBirthday = birthday;
     // Bouml preserved body end 00020D83
   }
+  
+  public Animals(int id, String nameAnimal) {
+	    // Bouml preserved body begin 00020D83
+		  this.IdAnimal = id;
+		  this.name = nameAnimal;
+	    // Bouml preserved body end 00020D83
+	  }
+  
+  public Animals(int sexe, String nameAnimal, String nameSpecies, String birthday) {
+	    // Bouml preserved body begin 00020D83
+		  this.sexe=sexe;
+	  	  this.name = nameAnimal;
+		  this.specie = nameSpecies;
+		  this.numberBirthday=birthday;
+	    // Bouml preserved body end 00020D83
+	  }
 
   public String getSpecie() {
     // Bouml preserved body begin 00022C83
@@ -29,6 +46,12 @@ private String name;
 	  return this.numberBirthday;
     // Bouml preserved body end 00022D03
   }
+  
+  public int getSexe() {
+	    // Bouml preserved body begin 00022D03
+		  return this.sexe;
+	    // Bouml preserved body end 00022D03
+	  }
 
   public void setSpecie(String new_Specie) {
     // Bouml preserved body begin 00022D83

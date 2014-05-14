@@ -33,8 +33,13 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	private JPanel panButton;
 	private JPanel panelButton;
 	
+	private  Customers custom;
+	private Animals animal;
+	private Database d=new Database();
+	
 	public InterfaceUS2_2(Customers custom)
 	{
+		this.custom=custom;
 		labNomClient = new JLabel("Client :" + custom.getLastName() + custom.getFirstName());
 		panelClient=new JPanel();
 		panelClient.add(labNomClient);	
@@ -74,6 +79,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 		butAnnuler = new JButton("Annuler");
 	    butValider = new JButton("Valider");
 	    butValider.addActionListener(this);
+	    butAnnuler.addActionListener(this);
 	    panButton = new JPanel();
 	    panButton.add(butAnnuler);
 	    panButton.add(butValider);
@@ -107,9 +113,28 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 					bool=false;
 				}
 			}
+			
+			else if (nomAnimal.getText().length()!=0 || IDAnimal.getText().length()!=0)
+			{
+				bool=true;
+			}
+	
 			if(bool=true)
 			{
+				animal = new Animals(Integer.parseInt(IDAnimal.getText()), nomAnimal.getText());
 				
+				System.out.println(custom.getID());
+				
+				if(d.IfAnimalExist(animal,custom))
+				{
+					InterfaceUS2_4 test = new InterfaceUS2_4(animal,custom);
+		    		this.dispose();
+				}
+				else
+				{
+					InterfaceUS2_3 test = new InterfaceUS2_3(custom, nomAnimal.getText());
+		    		this.dispose();
+				}
 			}
 		}
 		if(point.getSource()==butAnnuler)
@@ -120,6 +145,7 @@ public class InterfaceUS2_2 extends JFrame implements ActionListener
 	
 	public static void main(String[] args) 
 	{    
-       //InterfaceUS2_2 us = new InterfaceUS2_2();
+       InterfaceUS2_2 us = new InterfaceUS2_2(new Customers("dupond", 86000,"Poitiers", "090909",1));
     }
 }
+

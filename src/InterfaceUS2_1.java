@@ -185,45 +185,48 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 		if (point.getSource()==butValider)
 		{
 			boolean bool = true;
-			if(fieldNumA.getText().length()==0)
+			if (fieldNumC.getText().length() == 0)
 			{
-				Object[] options = { "OK" };
-				int n = JOptionPane.showOptionDialog(new JFrame(),
-						"Veuillez remplir le numéro de l'adresse", "",
-				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
-				       options, options);
-				 bool = false;
+				if(fieldNumA.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez remplir le numéro de l'adresse", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);
+					 bool = false;
+				}
+				if(fieldRue.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez remplir le nom de la rue", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);	
+					bool = false;
+				}
+				if(fieldCP.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez remplir le code postal", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);	
+					bool = false;
+				}
+				if(fieldVille.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez remplir le nom de la ville", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);	
+					bool = false;
+				}
 			}
-			if(fieldRue.getText().length()==0)
+			else if(fieldNumC.getText().length()==0)
 			{
-				Object[] options = { "OK" };
-				int n = JOptionPane.showOptionDialog(new JFrame(),
-						"Veuillez remplir le nom de la rue", "",
-				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
-				       options, options);	
-				bool = false;
-			}
-			if(fieldCP.getText().length()==0)
-			{
-				Object[] options = { "OK" };
-				int n = JOptionPane.showOptionDialog(new JFrame(),
-						"Veuillez remplir le code postal", "",
-				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
-				       options, options);	
-				bool = false;
-			}
-			if(fieldVille.getText().length()==0)
-			{
-				Object[] options = { "OK" };
-				int n = JOptionPane.showOptionDialog(new JFrame(),
-						"Veuillez remplir le nom de la ville", "",
-				       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
-				       options, options);	
-				bool = false;
-			}
-			if(fieldNumC.getText().length()==0)
-			{
-				if( fieldNomC.getText().length()==0 | fieldPrenomC.getText().length()==0 )
+				if( fieldNomC.getText().length()==0 || fieldPrenomC.getText().length()==0 )
 				{
 					if(proButton.isSelected())
 					{
@@ -285,7 +288,6 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 				{
 					Integer s = Integer.parseInt(fieldNumC.getText());
 					custom=d.searchCustomerID(s.intValue());
-					//custom= new Customers();
 				}
 				else if (fieldNomC.getText().length()!=0&&fieldPrenomC.getText().length()!=0)
 	    		{
@@ -302,15 +304,22 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 				else{
 					
 				}
-				if(d.IfCustomerExist(custom))
+				System.out.println(d.IfCustomerExist(custom));
+				if(custom==null)
 				{
-					//custom = new Customers()
-					InterfaceUS2_2 test = new InterfaceUS2_2(custom);
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Le client n'existe pas, Veuillez le créer", "",
+					       JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+					       options, options);
+					InterfaceUS1 test = new InterfaceUS1();
 		    		this.dispose();
+					//custom = new Customers()
+					
 				}
 				else
 				{
-					InterfaceUS1 test = new InterfaceUS1();
+					InterfaceUS2_2 test = new InterfaceUS2_2(custom);
 		    		this.dispose();
 				}
 				
@@ -330,6 +339,7 @@ public class InterfaceUS2_1 extends JFrame implements ActionListener
 	public static void main(String[] args) 
 	{    
        InterfaceUS2_1 us = new InterfaceUS2_1();
+
        
     }
 

@@ -57,7 +57,7 @@ public class InterfaceUS5_UneCommande extends JFrame implements ActionListener
 		 // visibilité
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
-        this.setSize(300, 250);
+        this.setSize(500, 550);
         this.setVisible(true);
 	}
 	
@@ -65,7 +65,7 @@ public class InterfaceUS5_UneCommande extends JFrame implements ActionListener
     {
 		if (point.getSource()==butAnnuler)
 		{
-			InterfaceUS5_Commande retour = new InterfaceUS5_Commande();
+			InterfaceUS5 retour = new InterfaceUS5();
     		this.dispose();
 		}
 		if (point.getSource()==butQuitter)
@@ -73,10 +73,4 @@ public class InterfaceUS5_UneCommande extends JFrame implements ActionListener
 			this.dispose();
 		}
     }
-	
-	public static void main(String[] args)
-	{
-		InterfaceUS5_UneCommande test = new InterfaceUS5_UneCommande();
-
-	}
 }

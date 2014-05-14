@@ -7,8 +7,12 @@ public class Main {
 	{
 		Database d = new Database();
 
-
-
+		
+		ArrayList<Customers> c = d.searchCustomersByName("Sansa","Clement");
+		
+		System.out.println(c.get(1).getFirstName());
+		System.out.println(c.get(1).getLastName());
+		System.out.println(c.get(1).getAdressClient().getNumber());
 		d.close();
 
 	}

@@ -29,6 +29,7 @@ class Orders {
 
   private Invoice invoice;
   
+  
   private Types_analysis test;
   
   private int nbTotSample;
@@ -54,7 +55,7 @@ class Orders {
     // Bouml preserved body begin 0001F402
 	  this.samples = new ArrayList<Samples>();
 	  this.numberSamples=num_samples;
-	  this.dateOrder=date_order;
+	  this.setDateOrder(date_order);
 	  //this.dateDeadline=date_deadline;
 	  //this.priorityLevel = priority;
 	  this.customer=customer;
@@ -230,6 +231,14 @@ public String getStatus() {
 
 public void setStatus(String status) {
 	this.status = status;
+}
+
+public Date getDateOrder() {
+	return dateOrder;
+}
+
+public void setDateOrder(Date dateOrder) {
+	this.dateOrder = dateOrder;
 }
 
 }

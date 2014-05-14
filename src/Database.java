@@ -290,7 +290,7 @@ class Database
 	 */
 
 	//DONE
-	public void saveOrder(Orders order,int analyse,int idClient) 
+	public void saveOrder(Orders order,int analyse,int idClient,int nbEch,int prio) 
 	{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
@@ -1514,6 +1514,46 @@ class Database
 			e.printStackTrace();
 		}
 		return ok;
+	}
+	
+	public void printOrder(ArrayList<Orders> listOrder){
+		System.out.println("%>");
+		System.out.println("<span id=\"order\">");
+		System.out.println("<table>");
+		System.out.println("<tr>");
+		System.out.println("<td>");
+		System.out.println("Numéro de commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Statut de la commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon analysés");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon totaux");
+		System.out.println("</td>");
+		System.out.println("</tr>");
+		for (Orders o : listOrder){
+			System.out.println("<tr>");
+			System.out.println("<td>");
+			System.out.println(o.getId());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getStatus());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbSampleAnalysed());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbTotSample());
+			System.out.println("</td>");
+			System.out.println("</tr>");
+		}
+
+		System.out.println("</table>");
+		System.out.println("</span>");
+		System.out.println("<%");
 	}
 }
 

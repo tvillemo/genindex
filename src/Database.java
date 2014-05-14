@@ -344,25 +344,29 @@ class Database
 	 */
 	public boolean IfCustomerExist(Customers custom) 
 	{
-		
+		boolean bool = false;
+		try{
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
 		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
-		boolean bool = false;
+		
 		
 		try
 		{
 			if (custom.getID() != 0)
 			{
+				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
+				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
+				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			myResult.next();
@@ -379,7 +383,9 @@ class Database
 		{
 			System.out.println("Erreur requête IfCustomerExist");
 		}
-		
+		}catch(NullPointerException ex){
+			
+		}
 		
 		return bool;
 	}
@@ -692,7 +698,7 @@ class Database
 	public Customers searchCustomerName(String name,String first,String ville,String rue,int num,int CP) {
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select idClient,nameClient,idAdress,phoneClient,firstNameClient from Client where nameClient='"+name+"' and firstNameClient='"+first+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		try {
 			resultClient=myStatement.executeQuery(query);
@@ -792,7 +798,7 @@ class Database
 	public Customers searchCustomerProByCorp(String Corpname,String ville,String rue,int num,int CP)
 	{
 		ResultSet resultClient = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select * from Client where CorporationName='"+Corpname+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		System.out.println(query);
 		try {
@@ -833,7 +839,7 @@ class Database
 
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
 		try 
 		{

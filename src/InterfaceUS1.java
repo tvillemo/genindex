@@ -313,7 +313,6 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
         if ( e.getSource() == proButton )
         {
             if (proButton.isSelected()) {
-                System.out.println("Pro");
                      pro = true;  
                      infoClient.removeAll();
                      infoClient.setLayout(new GridLayout(2, 2));
@@ -343,7 +342,6 @@ public class InterfaceUS1 extends JFrame implements  ActionListener{
             }
         }
         if ( e.getSource() == valider ) {
-        	System.out.println("Valide ok");
         	Customers C = new Customers (nTF.getText(),//Nom
         		Integer.parseInt(nRTF.getText()),// numero rue
         		rTF.getText(),// rue

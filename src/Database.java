@@ -1314,31 +1314,46 @@ class Database
 	 * @return : ArrayList of string of samples with dates
 	 * @author : mathilde
 	 */
-	public ArrayList<ArrayList<String>> getSampleAnalysis(int cas) 
+	public ArrayList<ArrayList<String>> getSampleAnalysis(int cas, String nameTest) 
 	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+		
 		ResultSet resultsSamples;
 		String QuerySample="-1";
 		ArrayList<ArrayList<String>> maListe = new ArrayList<ArrayList<String>>();
 		
 		if (cas == 1) 
 		{
-			QuerySample="SELECT Sample.idSample, dateSampling FROM Sample, Lot, TestType, Tube, Analysis WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND Sample.idSample=Tube.idSample AND Tube.idTube=Analysis.idTubeStandard AND nameTest='tonNomDeTest' AND statut='reanalyser' ORDER BY dateSampling";
+			QuerySample="SELECT Sample.idSample, dateSampling FROM Sample, Lot, TestType, Tube, Analysis WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND Sample.idSample=Tube.idSample AND Tube.idTube=Analysis.idTubeStandard AND nameTest='" + nameTest + "' AND statut='reanalyser' ORDER BY dateSampling";
 		}
 		else if (cas == 2) 
 		{
-			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='tonType de test' AND idSample NOT IN (Select idSample FROM Tube) AND Statute='En cours' ORDER BY dateSampling";
+			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='" + nameTest + "' AND idSample NOT IN (Select idSample FROM Tube) AND Statute='En cours' ORDER BY dateSampling";
 		}
 		else if (cas == 3) 
 		{
-			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='tonType de test' AND Statute='En attente' ORDER BY dateSampling";
+			QuerySample="SELECT idSample, dateSampling FROM Sample, Lot, TestType WHERE Sample.idLot=Lot.idLot AND Lot.idTest=TestType.idTest AND nameTest='" + nameTest + "' AND Statute='En attente' ORDER BY dateSampling";
 		}
 		else 
 		{
 			System.out.println("Votre saisie n'est pas correcte, attention !");
 		}
 		try
-		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
+		{					
+			resultsSamples = tmpMyStatement.executeQuery(QuerySample);
+			//System.out.println("Execute");
 			while(resultsSamples.next())
 			{
 				ArrayList<String> aux = new ArrayList<String>();
@@ -1352,6 +1367,9 @@ class Database
 			System.out.println(ex.getMessage());
 			System.out.println("Erreur requête getSampleAnalysis");
 		}
+		
+
+		
 		return maListe;
 	}
 	
@@ -1362,7 +1380,8 @@ class Database
 	 */
 	public void createBatch(int taille) 
 	{
-		String QuerySample="INSERT INTO Batch (length) VALUES ('"+taille+"')";
+		String QuerySample="INSERT INTO Batch(length) VALUES ('"+taille+"')";
+		
 		try
 		{
 			myStatement.executeQuery(QuerySample);

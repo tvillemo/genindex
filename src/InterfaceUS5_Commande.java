@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,7 +21,7 @@ public class InterfaceUS5_Commande extends JFrame implements ActionListener
 	
 	private JButton butAnnuler;
 
-	public InterfaceUS5_Commande()
+	public InterfaceUS5_Commande(ArrayList<Customers> liste)
 	{
 		panelListe = new JPanel();
 		
@@ -51,14 +52,9 @@ public class InterfaceUS5_Commande extends JFrame implements ActionListener
 		Customers c;
 		if (point.getSource()==butAnnuler)
 		{
-			InterfaceUS5_Client retour = new InterfaceUS5_Client(c);
+			InterfaceUS5 retour = new InterfaceUS5();
     		this.dispose();
 		}
     }
-	
-	public static void main(String[] args)
-	{
-		InterfaceUS5_Commande test = new InterfaceUS5_Commande();
 
-	}
 }

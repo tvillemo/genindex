@@ -183,6 +183,21 @@ class Database
 	 */
 	public ArrayList<Orders> searchOrderByCustomer(Customers customer) 
 	{
+		Statement tmp1MyStatement = null;
+		Statement tmp2MyStatement = null;
+		try 
+		{
+			tmp1MyStatement = myConnexion.createStatement();
+			tmp2MyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
 		ResultSet resultsOrder = null;
 		ResultSet resultsCountTot = null;
 		ResultSet resultsCountAnalyzed = null;
@@ -206,8 +221,11 @@ class Database
 				String QueryOrderTot="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND Lot.idLot='"+myOrder.getId()+"'";
 				String QueryOrderAnalyzed="SELECT COUNT(idSample) FROM Lot, Sample WHERE Sample.idLot=Lot.idLot AND (statutSample='Realise' OR statutSample='Echec') AND Lot.idLot='"+myOrder.getId()+"'";
 				
-				resultsCountTot =  myStatement.executeQuery(QueryOrderTot);
-				resultsCountAnalyzed = myStatement.executeQuery(QueryOrderAnalyzed);
+				resultsCountTot =  tmp1MyStatement.executeQuery(QueryOrderTot);
+				resultsCountAnalyzed = tmp2MyStatement.executeQuery(QueryOrderAnalyzed);
+				
+				resultsCountTot.next();
+				resultsCountAnalyzed.next();
 				
 				myOrder.setNbSampleAnalysed(resultsCountTot.getInt(1));
 				myOrder.setNbTotSample(resultsCountAnalyzed.getInt(1));
@@ -291,8 +309,9 @@ class Database
 	 */
 
 	//DONE
+
 	public void saveOrder(Orders order,int analyse,int idClient, int nbEch, int prio) 
-	{
+{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
 		{
@@ -700,6 +719,20 @@ class Database
 	//Recherche de customers par nom et prénom
 	public ArrayList<Customers> searchCustomersByName(String firstName, String lastName) 
 	{
+		Statement tmpMyStatement = null;
+		try 
+		{
+			tmpMyStatement = myConnexion.createStatement();
+		} 
+		catch (SQLException ex) 
+		{
+			Logger.getLogger("ConnectBDD").log(Level.SEVERE, null, ex);
+			System.out.println("SQLException: " + ex.getMessage());
+			System.out.println("SQLState: " + ex.getSQLState());
+			System.out.println("VendorError: " + ex.getErrorCode());
+		}
+		
+		
 		ArrayList<Customers> result = new ArrayList<Customers>();
 		
 		ResultSet resultsSamples;
@@ -707,7 +740,7 @@ class Database
 		
 		try
 		{
-			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples = tmpMyStatement.executeQuery(QuerySample);
 			System.out.println(QuerySample);
 			//resultsSamples.
 			while (resultsSamples.next())
@@ -722,7 +755,7 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println(ex.getMessage());
-			System.out.println("Erreur requête searchCustomerName");
+			System.out.println("Erreur requête searchCustomerByName");
 		}
 
 		
@@ -818,12 +851,13 @@ class Database
 			
 			c=new Customers(nameClient, resultAdress.getInt("num"), resultAdress.getString("street"), phoneClient, ID);
 			c.setName(firstName, nameClient);
+			c.setAdressClient(new Adress(resultAdress.getInt("num"),resultAdress.getString("street"),resultAdress.getInt("cp"),resultAdress.getString("town")));
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
 		return c;
-	}
+	}	
 
 	public boolean saveCustomer(Customers cust) {
 		// Bouml preserved body begin 00023645
@@ -1571,6 +1605,46 @@ class Database
 			e.printStackTrace();
 		}
 		return ok;
+	}
+	
+	public void printOrder(ArrayList<Orders> listOrder){
+		System.out.println("%>");
+		System.out.println("<span id=\"order\">");
+		System.out.println("<table>");
+		System.out.println("<tr>");
+		System.out.println("<td>");
+		System.out.println("Numéro de commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Statut de la commande");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon analysés");
+		System.out.println("</td>");
+		System.out.println("<td>");
+		System.out.println("Nombre d'échantillon totaux");
+		System.out.println("</td>");
+		System.out.println("</tr>");
+		for (Orders o : listOrder){
+			System.out.println("<tr>");
+			System.out.println("<td>");
+			System.out.println(o.getId());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getStatus());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbSampleAnalysed());
+			System.out.println("</td>");
+			System.out.println("<td>");
+			System.out.println(o.getNbTotSample());
+			System.out.println("</td>");
+			System.out.println("</tr>");
+		}
+
+		System.out.println("</table>");
+		System.out.println("</span>");
+		System.out.println("<%");
 	}
 }
 

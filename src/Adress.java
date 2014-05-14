@@ -114,6 +114,8 @@ class Adress {
 	this.idAdress = idAdress;
   }
   
-  
-  
+  public String toString()
+  {
+  	return number+" "+street+" "+zipcode+" "+city;
+  }
 }

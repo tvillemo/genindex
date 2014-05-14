@@ -64,5 +64,10 @@ class Date {
 	  
     // Bouml preserved body end 00043902
   }
+  
+  public String toString()
+  {
+	  return day+"/"+month+"/"+year;
+  }
 
 }

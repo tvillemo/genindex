@@ -7,17 +7,19 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
 
 /**
-*
-* @author Audrey
-*/
+ *
+ * @author Audrey
+ */
 
 public class InterfaceUS5_Client extends JFrame implements ActionListener
 {
@@ -25,53 +27,43 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 	private JPanel panelButton;
 	private JPanel panelChoix;
 	private JPanel panelChoixNum;
-	
+
 	private JButton butAnnuler;
 	private JButton butValider;
-	
-	private TableModel dataModel;
+
+	private DefaultTableModel dataModel;
 	private JTable table;
 	private JScrollPane scrollpane;
-	
+
 	private JLabel labChoixNum;
 	private JTextField fieldChoixNum;
-	
+
 	private ArrayList<Customers> liste;
+
+	private Database d;
 
 	public InterfaceUS5_Client(final ArrayList<Customers> li)
 	{
+
+		d = new Database();
 		liste = li;
-		dataModel = new AbstractTableModel()
-		{
-		     public int getColumnCount() { return 4; }
-		     public int getRowCount() { return liste.size();}
-		     public Object getValueAt(int row, int col) { return new Integer(row*col); }
-		};
-		
-		// Insert data in JTable
-		Object[][] data = new Object[4][liste.size()];
+
+		dataModel = new DefaultTableModel();
+		dataModel.addColumn("ID");
+		dataModel.addColumn("Prénom");
+		dataModel.addColumn("Nom");
+		dataModel.addColumn("Adresse");
+
 		for (int i =0 ; i < liste.size(); i++)
 		{
-			data[0][i]=""+liste.get(i).getID();
-			data[1][i]=liste.get(i).getLastName();
-			data[2][i]=liste.get(i).getFirstName();
-			data[3][i]=liste.get(i).getAdressClient().toString();
-			
-			System.out.println(data[0][i]);
-			System.out.println(data[1][i]);
-			System.out.println(data[2][i]);
-			System.out.println(data[3][i]);
-			System.out.println("--------------------");
+			String[] info = { ""+liste.get(i).getID(), liste.get(i).getLastName(), liste.get(i).getFirstName(), liste.get(i).getAdressClient().toString() };
+			dataModel.addRow(info);
 		}
-		
-		
-		//Object[] dataET = {"","","",""};
+
 		table = new JTable(dataModel);
-		
+
 		scrollpane = new JScrollPane(table);
-		
-		
-		
+
 		labChoixNum = new JLabel("Choisir l'identifiant :");
 		fieldChoixNum = new JTextField();
 
@@ -90,37 +82,45 @@ public class InterfaceUS5_Client extends JFrame implements ActionListener
 		panelButton.add(butAnnuler);
 		panelButton.add(butValider);
 
-	    panelChoix = new JPanel();
-	    panelChoix.add(scrollpane);
-	    panelChoix.add(panelChoixNum);
-	    panelChoix.add(panelButton);
+		panelChoix = new JPanel();
+		panelChoix.add(scrollpane);
+		panelChoix.add(panelChoixNum);
+		panelChoix.add(panelButton);
 
-	    this.add(panelChoix);
+		this.add(panelChoix);
 
-	    panelChoix.setBorder(BorderFactory.createTitledBorder(
-	            BorderFactory.createEtchedBorder(), "Choisir le client souhaité :"));
+		panelChoix.setBorder(BorderFactory.createTitledBorder(
+				BorderFactory.createEtchedBorder(), "Choisir le client souhaité :"));
 
-		 // visibilité
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.pack();
-        this.setSize(300, 250);
-        this.setVisible(true);
+		// visibilité
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.pack();
+		this.setSize(500, 550);
+		this.setVisible(true);
 	}
-	
-	public void actionPerformed(ActionEvent point)
-    {
-		
-		if (point.getSource()==butAnnuler)
-		{
-			InterfaceUS5 retour = new InterfaceUS5();
-    		this.dispose();
-		}
-		if (point.getSource()==butValider)
-		{
-			//InterfaceUS5_Commande test = InterfaceUS5_Commande(null);
-			this.dispose();
-		}
-    }
-	
 
-}
+	public void actionPerformed(ActionEvent point)
+	{
+			if (point.getSource()==butAnnuler)
+			{
+				InterfaceUS5 retour = new InterfaceUS5();
+				this.dispose();
+			}
+			if (point.getSource()==butValider)
+			{
+				if (fieldChoixNum.getText().length()==0)
+				{
+					Object[] options = { "OK" };
+					int n = JOptionPane.showOptionDialog(new JFrame(),
+							"Veuillez saisir l'identifiant d'un client", "",
+							JOptionPane.OK_OPTION, JOptionPane.ERROR_MESSAGE, null,
+							options, options);
+				}
+				else if (fieldChoixNum.getText().length()!=0)
+				{
+					InterfaceUS5_Commande test =new InterfaceUS5_Commande(d.searchOrderByCustomer(new Customers(null, 0, null, null, Integer.parseInt(fieldChoixNum.getText()))));
+					this.dispose();
+				}
+			}
+		}
+	}

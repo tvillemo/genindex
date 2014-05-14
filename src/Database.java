@@ -176,6 +176,7 @@ class Database
 		// Bouml preserved body end 0003D002
 	}
 
+
 	//DONE
 	/**
 	 * This function permits to search the order in the database that have the customer in parameter.
@@ -308,8 +309,9 @@ class Database
 	 */
 
 	//DONE
-	public void saveOrder(Orders order,int analyse,int idClient,int nbEch,int prio) 
-	{
+
+	public void saveOrder(Orders order,int analyse,int idClient, int nbEch, int prio) 
+{
 		String QuerySample="INSERT INTO Lot (idClient, idTest, dateLot, nbSample, first) VALUES ('"+idClient+"', '"+analyse+"', SYSDATE, '"+nbEch+"', '"+prio+"')";
 		try
 		{
@@ -342,25 +344,29 @@ class Database
 	 */
 	public boolean IfCustomerExist(Customers custom) 
 	{
-		
+		boolean bool = false;
+		try{
 		String QueryCustomId="SELECT COUNT(idClient) FROM Client WHERE idClient="+custom.getID();
 		String QueryCustom="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND nameClient='"+custom.getLastName()+"' AND firstNameClient='"+custom.getFirstName()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		String QueryCustomPro="SELECT COUNT(idClient) FROM Client, Adress WHERE Client.idAdress=Adress.idAdress AND corporationName='"+custom.getNomSociete()+"' AND num="+custom.getAdressClient().getNumber()+" AND CP="+custom.getAdressClient().getZipCode()+" AND town='"+custom.getAdressClient().getCity()+"' AND street='"+custom.getAdressClient().getStreet()+"'";
 		ResultSet myResult;
-		boolean bool = false;
+		
 		
 		try
 		{
 			if (custom.getID() != 0)
 			{
+				System.out.println(QueryCustomId);
 				myResult=myStatement.executeQuery(QueryCustomId);
 			}
 			else if (custom.isPro())
 			{
+				System.out.println(QueryCustomPro);
 				myResult=myStatement.executeQuery(QueryCustomPro);
 			}
 			else
 			{
+				System.out.println(QueryCustom);
 				myResult=myStatement.executeQuery(QueryCustom);
 			}
 			myResult.next();
@@ -377,7 +383,9 @@ class Database
 		{
 			System.out.println("Erreur requête IfCustomerExist");
 		}
-		
+		}catch(NullPointerException ex){
+			
+		}
 		
 		return bool;
 	}
@@ -509,15 +517,16 @@ class Database
 	{
 		ArrayList<String> maListe = new ArrayList<String>();
 		ResultSet resultsSamples;
-		String QuerySample="SELECT nameCategory FROM Category, Species, Animal WHERE Category.idCategory=Species.idCategory AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
-		String nomCat;
+		String QuerySample="SELECT nameTest FROM TestType, Can, Species, Animal WHERE TestType.idTest=Can.idTest AND Can.idSpecies=Species.idSpecies AND Species.idSpecies=Animal.idSpecies AND idAnimal='"+idAnimal+"'";
 		
 		try
 		{
+			System.out.println(QuerySample);
 			resultsSamples = myStatement.executeQuery(QuerySample);
-			resultsSamples.next();
-			nomCat=resultsSamples.getString("nameCategory");
-			maListe=getAnalyseByCategory(nomCat);
+			while(resultsSamples.next())
+			{
+				maListe.add(resultsSamples.getString("nameTest"));
+			}
 			
 		}
 		catch (SQLException ex) 
@@ -526,6 +535,29 @@ class Database
 			System.out.println("Erreur requête getAnalyseByAnimal");
 		}
 		return maListe;
+	}
+	
+	public int getMaxID()
+	{
+		ResultSet resultsSamples;
+		String QuerySample="SELECT MAX(idAnimal) as max FROM Animal";
+		
+		try
+		{
+			System.out.println(QuerySample);
+			resultsSamples = myStatement.executeQuery(QuerySample);
+			resultsSamples.next();
+			return Integer.parseInt(resultsSamples.getString("max"));
+			
+			
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requête getMAxID");
+			return -1;
+		}
+		
 	}
 	
 
@@ -666,7 +698,7 @@ class Database
 	public Customers searchCustomerName(String name,String first,String ville,String rue,int num,int CP) {
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select idClient,nameClient,idAdress,phoneClient,firstNameClient from Client where nameClient='"+name+"' and firstNameClient='"+first+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		try {
 			resultClient=myStatement.executeQuery(query);
@@ -766,7 +798,7 @@ class Database
 	public Customers searchCustomerProByCorp(String Corpname,String ville,String rue,int num,int CP)
 	{
 		ResultSet resultClient = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select * from Client where CorporationName='"+Corpname+"' and idAdress=(select idAdress from adress where town='"+ville+"' and street='"+rue+"' and num="+num+" and cp="+CP+")";
 		System.out.println(query);
 		try {
@@ -807,14 +839,15 @@ class Database
 
 		ResultSet resultClient = null;
 		ResultSet resultAdress = null;
-		Customers c = new Customers(null, 1, null, null, 1);
+		Customers c = null;
 		String query="select nameClient,idAdress,phoneClient,firstNameClient from Client where idClient="+ID;
 		try 
 		{
-			resultClient=myStatement.executeQuery(query);
+			resultClient=tmpMyStatement.executeQuery(query);
 			resultClient.next();
 			
-			query="select num,street,cp,town from Adress where idAdress="+resultClient.getInt("idAdress");
+			query="select num,street from Adress where idAdress="+resultClient.getInt("idAdress");
+			
 			
 			String nameClient=resultClient.getString("nameClient");
 			String phoneClient=resultClient.getString("phoneClient");
@@ -1275,6 +1308,20 @@ class Database
 			System.out.println("Erreur requete insert category");
 		}
 	}
+	
+	public void saveAnimal(Animals animal) 
+	{
+		String QuerySample="INSERT INTO Animal (idSpecies, NameAnimal, SexAnimal,birthAnimal) VALUES ('"+getIdSpecies(animal.getSpecie())+"', '"+animal.getName()+"', '"+animal.getSexe()+"', '"+animal.getNumberBirthday()+"')";
+		try
+		{
+			System.out.println(QuerySample);
+			myStatement.executeQuery(QuerySample);
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println("Erreur requete insert animal");
+		}
+	}
 
 	/**
 	 * This function permits to have the list of all sample type in the database
@@ -1365,6 +1412,24 @@ class Database
 		catch (SQLException ex) 
 		{
 			System.out.println("Erreur requete selection des types d'Ã©chantillons");
+			return(-1);
+		}
+	}
+	
+	public Integer getIdSpecies(String name) 
+	{
+		String QuerySample="SELECT idSpecies FROM Species WHERE nameSpecies='"+name+"'";
+		try
+		{
+			
+			ResultSet monRes = myStatement.executeQuery(QuerySample);		
+			monRes.next();
+			return(Integer.parseInt(monRes.getString("idSpecies")));
+		}
+		catch (SQLException ex) 
+		{
+			System.out.println(ex.getMessage());
+			System.out.println("Erreur requete selection de l'id species");
 			return(-1);
 		}
 	}

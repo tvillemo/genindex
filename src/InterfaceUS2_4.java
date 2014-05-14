@@ -64,6 +64,7 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 		labAnalyse = new JLabel("Analyse");
 		analyse = new JComboBox();
 		ArrayList<String> items = d.getAnalyseByAnimal(animal.getIdAnimal());
+		//System.out.println(items.get(0));
 		for (int i=0;i< items.size();i++)
 		{
 			analyse.addItem(items.get(i));
@@ -148,6 +149,7 @@ public class InterfaceUS2_4 extends JFrame implements ActionListener
 						"Votre commande a bien été enregistrée", "",
 				       JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE, null,
 				       options, options);
+				this.dispose();
 			}
 		}
 		
